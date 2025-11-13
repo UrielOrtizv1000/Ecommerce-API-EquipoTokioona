@@ -1,0 +1,1 @@
+//JasonWebToken configuration for private routes
