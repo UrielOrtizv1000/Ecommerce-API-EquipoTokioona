@@ -1,0 +1,1 @@
+//CORS CONFIGURATION (Connect backfront with frontend)
