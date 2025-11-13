@@ -3,10 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db/conexion");
 
+const authRoutes = require("./routes/auth.routes");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));    // Required for Postman testing
 app.use(express.json());
 
 async function testDBConnection() {
@@ -17,6 +20,9 @@ async function testDBConnection() {
         console.error("Database connection failed:", error);
     }
 }
+
+// Routes under /api
+app.use("/api", authRoutes);
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
