@@ -1,0 +1,30 @@
+<header>
+  <div class="header-container">
+    <div class="header-logo">
+      <p>logo</p>
+      <p>Tokioona</p>
+    </div>
+
+    <div class="header-nav">
+      <nav>
+        <!-- Main navigation links -->
+        <div class="navigation-a">
+          <a href="index.html">Home</a>
+          <a href="store.html">Store</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+          <a href="">Accessibility</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+
+        <!-- User section: login / profile / cart -->
+        <div class="navigation-b" id="user-section"></div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Initialize user section after page load
+  document.addEventListener("DOMContentLoaded", () => Auth.updateUserSection());
+</script>
