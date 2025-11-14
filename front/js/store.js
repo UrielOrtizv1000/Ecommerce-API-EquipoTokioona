@@ -17,6 +17,7 @@ function renderProducts(products) {
     card.innerHTML = `
       <img src="${p.image}" alt="${p.name}">
       <h4>${p.name}</h4>
+      <p>${p.desc}</p>
       <p class="price">$${p.price}</p>
       <p>Stock: ${p.stock}</p>
       <div class="tags">
@@ -34,13 +35,18 @@ function renderProducts(products) {
 //     Carga inicial
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Mostrar todos los productos al inicio
-  renderProducts(productsData);
+  const params = new URLSearchParams(window.location.search);
+  const categoryFromURL = params.get("category");
 
-  // Activar filtros del sidebar
+  if (categoryFromURL && categoryFromURL !== "all") {
+    const filtered = productsData.filter(p => p.category === categoryFromURL);
+    renderProducts(filtered);
+  } else {
+    renderProducts(productsData);
+  }
+
   setupCategoryFilters();
 });
-
 
 //  Filtro por categorías
 function setupCategoryFilters() {

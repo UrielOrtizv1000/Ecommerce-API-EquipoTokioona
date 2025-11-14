@@ -2,6 +2,7 @@ const productsData = [
   {
     id: 1,
     name: "Producto 1",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 120,
     category: "grande",
     image: "https://picsum.photos/300/200?1",
@@ -10,7 +11,8 @@ const productsData = [
   },
   {
     id: 2,
-    name: "Prodcuto 2",
+    name: "Producto 2",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 80,
     category: "mediano",
     image: "https://picsum.photos/300/200?1",
@@ -20,6 +22,7 @@ const productsData = [
   {
     id: 3,
     name: "Producto 3",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 200,
     category: "mediano",
     image: "https://picsum.photos/300/200?1",
@@ -29,6 +32,7 @@ const productsData = [
   {
     id: 4,
     name: "Producto 4",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 150,
     category: "pequeno",
     image: "https://picsum.photos/300/200?1",
@@ -38,6 +42,7 @@ const productsData = [
   {
     id: 2,
     name: "Prodcuto 2",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 80,
     category: "mediano",
     image: "https://picsum.photos/300/200?1",
@@ -47,6 +52,7 @@ const productsData = [
   {
     id: 3,
     name: "Producto 3",
+    desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 200,
     category: "grande",
     image: "https://picsum.photos/300/200?1",
