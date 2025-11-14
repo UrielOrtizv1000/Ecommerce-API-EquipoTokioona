@@ -3,13 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db/conexion");
 
-const authRoutes = require("./routes/auth.routes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));    // Required for Postman testing
+app.use(express.urlencoded({ extended: true }));    // Required for x-www-form-urlencoded support
 app.use(express.json());
 
 async function testDBConnection() {
