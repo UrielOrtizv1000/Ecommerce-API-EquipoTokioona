@@ -33,29 +33,38 @@ const cartController = {
   },
 
   // Add to the cart
-  addToCart: async (req, res) => {
-    try {
-      const { userId, productId, quantity } = req.body;
+addToCart: async (req, res) => {
+  try {
+    const userId = req.body.userId || req.body.user_id;
+    const productId = req.body.productId || req.body.product_id;
+    const quantity = req.body.quantity;
 
-      const result = await Cart.addProduct(userId, productId, quantity);
-
-      res.json({
-        success: true,
-        message: result.message
+    if (!userId || !productId || !quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Faltan campos: userId/productId/quantity"
       });
-
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Error al agregar producto al carrito' });
     }
-  },
+
+    const result = await Cart.addProduct(userId, productId, quantity);
+
+    res.json({
+      success: true,
+      message: result.message
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error al agregar producto al carrito' });
+  }
+},
 
   // Update the quantity
   updateQuantity: async (req, res) => {
     try {
-      const { userId, productId, quantity } = req.body;
+      const { user_id, product_id, quantity } = req.body;
 
-      await Cart.updateQuantity(userId, productId, quantity);
+      await Cart.updateQuantity(user_id, product_id, quantity);
 
       res.json({
         success: true,

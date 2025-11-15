@@ -9,7 +9,7 @@
  * Required by: Cart page, checkout process
  */
 
-const db = require('../db/conexion');
+const pool = require('../db/conexion');
 
 class Cart {
 
