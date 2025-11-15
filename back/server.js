@@ -9,6 +9,9 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Routes cart
+app.use('/api/cart', require('./routes/cartRoutes'));
+
 async function testDBConnection() {
     try {
         const [rows] = await pool.query("SELECT 1 + 1 AS result");
