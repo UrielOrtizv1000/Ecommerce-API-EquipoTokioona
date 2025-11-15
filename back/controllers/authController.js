@@ -9,7 +9,7 @@ CAPTCHA: Generated in captchaController, validated here.
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-// -- USER SIGNUP CONTROLLER --
+// -- USER REGISTER CONTROLLER (SIGNUP) --
 const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -27,6 +27,12 @@ const signup = async (req, res) => {
     const hash = await bcrypt.hash(password, salt);
 
     const insertedId = await User.createUser(username, email, hash);
+    if (!insertedId) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists"
+      });
+    }
     res.status(201).json({
       success: true,
       message: "User signed up successfully",
