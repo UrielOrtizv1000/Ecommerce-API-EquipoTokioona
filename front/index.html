@@ -1,39 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styles/master_styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store</title>
+
+  <!-- General styles -->
+  <link rel="stylesheet" href="styles/master_styles.css">
+  <link rel="stylesheet" href="styles/login_styles.css">
+
+  <!-- Header and footer styles -->
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <!-- Scripts -->
+  <script src="js/components.js" defer></script> <!-- Loads header and footer -->
+  <script src="js/auth.js" defer></script>       <!-- User authentication -->
+  <script src="js/index.js" defer></script>      <!-- Main page logic -->
+  <script src="js/login.js" defer></script>      <!-- Login modal control -->
 </head>
+
 <body>
-    <header>
-        <div class="header-company">
-            <div class="header-logo">
-                <p>*logo*</p>
-            </div>
-            <div class="header-nombre">
-                <p>*nombre y logo*</p>
-            </div>
+
+  <!-- Dynamic header insertion -->
+  <div id="header"></div>
+
+  <main>
+    <!-- Hero section -->
+    <section class="hero-section">
+      <div class="hero-container">
+        <div class="hero-text">
+            <h1>Compra aqui los mejores juguetes</h1>
+            <h1>Andale we ocupamos el varo</h1>
+            <p>Tenemos las mejores ofertas we</p>
         </div>
-        <div class="header-navegation">
-            <nav>
-                <a href="#">Categorias</a>
-                <a href="#">Carrito</a>
-                <a href="#">Registro</a>
-                <a href="#">Nosotros</a>
-                <a href="#">Contacto</a>
-                <a href="#">FAQ</a>
-                <button>p</button>
-            </nav>
+        <div class="hero-button">
+            <button>Ver productos</button>
         </div>
-    </header>
-    <footer>
-        <p>cosa</p>
-        <p>cosa</p>
-        <p>cosa</p>
-        <p>cosa</p>
-        <p>cosa</p>
-    </footer>
+      </div>
+    </section>
+
+    <!-- Featured categories section -->
+    <section class="featured-categories">
+      <div class="categories-title">
+        <h2>Categorías Destacadas</h2>
+      </div>
+      <div class="categories-container">
+        <div class="categories-card-collection">
+          <div class="category-card">
+            <p>Imagen</p>
+            <p>Nombre</p>
+            <a href="store.html?category=grande" class="promo-card">
+            <h2>Productos de Cocina</h2>
+        </a>
+          </div>
+          <div class="category-card">
+            <p>Imagen</p>
+            <p>Nombre</p>
+          </div>
+          <div class="category-card">
+            <p>Imagen</p>
+            <p>Nombre</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offers section -->
+    <section class="offers-section">
+      <h2>Productos en Oferta</h2>
+      <p>Próximamente...</p>
+    </section>
+
+    <!-- Subscribe section -->
+    <section class="subscribe-section">
+      <h2>Suscríbete</h2>
+      <p>Recibe nuestras ofertas y novedades.</p>
+    </section>
+  </main>
+
+  <!-- Dynamic footer insertion -->
+  <div id="footer"></div>
+
+  <!-- Login modal -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-content">
+      <h2>Iniciar Sesión</h2>
+
+      <form>
+        <!-- Name input field -->
+        <label for="name">Nombre</label>
+        <input type="text" id="name">
+
+        <!-- Email input field -->
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email">
+
+        <!-- Buttons section -->
+        <div class="modal-buttons">
+            <!-- Register button -->
+            <button type="button" id="register-btn">Registrarse</button>
+            <!-- Forgot password button -->
+            <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+            <!-- Submit/login button -->
+            <button type="submit" id="submit-btn">Aceptar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
