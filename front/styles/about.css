@@ -1,0 +1,36 @@
+.description{
+    margin: 40px 0 120px;
+    display: flex;
+    justify-content: center;
+}
+.description-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 1000px;
+}
+.container-txt{
+    padding: 50px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+.container-img{
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
+.container-img img{
+    height: 300px;
+    border-radius: 20px;
+}
+
+/* cambiar esto por otra cosa juasjuas */
+.holas{
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+}
+.holas div{
+    margin: 50px;
+}

@@ -11,26 +11,19 @@ body {
   line-height: 1.5;
 }
 
-/* Hero section */
-.hero-section {
-  background: url('../images/toys.png');
-  background-size: cover;         
-  background-position: center;    
-  background-repeat: no-repeat;
-}
-
-.hero-container {
-  padding: 50px;
-}
-
-.hero-btn {
-  display: flex;
-  margin-left: 30px;
-}
-
 /* sticky header */
 #header {
   position: sticky;
   top: 10px;
   z-index: 1100;
+}
+
+/* title */
+.title{
+    display: flex;
+    justify-content: center;
+}
+.title-txt{
+    width: 700px;
+    font-size: 35px;
 }
