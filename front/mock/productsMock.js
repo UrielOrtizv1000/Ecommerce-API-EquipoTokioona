@@ -5,7 +5,7 @@ const productsData = [
     desc:"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque quaerat nam",
     price: 120,
     category: "grande",
-    image: "https://picsum.photos/300/200?1",
+    image: "../images/toys.png",
     stock: 10,
     tags: ["nuevo", "popular","grande"]
   },
