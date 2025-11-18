@@ -15,10 +15,10 @@
     <link rel="stylesheet" href="styles/footer.css">
 
     <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+    <script src="js/components.js" defer></script> 
+    <script src="js/auth.js" defer></script>      
+    <script src="js/index.js" defer></script>     
+    <script src="js/login.js" defer></script>      
 </head>
 
 <body>
@@ -26,64 +26,126 @@
     <!-- Dynamic header insertion -->
     <div id="header"></div>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <section class="description">
-            <div class="description-container">
-                <div class="container-txt">
-                    <h3>
-                        Esta es una tienda de juguetes que fabrica, diseña y 
-                        tiene como meta enviar productos a distintas partes del 
-                        mundo. Fundada en 2025 y con un equipo reducido y 
-                        principiante, nos presentamos al mercado con ideas 
-                        innovadoras y grandes oportunidades. 
-                    </h3>
-                </div>
-                <div class="container-img">
-                    <!-- esta deberia ser una imagen sin fondo para que quede -->
-                    <!-- mas libre la pagina -->
-                    <img src="images/figurita.png" alt="">
-                </div>
-            </div>
-        </section>
-        <section class="holas">
-            <div class="title">
-                <div class="title-txt">
-                    <p>
-                        Conoce a nuestros desarrolladores!
-                    </p>
-                </div>
-            </div>
-            <!-- <div>
-                <h1>Como comenzo esta tienda</h1>
+<main>
+
+    <!-- Hero Description Section -->
+    <section class="description">
+        <div class="description-container">
+
+            <!-- Text block for store introduction -->
+            <div class="container-txt">
                 <h3>
-                    Esta tienda nacio de una apasionante inspiracion de
-                    6 estudiantes que querian hacer algun proyecto para
-                    nutrirse de conocimiento y conseguir nuevas habilidades
-                    en el ambito de las paginas web.
+                    Somos una tienda de juguetes creada en 2025 con la visión de diseñar, fabricar y llevar ilusión a cualquier parte del mundo. 
+                    Nuestro equipo, aunque pequeño y en pleno crecimiento, trabaja con dedicación para transformar ideas innovadoras en productos reales 
+                    que inspiren creatividad, juego y recuerdos duraderos. Cada juguete nace de la curiosidad, el diseño y el deseo de entregar 
+                    experiencias memorables a personas de todas las edades.
                 </h3>
             </div>
-            <div>
-                <h1>Nuestro enfoque</h1>
+
+            <!-- Decorative image -->
+            <div class="container-img">
+                <img src="images/figurita.png" alt="">
+            </div>
+        </div>
+    </section>
+
+    <!-- Developers Section -->
+    <section class="developers-section">
+        
+        <!-- Section title -->
+        <div class="title">
+            <div class="title-txt">
+                <p>Conoce a nuestros desarrolladores!</p>
+            </div>
+        </div>
+
+        <!-- Developers list (Apple style cards) -->
+        <div class="dev-container">
+
+            <div class="dev-card">
+                <h1>Bruno</h1>
                 <h3>
-                    Esta tienda tienda de jugeutes es muy especial, porque 
-                    no solamente vendemos productos, sino que vendemos 
-                    recuerdos. Nos dedicamos a fabricar y traer juguetes 
-                    que tienen como objetivo darle las sonrisas a los
-                    niños que tanto se merecen.
+                    Visionario con enfoque en diseño y experiencia del usuario. Aporta creatividad,
+                    ideas frescas y una visión moderna para que cada juguete tenga una esencia única.
                 </h3>
             </div>
-            <div>
-                <h1>Nuestras metas</h1>
+
+            <div class="dev-card">
+                <h1>Brandon</h1>
                 <h3>
-                    Tenemos como meta llegar a la mayor cantidad de ventas
-                    en relacion de la calidad de nuestros juguetes, queremos
-                    lograr hacer realidad las mejores experiencias posibles
-                    para nuestros clientes.
+                    Especialista en marketing y conexión con las personas. Se encarga de que cada producto
+                    llegue a quien realmente lo necesita, creando vínculos emocionales con cada campaña.
                 </h3>
-            </div> -->
-        </section>
-    </main>
+            </div>
+
+            <div class="dev-card">
+                <h1>Oscar</h1>
+                <h3>
+                    Desarrollador centrado en la lógica, la estructura y el código limpio. 
+                    Disfruta resolver problemas, optimizar sistemas y construir herramientas que permiten 
+                    que la tienda funcione con eficiencia y crecimiento constante.
+                </h3>
+            </div>
+
+            <div class="dev-card">
+                <h1>Azael</h1>
+                <h3>
+                    Responsable de la estrategia financiera y la estabilidad del proyecto. 
+                    Mantiene el equilibrio perfecto entre crecer, invertir y asegurar el futuro de la empresa.
+                </h3>
+            </div>
+
+            <div class="dev-card">
+                <h1>Gael</h1>
+                <h3>
+                    Encargado de la producción y la calidad. Supervisa cada detalle para garantizar 
+                    que los juguetes no solo sean divertidos, sino también seguros y duraderos.
+                </h3>
+            </div>
+
+            <div class="dev-card">
+                <h1>Uriel</h1>
+                <h3>
+                    Creativo, apasionado por la innovación y la experiencia del cliente. Su enfoque emocional,
+                    artístico y humano impulsa a la empresa a crear juguetes que cuentan historias.
+                </h3>
+            </div>
+
+        </div>
+
+        <!-- Store origin story -->
+        <div class="info-section">
+            <h1>Cómo comenzó esta tienda</h1>
+            <h3>
+                La tienda nació como un proyecto creativo entre un grupo de estudiantes que buscaban aprender, experimentar 
+                y desarrollar nuevas habilidades en el mundo del diseño y las páginas web. De esa curiosidad surgió una marca 
+                que hoy continúa creciendo y evolucionando.
+            </h3>
+        </div>
+
+        <!-- Store philosophy -->
+        <div class="info-section">
+            <h1>Nuestro enfoque</h1>
+            <h3>
+                No solo vendemos juguetes: compartimos recuerdos, emociones y momentos especiales. 
+                Trabajamos para ofrecer productos que acompañen la infancia, inspiren imaginación y 
+                generen sonrisas auténticas en niños y adultos.
+            </h3>
+        </div>
+
+        <!-- Goals section -->
+        <div class="info-section">
+            <h1>Nuestras metas</h1>
+            <h3>
+                Aspiramos a convertirnos en una marca reconocida por la calidad de nuestros productos, 
+                la creatividad de nuestros diseños y la confianza de nuestros clientes. 
+                Queremos llegar cada vez a más familias, llevando con nosotros historias, juegos y alegría.
+            </h3>
+        </div>
+
+    </section>
+
+</main>
 
     <!-- Dynamic footer insertion -->
     <div id="footer"></div>
@@ -91,25 +153,19 @@
     <!-- Login modal -->
     <div class="modal-overlay" id="login-modal">
         <div class="modal-content">
-            <!-- Modal title -->
+
             <h2>Iniciar Sesión</h2>
 
             <form>
-                <!-- Name input field -->
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre">
 
-                <!-- Email input field -->
                 <label for="correo">Correo electrónico</label>
                 <input type="email" id="correo">
 
-                <!-- Buttons section -->
                 <div class="modal-buttons">
-                    <!-- Register button -->
                     <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
                     <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
                     <button type="submit" id="submit-btn">Aceptar</button>
                 </div>
             </form>
@@ -118,5 +174,3 @@
 
 </body>
 </html>
-
-
