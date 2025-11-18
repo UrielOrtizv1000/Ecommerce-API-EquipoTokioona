@@ -4,6 +4,7 @@ const cors = require("cors");
 const pool = require("./db/conexion");
 
 const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,8 +22,11 @@ async function testDBConnection() {
     }
 }
 
-// Routes under /api
-app.use("/api", authRoutes);
+// Routes under /api/users
+app.use("/api/users", authRoutes);
+
+// Routes under /api/products
+app.use("/api/products", productRoutes);
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
