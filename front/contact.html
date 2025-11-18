@@ -8,6 +8,7 @@
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/contact.css">
 
     <!-- Header and footer styles -->
     <link rel="stylesheet" href="styles/header.css">
@@ -27,8 +28,49 @@
 
     <main>
         <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
+        <div class="title">
+            <div class="title-txt">
+                <p>
+                    Contactanos!
+                </p>
+            </div>
+        </div>
+        <section class="contact-form">
+            <form action="#" method="post" class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="apellidos">Apellidos</label>
+                        <input type="text" id="apellidos" name="apellidos" required>
+                    </div>
+                </div>
+            
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" name="correo" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="numero">Número</label>
+                        <input type="tel" id="numero" name="numero" required>
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label for="asunto">Asunto / Mensaje</label>
+                    <textarea id="asunto" name="asunto" rows="5" required></textarea>
+                </div>
+            
+                <button type="submit" class="btn-enviar">Enviar</button>
+            
+            </form>
+        </section>
+
     </main>
 
     <!-- Dynamic footer insertion -->
