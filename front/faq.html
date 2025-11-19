@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Page</title>
+
+    <!-- General styles -->
+    <link rel="stylesheet" href="styles/master_styles.css">
+    <link rel="stylesheet" href="styles/login_styles.css">
+
+    <!-- Header and footer styles -->
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+
+    <!-- Scripts for components and login -->
+    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
+    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
+    <script src="js/index.js" defer></script>      <!-- Main page logic -->
+    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+</head>
+
+<body>
+
+    <!-- Dynamic header insertion -->
+    <div id="header"></div>
+
+    <main>
+        <!-- Page visible content in Spanish -->
+        <div class="title">
+            <div class="title-txt">
+                <p>
+                    Preguntas Frecuentes
+                </p>
+            </div>
+        </div>
+        <div>
+            <h4>¿En qué países realizan envíos?</h4>
+            <h5>Nuestras tiendas realizan entregas en todo Mexico.</h5>
+        </div>
+        <div>
+            <h4>¿Cuánto tarda en llegar mi pedido?</h4>
+            <h5>Dependiendo del pedido en cuestion, puede tardar entre 1 y 7 dias de envio.</h5>
+        </div>
+        <div>
+            <h4>¿Cuáles son los métodos de pago disponibles?</h4>
+            <h5> - - - </h5>
+        </div>
+        <div>
+            <h4>¿Cómo puedo saber si un juguete es adecuado para la edad de mi hijo?</h4>
+            <h5>Esto se puede comprobar viendo detenidamente la descripcion de cada juguete y tambien las tags de cada producto.</h5>
+        </div>
+        <div>
+            <h4>¿Los precios ya incluyen impuestos?</h4>
+            <h5>Nuestros precios ya incluyen los impuestos de cada producto.</h5>
+        </div>
+        <div>
+            <h4>¿Ofrecen descuentos en los productos?</h4>
+            <h5>Si!, ofrecemos descuentos para algunos de nuestros productos segun la epoca del año, dias festivos o cupones!</h5>
+        </div>
+        <div>
+            <h4>¿Como puedo recibir un cupon?</h4>
+            <h5>Los cupones se pueden conseguir por medio de el registro de un nuevo usuario!</h5>
+        </div>
+        <div>
+            <h4>¿Cómo puedo contactar atención al cliente?</h4>
+            <h5>En las pestaña de 'Contacto' es posible consultar con nuestros operadores para asi recibir una respuesta personalizada via correo electronico!</h5>
+        </div>
+    </main>
+
+    <!-- Dynamic footer insertion -->
+    <div id="footer"></div>
+
+    <!-- Login modal -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <!-- Modal title -->
+            <h2>Iniciar Sesión</h2>
+
+            <form>
+                <!-- Name input field -->
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre">
+
+                <!-- Email input field -->
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo">
+
+                <!-- Buttons section -->
+                <div class="modal-buttons">
+                    <!-- Register button -->
+                    <button type="button" id="register-btn">Registrarse</button>
+                    <!-- Forgot password button -->
+                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+                    <!-- Submit/login button -->
+                    <button type="submit" id="submit-btn">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

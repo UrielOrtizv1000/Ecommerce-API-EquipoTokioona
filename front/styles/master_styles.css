@@ -1,52 +1,29 @@
-/* 
-colores principales:
-titulos: 
-azul oscuro: rgb(18, 18, 74)
-*/
-
-/* Estilos globales */
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%; 
-}
-a{
-    color: white;
-    text-decoration: none;
+/* === RESET GENERAL === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', Arial, sans-serif;
+  text-decoration: none;
 }
 
-/* Header */
-.header-company{
+body {
+  line-height: 1.5;
+}
+
+/* sticky header */
+#header {
+  position: sticky;
+  top: 10px;
+  z-index: 1100;
+}
+
+/* title */
+.title{
     display: flex;
     justify-content: center;
-    background: rgb(205, 20, 82);
-    font-size: 20px;
-    color: white;
 }
-.header-logo{
-    padding: 5px;
-
-    /*quitar*/
-    display: flex;
-    align-items: center;
-}
-.header-nombre{
-    padding: 20px;
-}
-
-.header-navegation{
-    background-color: rgb(18, 18, 74);
-    color: white;
-    padding: 15px;
-}
-.header-navegation nav{
-    display: flex;
-    gap: 20px;
-}
-
-/* Footer */
-footer{
-    margin-top: 60px;
-    background-color: rgb(18, 18, 74);
-    color: white;
+.title-txt{
+    width: 700px;
+    font-size: 35px;
 }

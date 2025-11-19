@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Page</title>
+
+    <!-- General styles -->
+    <link rel="stylesheet" href="styles/master_styles.css">
+    <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/about.css">
+
+    <!-- Header and footer styles -->
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+
+    <!-- Scripts for components and login -->
+    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
+    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
+    <script src="js/index.js" defer></script>      <!-- Main page logic -->
+    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+</head>
+
+<body>
+
+    <!-- Dynamic header insertion -->
+    <div id="header"></div>
+
+    <main>
+        <!-- Page visible content in Spanish -->
+        <section class="description">
+            <div class="description-container">
+                <div class="container-txt">
+                    <h3>
+                        Esta es una tienda de juguetes que fabrica, diseña y 
+                        tiene como meta enviar productos a distintas partes del 
+                        mundo. Fundada en 2025 y con un equipo reducido y 
+                        principiante, nos presentamos al mercado con ideas 
+                        innovadoras y grandes oportunidades. 
+                    </h3>
+                </div>
+                <div class="container-img">
+                    <!-- esta deberia ser una imagen sin fondo para que quede -->
+                    <!-- mas libre la pagina -->
+                    <img src="images/figurita.png" alt="">
+                </div>
+            </div>
+        </section>
+        <section class="holas">
+            <div class="title">
+                <div class="title-txt">
+                    <p>
+                        Conoce a nuestros desarrolladores!
+                    </p>
+                </div>
+            </div>
+            <!-- <div>
+                <h1>Como comenzo esta tienda</h1>
+                <h3>
+                    Esta tienda nacio de una apasionante inspiracion de
+                    6 estudiantes que querian hacer algun proyecto para
+                    nutrirse de conocimiento y conseguir nuevas habilidades
+                    en el ambito de las paginas web.
+                </h3>
+            </div>
+            <div>
+                <h1>Nuestro enfoque</h1>
+                <h3>
+                    Esta tienda tienda de jugeutes es muy especial, porque 
+                    no solamente vendemos productos, sino que vendemos 
+                    recuerdos. Nos dedicamos a fabricar y traer juguetes 
+                    que tienen como objetivo darle las sonrisas a los
+                    niños que tanto se merecen.
+                </h3>
+            </div>
+            <div>
+                <h1>Nuestras metas</h1>
+                <h3>
+                    Tenemos como meta llegar a la mayor cantidad de ventas
+                    en relacion de la calidad de nuestros juguetes, queremos
+                    lograr hacer realidad las mejores experiencias posibles
+                    para nuestros clientes.
+                </h3>
+            </div> -->
+        </section>
+    </main>
+
+    <!-- Dynamic footer insertion -->
+    <div id="footer"></div>
+
+    <!-- Login modal -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <!-- Modal title -->
+            <h2>Iniciar Sesión</h2>
+
+            <form>
+                <!-- Name input field -->
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre">
+
+                <!-- Email input field -->
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo">
+
+                <!-- Buttons section -->
+                <div class="modal-buttons">
+                    <!-- Register button -->
+                    <button type="button" id="register-btn">Registrarse</button>
+                    <!-- Forgot password button -->
+                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+                    <!-- Submit/login button -->
+                    <button type="submit" id="submit-btn">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
