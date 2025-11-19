@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db/conexion");
 const cartRoutes = require('./routes/cartRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
 
 
 const authRoutes = require("./routes/authRoutes");
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes cart
 app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/wishlist', wishlistRoutes);
 
 async function testDBConnection() {
     try {
