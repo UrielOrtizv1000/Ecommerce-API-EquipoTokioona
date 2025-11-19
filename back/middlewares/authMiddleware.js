@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (requireAdmin = false) => {
     return (req, res, next) => {
         try {
-            const authHeader = req.headers.authorization;
+            const authHeader = req.headers.authorization;//token received
 
             // Must come as: "Bearer TOKEN"
             if (!authHeader || !authHeader.startsWith("Bearer ")) {
