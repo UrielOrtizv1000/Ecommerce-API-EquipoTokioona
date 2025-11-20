@@ -22,4 +22,15 @@ async function createUser(name, email, password) {
   return res.insertId;
 }
 
-module.exports = { createUser };
+// Get user by email
+async function getUserByEmail(email) {
+  const [rows] = await pool.query(
+    "SELECT user_id, name, email FROM users WHERE email = ?",
+    [email]
+  );
+
+  return rows[0] || null;
+}
+
+
+module.exports = { createUser, getUserByEmail };

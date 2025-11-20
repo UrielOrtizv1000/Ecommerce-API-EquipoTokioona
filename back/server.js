@@ -2,9 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db/conexion");
+
+// const routes
 const cartRoutes = require('./routes/cartRoutes');
-
-
+const contactRoutes = require("./routes/contactRoutes");
+const subscriptionRoutes = require("./routes/subscriptionRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
@@ -15,7 +18,12 @@ app.use(express.urlencoded({ extended: true }));    // Required for x-www-form-u
 app.use(express.json());
 
 // Routes cart
-app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/cart', cartRoutes);
+
+app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/subscribe", subscriptionRoutes);
+app.use("/api/orders", orderRoutes);
 
 async function testDBConnection() {
     try {
@@ -26,10 +34,9 @@ async function testDBConnection() {
     }
 }
 
-// Routes under /api
-app.use("/api", authRoutes);
+
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
-    await testDBConnection();
+    await testDBConnection();  
 });
