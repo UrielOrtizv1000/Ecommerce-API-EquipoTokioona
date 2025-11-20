@@ -15,23 +15,23 @@ class Cart {
 
   // Add product or add more
   static async addProduct(userId, productId, quantity = 1) {
-    const conn = await pool.getConnection();
+    const conn = await pool.getConnection(); // wait a promise and put in a const call "conn"
     try {
       await conn.beginTransaction();
 
-      const [rows] = await conn.query(
+      const [rows] = await conn.query( // add a product
         `SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?`,
         [userId, productId]
       );
 
-      if (rows.length > 0) {
+      if (rows.length > 0) { // put more product
         await conn.query(
           `UPDATE cart SET quantity = quantity + ? 
            WHERE user_id = ? AND product_id = ?`,
           [quantity, userId, productId]
         );
       } else {
-        await conn.query(
+        await conn.query( // if the cart doesn´t exist
           `INSERT INTO cart (user_id, product_id, quantity)
            VALUES (?, ?, ?)`,
           [userId, productId, quantity]
