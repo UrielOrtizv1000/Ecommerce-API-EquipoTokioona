@@ -1,15 +1,22 @@
+// front/js/components.js
 async function loadComponent(id, file, callback) {
-  const response = await fetch(file);
-  const html = await response.text();
-  document.getElementById(id).innerHTML = html;
+  try {
+    const response = await fetch(file);
+    const html = await response.text();
+    document.getElementById(id).innerHTML = html;
 
-  if (callback) callback(); // Ejecutar después de cargar el HTML
+    if (callback) callback();
+  } catch (error) {
+    console.error(`Error loading component ${file}:`, error);
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
   loadComponent("header", "./includes/header.html", () => {
-    // Aquí se ejecuta index.js correctamente
-    initUserSection();
+    // Actualizar sección de usuario después de cargar el header
+    if (typeof Auth !== 'undefined') {
+      Auth.updateUserSection();
+    }
   });
 
   loadComponent("footer", "./includes/footer.html");
