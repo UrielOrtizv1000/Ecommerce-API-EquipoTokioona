@@ -3,17 +3,18 @@ here u are going to administrate the products filters
 getAll, getById, getByCategory, getOnSale, 
 create (admin), update (admin), delete (admin)
 */
-const Product = require("../models/Product");
+const Product = require('../models/Product');
 const Category = require("../models/Category");
 
 // -- GET PRODUCT CONTROLLER --
-const getProductById = async (req, res) => {
+exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.getProductById(id);
 
     if (!product) {
       return res.status(404).json({
+        ok: false,
         message: "Request not found"
       });
     }
@@ -21,27 +22,39 @@ const getProductById = async (req, res) => {
     res.status(200).json({ product });
   } catch (error) {
     console.error("Product query error: ", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
   }
 }
 
-const getCategories = async (req, res) => {
+exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.getCategories();
-    res.status(200).json({ categories });
+    res.status(200).json({
+      ok: true,
+      categories
+    });
   } catch (error) {
     console.error("Category query error: ", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
   }
 }
 
-const filterProductsBy = async (req, res) => {
+exports.filterProductsBy = async (req, res) => {
   try {
     // Creating query string
 
     // Check if there are no query parameters
     if (Object.keys(req.query).length === 0)
-      return res.status(400).json({ message: "Filters were not applied" });
+      return res.status(400).json({
+        ok: false,
+        message: "Filters were not applied"
+      });
 
     // Setup variables for generating a query string
     let numParams = 0;
@@ -73,7 +86,10 @@ const filterProductsBy = async (req, res) => {
           break;
         default:
           // If a wrong parameter was requested, return a 404 code
-          return res.status(404).json({ message: "Non-existent product filter was requested"});
+          return res.status(404).json({
+            ok: false,
+            message: "Non-existent product filter was requested"
+          });
       }
 
       // Add current parameter value to result array
@@ -84,11 +100,53 @@ const filterProductsBy = async (req, res) => {
 
     // Execute query
     const list = await Product.getProductsByFilter(queryControl, queryValues);
-    res.status(200).json({ list });
+    res.status(200).json({
+      ok: true,
+      list
+    });
   } catch (error) {
     console.log("Product filtering error");
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
   }
 }
 
-module.exports = { getProductById, getCategories, filterProductsBy }
+exports.createProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    } = req.body;
+
+    const newProductId = await Product.create({
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    });
+
+    return res.status(201).json({
+      ok: true,
+      message: 'Product created successfully',
+      product_id: newProductId
+    });
+
+  } catch (err) {
+    console.error('Error creating product:', err);
+
+    return res.status(500).json({
+      ok: false,
+      message: 'Internal server error'
+    });
+  }
+};

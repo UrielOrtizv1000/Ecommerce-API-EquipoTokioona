@@ -1,10 +1,26 @@
-/**
- * WISHLIST MODEL → OUR CHOSEN "APORTACIÓN" (extra feature)
- * Purpose: Let logged-in users save favorite products with the heart icon
- * What it does:
- *   - Add/remove product from wishlist
- *   - Get full wishlist with product details
- *   - Check if a product is already in the wishlist (to show filled heart)
- * Required by: Product cards, "My Wishlist" page
- * This satisfies the "aportación" requirement perfectly
- */
+const pool = require('../db/conexion');
+
+async function getAllProducts(userId) {
+    const [rows] =  await pool.query('SELECT * FROM wishlists WHERE user_id = ?', [userId]);
+    return rows;
+}
+
+async function insertProduct(userId, productId) {
+    const [result] = await pool.query(
+        'INSERT INTO wishlists (user_id, product_id) VALUES (?, ?)', 
+        [userId, productId]
+    );
+    return result.insertId;
+}
+
+async function deleteProduct(userId, productId) {
+    const [result] = await pool.query('DELETE FROM wishlists WHERE user_id = ? AND product_id = ?', 
+        [userId, productId]);
+    return result.affectedRows;
+}
+
+module.exports = {
+    getAllProducts,
+    insertProduct,
+    deleteProduct
+};

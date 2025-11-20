@@ -1,0 +1,107 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+/* Ensures the card serves as the context for absolute positioning */
+.card {
+  position: relative; 
+}
+
+.card-header {
+  position: relative;
+  margin-bottom: 10px; 
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  
+  cursor: pointer;
+  z-index: 10; 
+  color: #fff;
+  font-size: 1.5em; 
+  
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  padding: 5px 6px; 
+  line-height: 1; 
+  transition: color 0.2s;
+}
+
+.wishlist-btn:hover {
+  color: red; 
+}
+
+.wishlist-btn .fas.fa-heart {
+    color: red;
+} 
+
+/* Style for the heart when it's "active" (filled) */
+.wishlist-btn.active .fas.fa-heart,
+.wishlist-btn:hover { 
+    color: #ff4d4d; /* Added to wishlist */
+}
+
+.card-header img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.tags {
+  margin-top: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 7px;
+  background: #eee;
+  border-radius: 6px;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+.card-btn{
+  display: flex;
+  justify-content: end;
+}
+.card-btn button{
+  padding: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 20px;
+  border-radius: 18px;
+  background-color: rgb(6, 208, 249);
+  border-style: none;
+}
+
+.sidebar{
+  background-color: red;
+}
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Page</title>
+
+    <!-- General styles -->
+    <link rel="stylesheet" href="styles/master_styles.css">
+    <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/store.css">
+
+    <!-- Header and footer styles -->
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Scripts for components and login -->
+    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
+    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
+    <script src="js/index.js" defer></script>      <!-- Main page logic -->
+    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+</head>
+
+<body>
+
+    <!-- Dynamic header insertion -->
+    <div id="header"></div>
+
+    <main>
+        <!-- Page visible content in Spanish -->
+        <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+        <h3>Categorías</h3>
+        <ul>
+            <li><button data-category="all">Todos</button></li>
+            <li><button data-category="pequeno">Pequeño</button></li>
+            <li><button data-category="mediano">Mediano</button></li>
+            <li><button data-category="grande">Granden</button></li>
+        </ul>
+    </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+        <h1>Tienda de Productos</h1>
+        <div id="products-container" class="grid"></div>
+        </main>
+        
+
+    </div>
+    </main>
+
+    <!-- Dynamic footer insertion -->
+    <div id="footer"></div>
+
+    <!-- Login modal -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <!-- Modal title -->
+            <h2>Iniciar Sesión</h2>
+
+            <form>
+                <!-- Name input field -->
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre">
+
+                <!-- Email input field -->
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo">
+
+                <!-- Buttons section -->
+                <div class="modal-buttons">
+                    <!-- Register button -->
+                    <button type="button" id="register-btn">Registrarse</button>
+                    <!-- Forgot password button -->
+                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+                    <!-- Submit/login button -->
+                    <button type="submit" id="submit-btn">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="mock/productsMock.js"></script>
+    <script src="api/productsApi.js"></script>
+    <script src="js/store.js"></script>
+</body>
+</html>
