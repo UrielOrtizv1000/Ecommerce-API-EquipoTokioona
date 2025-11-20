@@ -135,7 +135,7 @@ exports.createProduct = async (req, res) => {
       category_id
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       ok: true,
       message: 'Product created successfully',
       product_id: newProductId
@@ -144,7 +144,7 @@ exports.createProduct = async (req, res) => {
   } catch (err) {
     console.error('Error creating product:', err);
 
-    return res.status(500).json({
+    res.status(500).json({
       ok: false,
       message: 'Internal server error'
     });

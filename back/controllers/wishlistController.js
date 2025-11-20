@@ -1,4 +1,4 @@
-const wishlist = require('../models/wishlist');
+const wishlist = require('../models/Wishlist');
 
 getWishlist = async (req, res) => {
     const userId = req.user.id; 

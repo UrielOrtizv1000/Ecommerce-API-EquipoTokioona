@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { getWishlist, addToWishlist,deleteFromWishlist } = require('../controllers/wishlistController');
-const { verifyToken } = require('../middlewares/auth.middleware');
+const { getWishlist, addToWishlist, deleteFromWishlist } = require('../controllers/wishlistController');
+const { verifyToken } = require('../middlewares/authMiddleware');
 
 // get the cart from an user
 router.get('/', verifyToken, getWishlist);
