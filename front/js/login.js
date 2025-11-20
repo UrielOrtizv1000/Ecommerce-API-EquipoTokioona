@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Modal internal buttons
   document.getElementById("register-btn").addEventListener("click", () => {
-    alert("Redirecting to registration page...");
+    // alert("Redirecting to registration page...");             // de momento no para acelerar el proceso
+    window.location.href = ("register.html");
   });
 
   document.getElementById("forgot-btn").addEventListener("click", () => {
