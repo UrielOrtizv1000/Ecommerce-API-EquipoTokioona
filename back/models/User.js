@@ -37,26 +37,11 @@ async function userLogin(name, password) {
   // Verify bcrypt's encrypted password
   const verifyHash = await bcrypt.compare(password, user.password);
 
-  if (!verifyHash) {
-    // Iterate failed attempts
-    const [fail] = await pool.query('UPDATE users SET failed_attempts = failed_attempts + 1 WHERE user_id = ?', [user.user_id]);
-
-    // Get current failed attempts value
-    const [currAtt] = await pool.query('SELECT failed_attempts FROM users WHERE user_id = ?', [user.user_id]);
-
-    // If current failed attempts value is divisible by 3, set lockout
-    if ((currAtt[0].failed_attempts % 3) === 0) {
-      const [lock] = await pool.query('UPDATE users SET lockout_date = CURRENT_TIMESTAMP WHERE user_id = ?', [user.user_id]);
-    }
-
-    return null;
-  }
-
-  // Remove failed attempts
-  const [remFail] = await pool.query('UPDATE users SET failed_attempts = 0 WHERE user_id = ?', [user.user_id]);
-
-  // Remove lockout, if any
-  const [unlock] = await pool.query('UPDATE users SET lockout_date = NULL WHERE user_id = ?', [user.user_id]);
+  if (!verifyHash)
+    return {
+      failedAttempt: true,
+      affectedId: user.user_id
+    };
 
   // Return public data
   return {

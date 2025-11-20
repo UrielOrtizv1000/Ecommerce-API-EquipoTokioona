@@ -22,11 +22,11 @@ async function testDBConnection() {
     }
 }
 
-// Routes under /api/users
-app.use("/api/users", authRoutes);
+// Routes under /api/auth
+app.use("/api/auth", authRoutes);
 
 // Routes under /api/products
-app.use("/api/products", productRoutes);
+app.use("/api/product", productRoutes);
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);

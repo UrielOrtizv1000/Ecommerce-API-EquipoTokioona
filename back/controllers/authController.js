@@ -8,7 +8,10 @@ CAPTCHA: Generated in captchaController, validated here.
 */
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
+
 const User = require("../models/User");
+const FailedLogin = require("../models/FailedLogin");
+
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
 
 
@@ -64,11 +67,55 @@ const login = async (req,res) => {
     }
 
     const userData = await User.userLogin(username, password);
-    if (!userData) {
+    if (userData.failedAttempt) {
+
+      const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
+      if (iterateFailedAttempt === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "User data was not found. Iiteration failed"
+        })
+      }
+
+      
+      const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
+      if (!currAtt) {
+        return res.status(404).json({
+          success: false,
+          message: "User data was not found. Attempt check failed"
+        })
+      }
+
+      if (currAtt % 3 === 0) {
+        const lock = await FailedLogin.setLockout(userData.affectedId);
+        if (lock === 0) {
+          return res.status(500).json({
+            success: false,
+            messge: "User lockout failed"
+          });
+        }
+      }
+
       return res.status(401).json({
         success: false,
         message: "Wrong credentials"
       });
+    }
+
+    const clearAtt = await FailedLogin.resetAttempts(userData.id);
+    if (clearAtt === 0) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to reset attempts"
+      })
+    }
+
+    const rmLock = await FailedLogin.removeLockout(userData.id);
+    if (rmLock === 0) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to remove lockout"
+      })
     }
 
     const token = storeToken(userData);
