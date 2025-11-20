@@ -7,6 +7,7 @@ const wishlistRoutes = require('./routes/wishlistRoutes');
 
 
 const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,8 +29,11 @@ async function testDBConnection() {
     }
 }
 
-// Routes under /api
-app.use("/api", authRoutes);
+// Routes under /api/auth
+app.use("/api/auth", authRoutes);
+
+// Routes under /api/products
+app.use("/api/product", productRoutes);
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);

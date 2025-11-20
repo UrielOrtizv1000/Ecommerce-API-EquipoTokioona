@@ -1,5 +1,9 @@
 
 const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+
+const sessions = new Map();
 
 /**
  * Middleware to verify JWT and optionally validate admin privileges
@@ -23,7 +27,7 @@ const verifyToken = (requireAdmin = false) => {
             const token = authHeader.split(" ")[1];
 
             // Validate token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const decoded = jwt.verify(token, JWT_SECRET);
 
             // Attach user information to the request (note: Adjust this part based on 
             // the parameters returned by the frontend login request)
@@ -40,6 +44,8 @@ const verifyToken = (requireAdmin = false) => {
                     message: "Access denied. Administrator role required."
                 });
             }
+            
+            req.token = token;
 
             next();
 
@@ -53,6 +59,22 @@ const verifyToken = (requireAdmin = false) => {
     };
 };
 
-module.exports = verifyToken;
+const storeToken = (userData) => {
+    const token = jwt.sign(
+        userData,
+        JWT_SECRET,
+        {
+            expiresIn: JWT_EXPIRES_IN
+        }
+    );
+    sessions.set(token, userData.id);
+    return token;
+}
+
+const disposeToken = (token) => {
+    return sessions.delete(token);
+}
+
+module.exports = { verifyToken, storeToken, disposeToken };
 
 
