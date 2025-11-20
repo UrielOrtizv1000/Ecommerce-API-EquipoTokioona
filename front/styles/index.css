@@ -256,3 +256,46 @@ efecto líquido
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
+
+/* ============================================
+   Animations (DELETE FADE IF U HATE IT, LOL)
+   ============================================ */
+
+@keyframes fadeInSoft {
+    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInUp {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+main {
+    animation: fadeInSoft 0.7s ease-out;
+}
+
+.hero-container {
+    animation: fadeInSoft 0.7s ease-out both;
+}
+
+.categories-card-collection .promo-card {
+    opacity: 0;
+    animation: fadeInUp 0.7s ease-out forwards;
+}
+
+.categories-card-collection .promo-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.categories-card-collection .promo-card:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.offers-section {
+    animation: fadeInSoft 0.7s ease-out both;
+}
+
+.subscribe-section {
+    animation: fadeInSoft 0.7s ease-out both;
+}

@@ -20,7 +20,6 @@ main {
 
 .layout {
   display: flex;
-  /* Removed full viewport height so page ends at last product */
   box-sizing: border-box;
 }
 
@@ -39,14 +38,13 @@ main {
   margin-bottom: 20px;
   margin-right: 0;    
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
-  border-radius: 18px 0 0 18px;  /* ← redondeado solo en lado izquierdo */
+  border-radius: 18px 0 0 18px;
   order: 2;
   transition: background-color 0.4s ease, box-shadow 0.25s ease;
 }
 
-
 .sidebar:hover {
-  background-color: #222; /* transparency disappears smoothly */
+  background-color: #222;
 }
 
 .sidebar h3,
@@ -93,7 +91,6 @@ main {
   flex: 1;
   padding: 24px;      
   margin-left: 250px;
-
   box-sizing: border-box;
   order: 1;
 }
@@ -109,7 +106,7 @@ main {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(230px, 1fr)); /* max 3 products per row */
+  grid-template-columns: repeat(3, minmax(230px, 1fr));
   gap: 20px;
 }
 
@@ -203,7 +200,6 @@ main {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Internal liquid glow */
 .card-btn button::before {
   content: "";
   position: absolute;
@@ -217,7 +213,6 @@ main {
   pointer-events: none;
 }
 
-/* Button hover animation */
 .card-btn button:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
@@ -266,8 +261,53 @@ main {
     order: 2;
   }
 
-  /* Grid stays max 3, but naturally goes to 1–2 columns on small screens */
   .grid {
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   }
+}
+
+
+/* ============================================
+   Animations (DELETE FADE IF U HATE IT, LOL)
+   ============================================ */
+
+@keyframes fadeInSoft {
+    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInUp {
+    0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+main {
+    animation: fadeInSoft 0.7s ease-out;
+}
+
+.sidebar {
+    animation: fadeInUp 0.7s ease-out both;
+}
+
+.card {
+    opacity: 0;
+    animation: fadeInUp 0.7s ease-out forwards;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.18s;
+}
+.card:nth-child(5) {
+    animation-delay: 0.24s;
+}
+.card:nth-child(6) {
+    animation-delay: 0.30s;
 }
