@@ -1,21 +1,84 @@
-/* form */
-.contact-form {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, Helvetica, sans-serif;
+/* ============================================
+   Global typography & base colors
+   ============================================ */
+
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+    color: #1d1d1f;
+    background: #f5f5f7;
 }
+
+/* ============================================
+   Main layout for Contact Page
+   ============================================ */
+
+main {
+    max-width: 1100px;
+    margin: 80px auto 60px;
+    padding: 0 20px;
+}
+
+/* ============================================
+   Page title section
+   ============================================ */
+
+.title {
+    text-align: center;
+    margin-bottom: 28px;
+    animation: fadeInSoft 0.6s ease-out both;
+}
+
+.title-txt p {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1c1c1e;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ============================================
+   Contact form container (card)
+   ============================================ */
+
+.contact-form {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 28px 26px;
+
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #d2d2d7;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+
+    animation: fadeInUp 0.7s ease-out both;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+/* Slight hover for the whole form card */
+.contact-form:hover {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    border-color: #c8c8d0;
+}
+
+/* ============================================
+   Form structure
+   ============================================ */
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 22px;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 22px;
 }
 
 .form-group {
@@ -23,33 +86,150 @@ form {
     flex-direction: column;
 }
 
+/* Labels: field titles */
 .form-group label {
     margin-bottom: 6px;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2c2c2e;
 }
 
+/* Inputs and textarea base style */
 .form-group input,
 .form-group textarea {
-    padding: 10px;
-    border: 1px solid #bbb;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #d2d2d7;
+    border-radius: 14px;
+
+    font-size: 0.95rem;
+    background: #f5f5f7;
+    letter-spacing: -0.01em;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.18s ease;
 }
 
+/* ============================================
+   Hover effect when entering input areas
+   ============================================ */
+
+.form-group:hover input,
+.form-group:hover textarea {
+    background: #ffffff;
+    border-color: #b5c8ff;
+    box-shadow: 0 0 0 3px rgba(29,142,240,0.16);
+    transform: translateY(-1px);
+}
+
+/* Focus state (stronger highlight) */
+.form-group input:focus,
+.form-group textarea:focus {
+    background: #ffffff;
+    border-color: #1d8ef0;
+    box-shadow: 0 0 0 4px rgba(29,142,240,0.22);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   liquid gradient submit button
+   ============================================ */
+
 .btn-enviar {
-    padding: 8px 20px;
-    background: #1d8ef0;
-    color: #fff;
+    position: relative;
+    overflow: hidden;
+
+    padding: 12px 32px;
+    border-radius: 999px;
     border: none;
-    border-radius: 26px;
-    font-size: 16px;
+
     cursor: pointer;
-    transition: 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+
+    /* Blue liquid gradient BUTTONNNNNNNNN */
+    background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+    background-size: 230% 230%;
+
+    box-shadow: 0 12px 26px rgba(0,0,0,0.22);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.5s ease;
+
     width: fit-content;
 }
 
+.btn-enviar::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -40%;
+    width: 180%;
+    height: 180%;
+
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.45), transparent 60%);
+    opacity: 0;
+    filter: blur(18px);
+    pointer-events: none;
+}
+
+/* Button hover animation */
 .btn-enviar:hover {
-    background: #345ce0;
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.28);
+    background-position: 100% 50%;
+    animation: liquid-gradient 4s ease-in-out infinite;
+}
+
+.btn-enviar:hover::before {
+    opacity: 1;
+    animation: liquid-blob 5s ease-in-out infinite;
+}
+
+/* ============================================
+   Animations (DELETE FADE IF U HATE IT, LOL)
+   ============================================ */
+
+@keyframes fadeInSoft {
+    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Card fade-up animation */
+@keyframes fadeInUp {
+    0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Liquid gradient movement */
+@keyframes liquid-gradient {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Organic inner glow movement */
+@keyframes liquid-blob {
+    0%   { transform: translate(-10%, -10%); }
+    50%  { transform: translate(15%, 15%); }
+    100% { transform: translate(-10%, -10%); }
+}
+
+/* ============================================
+   Responsive behavior (small screens)
+   ============================================ */
+
+@media (max-width: 800px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+        padding: 22px 18px;
+    }
+
+    .title-txt p {
+        font-size: 1.7rem;
+    }
 }
