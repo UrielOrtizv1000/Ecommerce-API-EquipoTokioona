@@ -14,6 +14,9 @@ const FailedLogin = require("../models/FailedLogin");
 
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
 
+// for forgot password
+
+const sendEmail = require("../utils/sendEmail");
 
 // -- USER REGISTER CONTROLLER (SIGNUP) --
 const signup = async (req, res) => {
@@ -159,4 +162,52 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { signup, login, logout }
+const sendResetPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) return res.status(400).json({ message: "Email requerido" });
+
+        // CORRECTO: usar tu función real del modelo
+        const user = await User.getUserByEmail(email);
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        const resetURL = `${process.env.FRONT_URL}/front/recuperar.html?token=${token}`;
+
+        const html = `
+            <h1>Restablecer contraseña</h1>
+            <p>Haz clic para continuar:</p>
+
+            <a href="${resetURL}" 
+            style="background:#007bff;padding:10px 15px;color:white;border-radius:5px;text-decoration:none;">
+                Restablecer contraseña
+            </a>
+
+            <p>Si no solicitaste esto, ignora este correo.</p>
+        `;
+
+        await sendEmail({
+            to: email,
+            subject: "Restablecer contraseña",
+            html,
+        });
+
+        res.json({ message: "Correo enviado" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error interno" });
+    }
+};
+
+
+module.exports = { signup, sendResetPassword, login, logout}
