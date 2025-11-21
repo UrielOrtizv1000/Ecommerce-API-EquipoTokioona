@@ -12,6 +12,8 @@ const User = require("../models/User");
 const FailedLogin = require("../models/FailedLogin");
 const hashPassword = require("../utils/hashPassword");
 
+const recaptcha = require("../utils/generateCaptcha");
+
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
 
 // for forgot password
@@ -57,74 +59,92 @@ const signup = async (req, res) => {
 // -- USER LOGIN CONTROLLER --
 const login = async (req,res) => {
   try {
-    const { username, password } = req.body;
-
-    // Check if one or more form entries are empty
-    if (!username || !password) {
+    const { username, password, 'g-recaptcha-response': captchaResponse } = req.body;
+    if (!captchaResponse) {
       return res.status(400).json({
         ok: false,
-        message: "One or more form entries are empty"
-      });
+        message: "Please verify your CAPTCHA"
+      })
     }
 
-    const userData = await User.userLogin(username, password);
-    if (userData.failedAttempt) {
-
-      const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
-      if (iterateFailedAttempt === 0) {
-        return res.status(404).json({
+    // Verify CAPTCHA
+    recaptcha.verify(req, async (error, data) => {
+      if (error) {
+        return res.status(400).json({
           ok: false,
-          message: "User data was not found. Iiteration failed"
-        })
+          message: "CAPTCHA verification failed"
+        });
       }
 
+      // CAPTCHA PASSED: proceed with login logic
       
-      const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
-      if (!currAtt) {
-        return res.status(404).json({
+      // Check if one or more form entries are empty
+      if (!username || !password) {
+        return res.status(400).json({
           ok: false,
-          message: "User data was not found. Attempt check failed"
+          message: "One or more form entries are empty"
+        });
+      }
+
+      const userData = await User.userLogin(username, password);
+      if (userData.failedAttempt) {
+
+        const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
+        if (iterateFailedAttempt === 0) {
+          return res.status(404).json({
+            ok: false,
+            message: "User data was not found. Iiteration failed"
+          })
+        }
+
+
+        const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
+        if (!currAtt) {
+          return res.status(404).json({
+            ok: false,
+            message: "User data was not found. Attempt check failed"
+          })
+        }
+
+        if (currAtt % 3 === 0) {
+          const lock = await FailedLogin.setLockout(userData.affectedId);
+          if (lock === 0) {
+            return res.status(500).json({
+              ok: false,
+              messge: "User lockout failed"
+            });
+          }
+        }
+
+        return res.status(401).json({
+          ok: false,
+          message: "Wrong credentials"
+        });
+      }
+
+      const clearAtt = await FailedLogin.resetAttempts(userData.id);
+      if (clearAtt === 0) {
+        return res.status(500).json({
+          ok: false,
+          message: "Failed to reset attempts"
         })
       }
 
-      if (currAtt % 3 === 0) {
-        const lock = await FailedLogin.setLockout(userData.affectedId);
-        if (lock === 0) {
-          return res.status(500).json({
-            ok: false,
-            messge: "User lockout failed"
-          });
-        }
+      const rmLock = await FailedLogin.removeLockout(userData.id);
+      if (rmLock === 0) {
+        return res.status(500).json({
+          ok: false,
+          message: "Failed to remove lockout"
+        })
       }
 
-      return res.status(401).json({
-        ok: false,
-        message: "Wrong credentials"
+      const token = storeToken(userData);
+
+      res.status(200).json({
+        ok: true,
+        token: token,
       });
-    }
-
-    const clearAtt = await FailedLogin.resetAttempts(userData.id);
-    if (clearAtt === 0) {
-      return res.status(500).json({
-        ok: false,
-        message: "Failed to reset attempts"
-      })
-    }
-
-    const rmLock = await FailedLogin.removeLockout(userData.id);
-    if (rmLock === 0) {
-      return res.status(500).json({
-        ok: false,
-        message: "Failed to remove lockout"
-      })
-    }
-
-    const token = storeToken(userData);
-
-    res.status(200).json({
-      ok: true,
-      token: token,
-    });
+    })
   } catch (error) {
     console.error("Login error: ", error);
     res.status(500).json({
