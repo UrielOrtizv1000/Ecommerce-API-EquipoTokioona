@@ -51,23 +51,35 @@ class Cart {
 
   // get the user cart
   static async getUserCart(userId) {
-    const [rows] = await pool.query(
-      `
-      SELECT 
-        c.id,
-        c.product_id,
-        c.quantity
-      FROM cart c
-      WHERE c.user_id = ?
-      `,
-      [userId]
-    );
+  const [rows] = await pool.query(
+    `
+    SELECT 
+      c.product_id,
+      c.quantity,
+      p.name,
+      p.price,
+      p.stock,
+      (c.quantity * p.price) AS subtotal
+    FROM cart c
+    JOIN products p ON c.product_id = p.product_id
+    WHERE c.user_id = ?
+    `,
+    [userId]
+  );
 
-    return rows;
-  }
+  return rows;
+}
 
-  // Update the quantity
+    // Update quantity or delete if quantity = 0
   static async updateQuantity(userId, productId, quantity) {
+    if (quantity <= 0) {
+      const [result] = await pool.query(
+        `DELETE FROM cart WHERE user_id = ? AND product_id = ?`,
+        [userId, productId]
+      );
+      return result;
+    }
+
     const [result] = await pool.query(
       `UPDATE cart 
        SET quantity = ? 
