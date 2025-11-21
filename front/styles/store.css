@@ -1,6 +1,112 @@
+/* ================================
+   Global settings & default styles
+   ================================ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f5f5f7;
+  margin: 0;
+}
+
+main {
+  padding: 0px;
+}
+
+
+/* ================================
+   Page layout structure (content + sidebar on the right)
+   ================================ */
+
+.layout {
+  display: flex;
+  box-sizing: border-box;
+}
+
+/* ================================
+   Sidebar section: navigation & categories
+   ================================ */
+
+.sidebar {
+  width: 230px;
+  background: rgba(34, 34, 34, 0.9);
+  color: #f5f5f7;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-left: 20px;      
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: 0;    
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  border-radius: 18px 0 0 18px;
+  order: 2;
+  transition: background-color 0.4s ease, box-shadow 0.25s ease;
+}
+
+.sidebar:hover {
+  background-color: #222;
+}
+
+.sidebar h3,
+.sidebar h2 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f5f5f7;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.sidebar button:hover {
+  background: rgba(160, 100, 255, 0.25);
+  transform: translateX(2px);
+}
+
+/* ================================
+   Main content: products section
+   ================================ */
+
+.main-content {
+  flex: 1;
+  padding: 24px;      
+  margin-left: 250px;
+  box-sizing: border-box;
+  order: 1;
+}
+.main-content h1 {
+  margin: 0 0 20px;
+  font-size: 1.6rem;
+  color: #424245;
+}
+
+/* ================================
+   Product grid: max 3 columns
+   ================================ */
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(3, minmax(230px, 1fr));
   gap: 20px;
 }
 
@@ -50,7 +156,19 @@
   height: 160px;
   object-fit: cover;
   border-radius: 10px;
+  margin-bottom: 10px;
 }
+
+.card h2,
+.card h3,
+.card p {
+  margin: 4px 0;
+  color: #424245;
+}
+
+/* ================================
+   Product tags (size, type, etc.)
+   ================================ */
 
 .tags {
   margin-top: 8px;
@@ -63,45 +181,149 @@
   border-radius: 6px;
   margin-right: 4px;
   margin-top: 4px;
+  font-size: 0.8rem;
+  color: #424245;
 }
-.card-btn{
+
+/* ================================
+   "Add to cart" button container
+   ================================ */
+
+.card-btn {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
+  margin-top: auto;
 }
-.card-btn button{
-  padding: 8px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 20px;
+
+/* ================================
+   Liquid effect button (hover animation)
+   ================================ */
+
+.card-btn button {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 14px;
+  margin-top: 16px;
   border-radius: 18px;
-  background-color: rgb(6, 208, 249);
-  border-style: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+  background-size: 220% 220%;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.sidebar{
-  background-color: red;
-}
-.layout {
-  display: flex;
-  min-height: 100vh;
+.card-btn button::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -40%;
+  width: 180%;
+  height: 180%;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.5) 0, transparent 60%);
+  opacity: 0;
+  filter: blur(18px);
+  pointer-events: none;
 }
 
-/* SIDEBAR */
+.card-btn button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+  animation: liquid-gradient 4s ease-in-out infinite;
+}
+
+.card-btn button:hover::before {
+  opacity: 1;
+  animation: liquid-blob 5s ease-in-out infinite;
+}
+
+/* ================================
+   Liquid animations for button hover
+   ================================ */
+
+@keyframes liquid-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes liquid-blob {
+  0% { transform: translate(-10%, -10%); }
+  50% { transform: translate(15%, 15%); }
+  100% { transform: translate(-10%, -10%); }
+}
+
+/* ================================
+   Responsive layout adjustments
+   ================================ */
+
+@media (max-width: 800px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: auto;
+    margin: 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    order: 1;
+  }
+
+  .main-content {
+    order: 2;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+}
+
+
+/* ============================================
+   Animations (DELETE FADE IF U HATE IT, LOL)
+   ============================================ */
+
+@keyframes fadeInSoft {
+    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInUp {
+    0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+main {
+    animation: fadeInSoft 0.7s ease-out;
+}
+
 .sidebar {
-  width: 240px;
-  background: #222;
-  color: #fff;
-  padding: 20px;
-  box-sizing: border-box;
+    animation: fadeInUp 0.7s ease-out both;
 }
 
-.sidebar h2 {
-  margin-top: 0;
+.card {
+    opacity: 0;
+    animation: fadeInUp 0.7s ease-out forwards;
 }
 
-/* CONTENIDO PRINCIPAL */
-.main-content {
-  flex: 1;
-  padding: 20px;
-  box-sizing: border-box;
+.card:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.18s;
+}
+.card:nth-child(5) {
+    animation-delay: 0.24s;
+}
+.card:nth-child(6) {
+    animation-delay: 0.30s;
 }
