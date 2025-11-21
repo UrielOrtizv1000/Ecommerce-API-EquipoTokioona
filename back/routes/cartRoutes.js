@@ -12,6 +12,9 @@ router.post('/add', verifyToken(), cartController.addToCart);
 // update the quantity
 router.put('/update', verifyToken(), cartController.updateQuantity);
 
+//Calculates shipping and taxes
+router.post("/calculate", verifyToken(), cartController.calculate);
+
 // delete the producto from the cart
 router.delete('/remove', verifyToken(), cartController.removeProduct);
 

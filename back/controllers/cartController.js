@@ -19,28 +19,25 @@ const pool = require("../db/conexion");
 const cartController = {
 
   // get the cart
-  getCart: async (req, res) => {
-        try {
-            const userId = req.user.id; 
+getCart: async (req, res) => {
+    try {
+        const userId = req.user.id; 
 
-            const items = await Cart.getUserCart(userId);
+        const items = await Cart.getUserCart(userId);
 
-            let subtotal = 0;
-            items.forEach(item => {
-                subtotal += item.subtotal;
-            });
+        const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
 
-            return res.json({
-                success: true,
-                items,
-                subtotal
-            });
+        return res.json({
+            success: true,
+            items,
+            subtotal: Number(subtotal.toFixed(2)) 
+        });
 
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: "Error al obtener el carrito" });
-        }
-    },
+    } catch (error) {
+        console.error("Error en getCart:", error);
+        res.status(500).json({ success: false, message: "Error al obtener el carrito" });
+    }
+},
 
   // Add to the cart
 addToCart: async (req, res) => {
@@ -131,92 +128,196 @@ addToCart: async (req, res) => {
         }
     },
 
+    // NEW: Calculate shipping, taxes, and total (with or without coupon)
+calculate: async (req, res) => {
+ try {
+      const userId = req.user.id;
+
+      // 1. Get cart items
+      const items = await Cart.getUserCart(userId);
+      if (!items || items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Cart is empty"
+        });
+      }
+
+      // 2. Calculate subtotal
+      const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
+
+      // 3. Get applied coupon (if any)
+      let discountAmount = 0;
+      let appliedCoupon = null;
+      try {
+        const [rows] = await pool.query(
+          `SELECT coupon_code, discount_amount FROM cart_coupons WHERE user_id = ? LIMIT 1`,
+          [userId]
+        );
+        if (rows.length > 0) {
+          appliedCoupon = rows[0].coupon_code;
+          discountAmount = Number(rows[0].discount_amount);
+        }
+      } catch (err) {
+        console.error("Error fetching applied coupon:", err);
+      }
+
+      // 4. Shipping info from frontend
+      const { state, shippingMethod = "standard" } = req.body;
+      if (!state) {
+        return res.status(400).json({
+          success: false,
+          message: "State is required"
+        });
+      }
+
+      // 5. Shipping cost logic for Mexico (realistic example)
+      let shippingCost = 129; // Base national shipping
+
+      // Zonas extendidas (más caro)
+      const extendedZones = ["baja california sur", "chiapas", "quintana roo", "yucatán"];
+      if (extendedZones.includes(state.toLowerCase())) {
+        shippingCost = 199;
+      }
+
+      if (shippingMethod === "express") {
+        shippingCost += 120;
+      }
+
+      if (subtotal >= 799) {
+        shippingCost = 0; // Free shipping over $799 MXN
+      }
+
+      // 6. Mexico VAT 16% (only on taxable amount after discount)
+      const taxableAmount = subtotal - discountAmount;
+      const taxes = taxableAmount > 0 ? taxableAmount * 0.16 : 0;
+
+      // 7. Final total
+      const total = taxableAmount + taxes + shippingCost;
+
+      // 8. Response
+      return res.json({
+        success: true,
+        itemsCount: items.length,
+        subtotal: Number(subtotal.toFixed(2)),
+        discount: Number(discountAmount.toFixed(2)),
+        appliedCoupon,
+        shippingCost,
+        freeShipping: shippingCost === 0,
+        shippingDetails: {
+          state,
+          method: shippingMethod
+        },
+        taxes: Number(taxes.toFixed(2)),
+        total: Number(total.toFixed(2))
+      });
+
+    } catch (error) {
+      console.error("Error in calculate:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error calculating totals"
+      });
+    }
+ },
 
   checkout: async (req, res) => {
-        try {
-            const userId = req.user.id;
-            const { shipping, payment } = req.body;
+    try {
+      const userId = req.user.id;
+      const { shipping, payment } = req.body;
 
-            // 1. get cart
-            const cart = await Cart.getUserCart(userId);
+      // Reuse the same calculation logic as /calculate
+      const items = await Cart.getUserCart(userId);
+      if (items.length === 0) {
+        return res.status(400).json({ success: false, message: "Cart is empty" });
+      }
 
-            if (cart.length === 0) {
-                return res.status(400).json({ success: false, message: "Carrito vacío" });
-            }
+      const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
 
-            // 2. confirm stock
-            for (let item of cart) {
-                if (item.quantity > item.stock) {
-                    return res.status(400).json({
-                        success: false,
-                        message: `Stock insuficiente para: ${item.name}`
-                    });
-                }
-            }
+      // Get applied coupon
+      let discountAmount = 0;
+      try {
+        const [rows] = await pool.query(`SELECT discount cele_amount FROM cart_coupons WHERE user_id = ?`, [userId]);
+        if (rows.length > 0) discountAmount = Number(rows[0].discount_amount);
+      } catch (err) { /* ignore */ }
 
-            // 3. put the total
-            let subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
-            const tax = subtotal * 0.10;
-            const shippingCost = 150;  
-            const total = subtotal + tax + shippingCost;
+      const taxableAmount = subtotal - discountAmount;
+      const taxes = taxableAmount * 0.16;
 
-            // 4. get the order
-            const orderId = await Order.create({
-                userId,
-                items: cart,
-                subtotal,
-                tax,
-                shipping: shippingCost,
-                total
-            });
+      // Shipping (reuse same logic - you can extract to utils later)
+      let shippingCost = subtotal >= 799 ? 0 : 129;
+      const state = shipping?.state?.toLowerCase() || "";
+      const extendedZones = ["baja california sur", "chiapas", "quintana roo", "yucatán"];
+      if (extendedZones.includes(state) && subtotal < 799) shippingCost = 199;
 
-            // 5. less inventary
-            for (let item of cart) {
-                await pool.query(
-                    "UPDATE products SET stock = stock - ? WHERE product_id = ?",
-                    [item.quantity, item.product_id]
-                );
-            }
+      const total = taxableAmount + taxes + shippingCost;
 
-            // 6. Generate PDF
-            const pdfPath = await generatePDF({
-                id: orderId,
-                customerName: shipping?.name || "Usuario",
-                items: cart,
-                subtotal,
-                tax,
-                shipping: shippingCost,
-                total
-            });
-
-            // 7. send the email
-            await sendEmail({
-                to: req.user.email,
-                subject: "Tu nota de compra",
-                html: `
-                    <h1>¡Gracias por tu compra!</h1>
-                    <p>Adjuntamos tu nota de compra.</p>
-                `,
-                attachments: [
-                    {
-                        filename: "nota_compra.pdf",
-                        path: pdfPath
-                    }
-                ]
-            });
-
-            // 8. clean the cart
-            await Cart.clearCart(userId);
-
-            res.json({ success: true, message: "Compra realizada", orderId });
-
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: "Error al procesar la compra" });
+      // Check stock
+      for (let item of items) {
+        if (item.quantity > item.stock) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for: ${item.name}`
+          });
         }
+      }
+
+      // Create order
+      const orderId = await Order.create({
+        userId,
+        items,
+        subtotal,
+        discount: discountAmount,
+        taxes,
+        shipping: shippingCost,
+        total
+      });
+
+      // Reduce stock
+      for (let item of items) {
+        await pool.query(
+          "UPDATE products SET stock = stock - ? WHERE product_id = ?",
+          [item.quantity, item.product_id]
+        );
+      }
+
+      // Generate PDF & send email
+      const pdfPath = await generatePDF({
+        id: orderId,
+        customerName: shipping?.name || "Customer",
+        items,
+        subtotal,
+        discount: discountAmount,
+        taxes,
+        shipping: shippingCost,
+        total
+      });
+
+      await sendEmail({
+        to: req.user.email,
+        subject: "¡Gracias por tu compra en Tiokioona! 🎉",
+        html: `<h1>¡Compra exitosa!</h1><p>Adjuntamos tu recibo digital.</p>`,
+        attachments: [{ filename: "recibo_tiokioona.pdf", path: pdfPath }]
+      });
+
+      // Clear cart and coupon
+      await Cart.clearCart(userId);
+      await pool.query(`DELETE FROM cart_coupons WHERE user_id = ?`, [userId]);
+
+      return res.json({
+        success: true,
+        message: "Purchase completed successfully",
+        orderId,
+        totalCharged: Number(total.toFixed(2))
+      });
+
+    } catch (error) {
+      console.error("Checkout error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error processing purchase"
+      });
     }
-
-
+  }
 };
 
 module.exports = cartController;
