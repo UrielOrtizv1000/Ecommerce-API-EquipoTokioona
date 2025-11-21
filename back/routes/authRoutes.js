@@ -4,18 +4,21 @@ const router = express.Router();
 const { verifyToken } = require("../middlewares/authMiddleware");
 const { limiter } = require("../middlewares/rateLimiter");
 const { signup, login, logout } = require("../controllers/authController");
-const { sendResetPassword } = require("../controllers/authController");
+const { sendResetPassword, resetPassword } = require("../controllers/authController");
 
-// POST /api/users/signup
+// POST /api/auth/signup
 router.post("/signup", signup);
 
-// POST /api/users/login
+// POST /api/auth/login
 router.post("/login", limiter, login);
 
-// PROTECTED POST /api/users/logout
+// PROTECTED POST /api/auth/logout
 router.post("/logout", verifyToken(), logout);
 
-// POST /api/forgot-password
+// POST /api/auth/forgot-password
 router.post("/forgot-password", sendResetPassword);
+
+// POST /api/auth/reset-password
+router.post("/resetPassword", resetPassword);
 
 module.exports = router;
