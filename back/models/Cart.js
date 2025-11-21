@@ -50,24 +50,30 @@ class Cart {
   }
 
   // get the user cart
-  static async getUserCart(userId) {
+static async getUserCart(userId) {
   const [rows] = await pool.query(
     `
     SELECT 
       c.product_id,
       c.quantity,
-      p.name,
-      p.price,
-      p.stock,
-      (c.quantity * p.price) AS subtotal
+      COALESCE(p.name, CONCAT('Producto ID ', c.product_id, ' (no disponible)')) AS name,
+      COALESCE(p.price, 0) + 0.0 AS price,        -- fuerza número
+      COALESCE(p.stock, 0) AS stock,
+      (c.quantity * COALESCE(p.price, 0)) + 0.0 AS subtotal  -- fuerza número
     FROM cart c
-    JOIN products p ON c.product_id = p.product_id
+    LEFT JOIN products p ON c.product_id = p.product_id
     WHERE c.user_id = ?
     `,
     [userId]
   );
 
-  return rows;
+  return rows.map(item => ({
+    ...item,
+    price: Number(item.price),
+    stock: Number(item.stock),
+    subtotal: Number(item.subtotal),
+    quantity: Number(item.quantity)
+  }));
 }
 
     // Update quantity or delete if quantity = 0

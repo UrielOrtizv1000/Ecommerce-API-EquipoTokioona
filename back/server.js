@@ -6,6 +6,7 @@ const pool = require("./db/conexion");
 // const routes
 const cartRoutes = require('./routes/cartRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
+const couponRoutes = require('./routes/couponRoutes');
 
 
 const contactRoutes = require("./routes/contactRoutes");
@@ -24,6 +25,8 @@ app.use(express.json());
 
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/cart', cartRoutes);
+app.use("/api/coupons", couponRoutes);
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);

@@ -5,12 +5,13 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 
 const sessions = new Map();
 
-/**
- * Middleware to verify JWT and optionally validate admin privileges
- *
- * @param {boolean} requireAdmin - If true, the request must come from an admin user
- * @returns Express middleware function.
+/*
+  Middleware to verify JWT and optionally validate admin privileges
+ 
+  param {boolean} requireAdmin - If true, the request must come from an admin user
+  returns Express middleware function.
  */
+
 const verifyToken = (requireAdmin = false) => {
     return (req, res, next) => {
         try {
