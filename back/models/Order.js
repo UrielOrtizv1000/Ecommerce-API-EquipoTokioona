@@ -6,3 +6,5 @@
  *   - Get all orders of a specific user (for "my orders" page)
  * Required by: Checkout completion, admin sales report
  */
+
+// back/models/Order.js
