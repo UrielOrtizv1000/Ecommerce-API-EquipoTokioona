@@ -1,13 +1,6 @@
 /*
-Controller for shoping cart
+Controller for shopping cart
 addToCart, getCart, updateQuantity, removeItem
-
-*/
-
-/*
-Controller for shoping cart
-addToCart, getCart, updateQuantity, removeItem
-
 */
 
 const Cart = require('../models/Cart');
@@ -15,6 +8,8 @@ const Order = require("../models/Order");
 const generatePDF = require("../utils/generatePDF");
 const sendEmail = require("../utils/sendEmail");
 const pool = require("../db/conexion");
+const { calculateTotals } = require("../utils/calculateTotals");
+
 
 const cartController = {
 
@@ -35,7 +30,7 @@ getCart: async (req, res) => {
 
     } catch (error) {
         console.error("Error en getCart:", error);
-        res.status(500).json({ success: false, message: "Error al obtener el carrito" });
+        res.status(500).json({ success: false, message: "Error fetching cart" });
     }
 },
 
@@ -48,7 +43,7 @@ addToCart: async (req, res) => {
             if (!product_id || !quantity) {
                 return res.status(400).json({
                     success: false,
-                    message: "Faltan campos: product_id o quantity"
+                    message: "Missing fields: product_id or quantity"
                 });
             }
 
@@ -56,12 +51,12 @@ addToCart: async (req, res) => {
 
             res.json({
                 success: true,
-                message: "Producto agregado al carrito"
+                message: "Product added to cart"
             });
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ success: false, message: "Error al agregar producto" });
+            res.status(500).json({ success: false, message: "Error adding product" });
         }
     },
 
@@ -74,7 +69,7 @@ addToCart: async (req, res) => {
             if (!product_id || quantity === undefined) {
                 return res.status(400).json({
                     success: false,
-                    message: "Faltan datos: product_id o quantity"
+                    message: "Missing data: product_id or quantity"
                 });
             }
 
@@ -82,12 +77,12 @@ addToCart: async (req, res) => {
 
             res.json({
                 success: true,
-                message: "Cantidad actualizada"
+                message: "Quantity updated"
             });
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ success: false, message: "Error al actualizar cantidad" });
+            res.status(500).json({ success: false, message: "Error updating quantity" });
         }
     },
 
@@ -101,12 +96,12 @@ addToCart: async (req, res) => {
 
             res.json({
                 success: true,
-                message: "Producto eliminado del carrito"
+                message: "Product removed from cart"
             });
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ success: false, message: 'Error al eliminar producto' });
+            res.status(500).json({ success: false, message: 'Error removing product' });
         }
     },
 
@@ -115,10 +110,10 @@ clearCart: async (req, res) => {
     try {
       const userId = req.user.id;
 
-      // Limpiar productos del carrito
+      // Clean cart items
       await Cart.clearCart(userId);
 
-      // Limpiar cupón aplicado (opcional pero recomendado)
+      // Remove applied coupon
       await pool.query("DELETE FROM cart_coupons WHERE user_id = ?", [userId]);
 
       return res.json({
@@ -230,13 +225,21 @@ calculate: async (req, res) => {
 checkout: async (req, res) => {
   try {
     const userId = req.user.id;
-    const { shipping } = req.body;
+    const { shipping , payment } = req.body;
 
     const state = shipping?.state;
     if (!state) {
       return res.status(400).json({
         success: false,
         message: "Shipping state is required"
+      });
+    }
+
+   // Validate payment method
+    if (!payment?.method) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment method is required"
       });
     }
 
@@ -259,15 +262,15 @@ checkout: async (req, res) => {
     }
 
     // 3. Create order in DB
-    const orderId = await Order.create({
-      userId,
-      items,
-      subtotal: totals.subtotal,
-      discount: totals.discount,
-      taxes: totals.taxes,
-      shipping: totals.shippingCost,
-      total: totals.total
-    });
+  const orderId = await Order.create({
+    userId,
+    items,
+    subtotal: totals.subtotal,
+    discount: totals.discount,            
+    taxes: totals.taxes,
+    shipping: totals.shippingCost,        
+    total: totals.total,                  
+  });
 
     // 4. Reduce stock
     for (const item of items) {
@@ -291,9 +294,9 @@ checkout: async (req, res) => {
 
     await sendEmail({
       to: req.user.email,
-      subject: "¡Gracias por tu compra en Tiokioona!",
-      html: `<h1>Compra exitosa</h1><p>Adjuntamos tu recibo.</p>`,
-      attachments: [{ filename: "recibo.pdf", path: pdfPath }]
+      subject: "Thank you for your purchase!",
+      html: `<h1>Purchase successful</h1><p>Your receipt is attached.</p>`,
+      attachments: [{ filename: "receipt.pdf", path: pdfPath }]
     });
 
     // 6. Clear cart and coupon
