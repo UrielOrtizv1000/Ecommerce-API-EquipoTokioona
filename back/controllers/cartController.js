@@ -227,23 +227,29 @@ calculate: async (req, res) => {
     }
  },
 
-  checkout: async (req, res) => {
-   try {
+checkout: async (req, res) => {
+  try {
     const userId = req.user.id;
-    const { shipping, payment } = req.body;
+    const { shipping } = req.body;
 
     const state = shipping?.state;
     if (!state) {
-      return res.status(400).json({ success: false, message: "Shipping state is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Shipping state is required"
+      });
     }
 
+    // 1. Calculate totals with reusable util
     const totals = await calculateTotals(userId, state, "standard");
-
     const items = totals.items;
 
-    // Stock validation
+    // 2. Validate stock
     for (const item of items) {
-      const [product] = await pool.query("SELECT stock FROM products WHERE product_id = ?", [item.product_id]);
+      const [product] = await pool.query(
+        "SELECT stock FROM products WHERE product_id = ?",
+        [item.product_id]
+      );
       if (item.quantity > product[0].stock) {
         return res.status(400).json({
           success: false,
@@ -252,7 +258,7 @@ calculate: async (req, res) => {
       }
     }
 
-    // Create order
+    // 3. Create order in DB
     const orderId = await Order.create({
       userId,
       items,
@@ -263,7 +269,7 @@ calculate: async (req, res) => {
       total: totals.total
     });
 
-    // Reduce stock
+    // 4. Reduce stock
     for (const item of items) {
       await pool.query(
         "UPDATE products SET stock = stock - ? WHERE product_id = ?",
@@ -271,7 +277,7 @@ calculate: async (req, res) => {
       );
     }
 
-    // PDF + Email
+    // 5. Generate PDF & send email
     const pdfPath = await generatePDF({
       id: orderId,
       customerName: shipping?.name || "Customer",
@@ -290,7 +296,7 @@ calculate: async (req, res) => {
       attachments: [{ filename: "recibo.pdf", path: pdfPath }]
     });
 
-    // Clean cart and coupon
+    // 6. Clear cart and coupon
     await Cart.clearCart(userId);
     await pool.query("DELETE FROM cart_coupons WHERE user_id = ?", [userId]);
 
@@ -303,9 +309,12 @@ calculate: async (req, res) => {
 
   } catch (error) {
     console.error("Checkout error:", error);
-    return res.status(500).json({ success: false, message: "Error processing purchase" });
-   }
+    return res.status(500).json({
+      success: false,
+      message: "Error processing purchase"
+    });
   }
+ }
 };
 
 module.exports = cartController;

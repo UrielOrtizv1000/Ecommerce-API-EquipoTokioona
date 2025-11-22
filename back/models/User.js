@@ -61,5 +61,11 @@ async function getUserByEmail(email) {
   return rows[0] || null;
 }
 
+// Update user password
+async function resetPassword(password, user_id) {
+  const [rows] = await pool.query('UPDATE users SET password = ? WHERE user_id = ?', [password, user_id]);
+  return rows.affectedRows;
+}
 
-module.exports = { createUser, getUserByEmail, userLogin };
+
+module.exports = { createUser, userLogin, getUserByEmail, resetPassword };
