@@ -31,6 +31,36 @@ const Product = {
     const [result] = await pool.query(sql, params);
     return result.insertId;
   },
+
+  // UPDATE PRODUCT
+ async update(product_id, productData) {
+  const sql = `
+    UPDATE products
+    SET 
+      name = ?, 
+      description = ?, 
+      price = ?, 
+      stock = ?, 
+      image_url = ?, 
+      is_on_sale = ?, 
+      category_id = ?
+    WHERE product_id = ?
+  `;
+
+  const params = [
+    productData.name,
+    productData.description,
+    productData.price,
+    productData.stock,
+    productData.image_url || null,
+    productData.is_on_sale ?? 0,
+    productData.category_id,
+    product_id
+  ];
+
+  const [result] = await pool.query(sql, params);
+  return result.affectedRows;
+  },
   
   // Get single product by ID
   async getProductById(id) {
@@ -42,7 +72,16 @@ const Product = {
   async getProductsByFilter(filterQuery, filterValues) {
     const [list] = await pool.query(filterQuery, filterValues);
     return list;
-  }
+  },
+  
+  // DELETE PRODUCT
+async delete(product_id) {
+  const sql = `DELETE FROM products WHERE product_id = ?`;
+  const [result] = await pool.query(sql, [product_id]);
+  return result.affectedRows; // 1 si borró, 0 si no existía
+ }
 };
+
+
 
 module.exports = Product;
