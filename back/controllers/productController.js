@@ -150,3 +150,100 @@ exports.createProduct = async (req, res) => {
     });
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    } = req.body;
+
+    // Verificar si existe
+    const existing = await Product.getProductById(id);
+
+    if (!existing) {
+      return res.status(404).json({
+        ok: false,
+        message: "Product not found"
+      });
+    }
+
+    // Ejecutar actualización
+    const updated = await Product.update(id, {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    });
+
+    if (updated === 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "Product update failed"
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      message: "Product updated successfully",
+      product_id: id
+    });
+
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Verificar si existe el producto
+    const product = await Product.getProductById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        ok: false,
+        message: "Product not found"
+      });
+    }
+
+    // Ejecutar eliminación
+    const deleted = await Product.delete(id);
+
+    if (deleted === 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "Product deletion failed"
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      message: "Product deleted successfully",
+      product_id: id
+    });
+
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+};
+

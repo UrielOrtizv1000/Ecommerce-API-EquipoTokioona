@@ -14,7 +14,13 @@ router.get("/query", productController.filterProductsBy);
 // GET /api/products/getProductById
 router.get("/:id", productController.getProductById);
 
-// Protected: only admins can create products
+// Protected: only admins 
+//ADD (admin)
 router.post('/', verifyToken(true), validateNewProduct, productController.createProduct);
+//UPDATE (admin)
+router.put('/:id', verifyToken(true), productController.updateProduct);
+// DELETE (admin)
+router.delete('/:id', verifyToken(true), productController.deleteProduct);
+
 
 module.exports = router;

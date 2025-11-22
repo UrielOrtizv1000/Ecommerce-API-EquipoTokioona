@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db/conexion");
+const adminRoutes = require("./routes/adminRoutes");
 
 // const routes
 const cartRoutes = require('./routes/cartRoutes');
@@ -33,6 +34,9 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/subscribe", subscriptionRoutes);
 app.use("/api/orders", orderRoutes);
 
+app.use("/api/admin", adminRoutes);
+
+
 async function testDBConnection() {
     try {
         const [rows] = await pool.query("SELECT 1 + 1 AS result");
@@ -43,7 +47,7 @@ async function testDBConnection() {
 }
 
 // Routes under /api/products
-app.use("/api/product", productRoutes);
+app.use("/api/products", productRoutes);
 
 
 app.listen(port, async () => {
