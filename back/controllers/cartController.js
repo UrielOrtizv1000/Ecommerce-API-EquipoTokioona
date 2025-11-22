@@ -234,11 +234,22 @@ calculate: async (req, res) => {
       const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
 
       // Get applied coupon
-      let discountAmount = 0;
-      try {
-        const [rows] = await pool.query(`SELECT discount cele_amount FROM cart_coupons WHERE user_id = ?`, [userId]);
-        if (rows.length > 0) discountAmount = Number(rows[0].discount_amount);
-      } catch (err) { /* ignore */ }
+let discountAmount = 0;
+try {
+    const [rows] = await pool.query(
+        `SELECT coupon_code, discount_amount 
+         FROM cart_coupons 
+         WHERE user_id = ? LIMIT 1`,
+        [userId]
+    );
+
+    if (rows.length > 0) {
+        discountAmount = Number(rows[0].discount_amount);
+    }
+} catch (err) { 
+    console.error("Error reading applied coupon:", err); 
+}
+
 
       const taxableAmount = subtotal - discountAmount;
       const taxes = taxableAmount * 0.16;
@@ -260,17 +271,18 @@ calculate: async (req, res) => {
           });
         }
       }
+  
+  const orderId = await Order.create({
+    userId,
+    items,
+    subtotal,
+    taxes,
+    shippingCost,
+    discountAmount,
+    grandTotal: total,
+    paymentMethod: payment.method
+});
 
-      // Create order
-      const orderId = await Order.create({
-        userId,
-        items,
-        subtotal,
-        discount: discountAmount,
-        taxes,
-        shipping: shippingCost,
-        total
-      });
 
       // Reduce stock
       for (let item of items) {
@@ -301,7 +313,8 @@ calculate: async (req, res) => {
 
       // Clear cart and coupon
       await Cart.clearCart(userId);
-      await pool.query(`DELETE FROM cart_coupons WHERE user_id = ?`, [userId]);
+      // this line send an error because user_id doesn´t exist in db table coupons
+     // await pool.query(`DELETE FROM coupons WHERE user_id = ?`, [userId]);
 
       return res.json({
         success: true,
