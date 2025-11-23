@@ -1,3 +1,5 @@
+console.log("🔥 JWT_SECRET EN USO →", process.env.JWT_SECRET);
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -18,6 +20,7 @@ const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));    // Required for x-www-form-urlencoded support
