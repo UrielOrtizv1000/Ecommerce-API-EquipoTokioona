@@ -66,7 +66,29 @@ const Order = {
   async getTotalSales() {
     const [rows] = await pool.query(`SELECT SUM(grand_total) AS total_sales FROM orders`);
     return rows[0].total_sales || 0;
+  },
+
+    /**
+   * Returns total sales grouped by product category.
+   * Used by admin dashboard chart.
+   */
+  async getSalesByCategory() {
+    const [rows] = await pool.query(`
+      SELECT 
+          c.category_name AS category,
+          SUM(od.line_subtotal) AS total_sales
+      FROM order_details od
+      JOIN products p ON od.product_id = p.product_id
+      JOIN categories c ON p.category_id = c.category_id
+      JOIN orders o ON od.order_id = o.order_id
+      WHERE o.order_status = 'Completed'
+      GROUP BY c.category_name
+      ORDER BY total_sales DESC
+    `);
+
+    return rows;
   }
+
 };
 
 module.exports = Order;

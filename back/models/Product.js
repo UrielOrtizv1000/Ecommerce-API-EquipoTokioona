@@ -79,7 +79,23 @@ async delete(product_id) {
   const sql = `DELETE FROM products WHERE product_id = ?`;
   const [result] = await pool.query(sql, [product_id]);
   return result.affectedRows; // 1 si borró, 0 si no existía
+ },
+
+ async getInventoryByCategory() {
+    const [rows] = await pool.query(`
+      SELECT 
+          c.category_name,
+          p.product_id,
+          p.name,
+          p.stock
+      FROM products p
+      JOIN categories c ON p.category_id = c.category_id
+      ORDER BY c.category_name, p.name
+    `);
+
+    return rows;
  }
+
 };
 
 
