@@ -132,39 +132,10 @@ clearCart: async (req, res) => {
 
     //  Calculate shipping, taxes, and total (with or without coupon)
 calculate: async (req, res) => {
- try {
+    try {
       const userId = req.user.id;
+      const { state, shippingMethod } = req.body;
 
-      // 1. Get cart items
-      const items = await Cart.getUserCart(userId);
-      if (!items || items.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Cart is empty"
-        });
-      }
-
-      // 2. Calculate subtotal
-      const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
-
-      // 3. Get applied coupon (if any)
-      let discountAmount = 0;
-      let appliedCoupon = null;
-      try {
-        const [rows] = await pool.query(
-          `SELECT coupon_code, discount_amount FROM cart_coupons WHERE user_id = ? LIMIT 1`,
-          [userId]
-        );
-        if (rows.length > 0) {
-          appliedCoupon = rows[0].coupon_code;
-          discountAmount = Number(rows[0].discount_amount);
-        }
-      } catch (err) {
-        console.error("Error fetching applied coupon:", err);
-      }
-
-      // 4. Shipping info from frontend
-      const { state, shippingMethod = "standard" } = req.body;
       if (!state) {
         return res.status(400).json({
           success: false,
@@ -172,45 +143,11 @@ calculate: async (req, res) => {
         });
       }
 
-      // 5. Shipping cost logic 
-      let shippingCost = 129; // Base national shipping
+      const totals = await calculateTotals(userId, state, shippingMethod || "standard");
 
-      // Extended Zones 
-      const extendedZones = ["baja california sur", "chiapas", "quintana roo", "yucatán"];
-      if (extendedZones.includes(state.toLowerCase())) {
-        shippingCost = 199;
-      }
-
-      if (shippingMethod === "express") {
-        shippingCost += 120;
-      }
-
-      if (subtotal >= 799) {
-        shippingCost = 0; // Free shipping over $799 MXN
-      }
-
-      // 6. Mexico VAT 16% (only on taxable amount after discount)
-      const taxableAmount = subtotal - discountAmount;
-      const taxes = taxableAmount > 0 ? taxableAmount * 0.16 : 0;
-
-      // 7. Final total
-      const total = taxableAmount + taxes + shippingCost;
-
-      // 8. Response
       return res.json({
         success: true,
-        itemsCount: items.length,
-        subtotal: Number(subtotal.toFixed(2)),
-        discount: Number(discountAmount.toFixed(2)),
-        appliedCoupon,
-        shippingCost,
-        freeShipping: shippingCost === 0,
-        shippingDetails: {
-          state,
-          method: shippingMethod
-        },
-        taxes: Number(taxes.toFixed(2)),
-        total: Number(total.toFixed(2))
+        ...totals
       });
 
     } catch (error) {
@@ -220,82 +157,87 @@ calculate: async (req, res) => {
         message: "Error calculating totals"
       });
     }
- },
+  },
 
 checkout: async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { shipping , payment } = req.body;
+    try {
+      const userId = req.user.id;
+      const { shipping, payment } = req.body;
 
-    const state = shipping?.state;
-    if (!state) {
-      return res.status(400).json({
-        success: false,
-        message: "Shipping state is required"
-      });
-    }
-
-   // Validate payment method
-    if (!payment?.method) {
-      return res.status(400).json({
-        success: false,
-        message: "Payment method is required"
-      });
-    }
-
-    // 1. Calculate totals with reusable util
-    const totals = await calculateTotals(userId, state, "standard");
-    const items = totals.items;
-
-    // 2. Validate stock
-    for (const item of items) {
-      const [product] = await pool.query(
-        "SELECT stock FROM products WHERE product_id = ?",
-        [item.product_id]
-      );
-      if (item.quantity > product[0].stock) {
+      if (!shipping?.state) {
         return res.status(400).json({
           success: false,
-          message: `Insufficient stock for product ID ${item.product_id}`
+          message: "Shipping state is required"
         });
       }
-    }
 
-    // 3. Create order in DB
-  const orderId = await Order.create({
-    userId,
-    items,
-    subtotal: totals.subtotal,
-    discount: totals.discount,            
-    taxes: totals.taxes,
-    shipping: totals.shippingCost,        
-    total: totals.total,                  
-  });
+      if (!payment?.method) {
+        return res.status(400).json({
+          success: false,
+          message: "Payment method is required"
+        });
+      }
 
-    // 4. Reduce stock
-    for (const item of items) {
-      await pool.query(
-        "UPDATE products SET stock = stock - ? WHERE product_id = ?",
-        [item.quantity, item.product_id]
+      // 1. Calculate totals with util
+      const totals = await calculateTotals(
+        userId,
+        shipping.state,
+        shipping.method || "standard"
       );
-    }
 
-    // 5. Generate PDF & send email
-    const pdfPath = await generatePDF({
-      id: orderId,
-      customerName: shipping?.name || "Customer",
-      items,
-      subtotal: totals.subtotal,
-      discount: totals.discount,
-      taxes: totals.taxes,
-      shipping: totals.shippingCost,
-      total: totals.total
-    });
+      const items = totals.items;
+
+      // 2. Validate stock
+      for (const item of items) {
+        const [product] = await pool.query(
+          "SELECT stock FROM products WHERE product_id = ?",
+          [item.product_id]
+        );
+        if (item.quantity > product[0].stock) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for product: ${item.name}`
+          });
+        }
+      }
+
+      // 3. Create order
+      const orderId = await Order.create({
+        userId,
+        items,
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        taxes: totals.taxes,
+        shipping: totals.shippingCost,
+        total: totals.total
+      });
+
+      // 4. Reduce stock
+      for (const item of items) {
+        await pool.query(
+          "UPDATE products SET stock = stock - ? WHERE product_id = ?",
+          [item.quantity, item.product_id]
+        );
+      }
+
+      // 5. Generate PDF & email
+      const pdfPath = await generatePDF({
+        id: orderId,
+        customerName: shipping?.name,
+        items,
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        tax: totals.taxes,
+        shipping: totals.shippingCost,
+        total: totals.total
+      });
 
     await sendEmail({
       to: req.user.email,
       subject: "Thank you for your purchase!",
-      html: `<h1>Purchase successful</h1><p>Your receipt is attached.</p>`,
+      html: `<h1>Purchase successful</h1><p>Your receipt is attached.</p> 
+      <a href="https://ibb.co/HpLMB8FL"><img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" alt="logo-mock" border="0" width="120"/></a>
+      <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>`,
       attachments: [{ filename: "receipt.pdf", path: pdfPath }]
     });
 

@@ -165,7 +165,7 @@ exports.updateProduct = async (req, res) => {
       category_id
     } = req.body;
 
-    // Verificar si existe
+    // Check if exists
     const existing = await Product.getProductById(id);
 
     if (!existing) {
@@ -175,7 +175,7 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    // Ejecutar actualización
+    // Update
     const updated = await Product.update(id, {
       name,
       description,
@@ -212,7 +212,7 @@ exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Verificar si existe el producto
+    // Check if the product exists
     const product = await Product.getProductById(id);
 
     if (!product) {
@@ -222,7 +222,7 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
-    // Ejecutar eliminación
+    // Delete
     const deleted = await Product.delete(id);
 
     if (deleted === 0) {

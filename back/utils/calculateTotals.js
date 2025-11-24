@@ -11,12 +11,14 @@ const pool = require('../db/conexion');
  * @returns {Promise<Object>}
  */
 const calculateTotals = async (userId, state, shippingMethod = "standard") => {
-  // 1. Get cart items
+  // 1. Get cart items WITH NAME
   const [items] = await pool.query(
     `SELECT
        c.product_id, 
        c.quantity,
+       COALESCE(p.name, CONCAT('Producto ID ', c.product_id, ' (no disponible)')) AS name,
        COALESCE(p.price, 0) AS price,
+       COALESCE(p.stock, 0) AS stock,
        (c.quantity * COALESCE(p.price, 0)) AS subtotal
      FROM cart c
      LEFT JOIN products p ON c.product_id = p.product_id

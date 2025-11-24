@@ -7,12 +7,12 @@ getWishlist = async (req, res) => {
         const cartItems = await wishlist.getAllProducts(userId);
         
         res.status(200).json({
-            message: "Productos obtenidos exitosamente.",
+            message: "Products retrieved succesfully.",
             products: cartItems
         });
     } catch (error) {
-        console.error("Error al obtener el carrito:", error);
-        res.status(500).json({ error: 'Error interno del servidor al recuperar el carrito.' });
+        console.error("Error retrieving wishlist", error);
+        res.status(500).json({ error: 'Internal server error while retrieving.' });
     }
 };
 
@@ -22,10 +22,10 @@ addToWishlist = async (req, res) => {
 
     try {
         await wishlist.addProduct(userId, productId);
-        res.status(201).json({ message: 'Producto agregado al carrito exitosamente.' });
+        res.status(201).json({ message: 'Product added to wishlist successfully.' });
     } catch (error) {
-        console.error("Error al agregar producto al carrito:", error);
-        res.status(500).json({ error: 'Error interno del servidor al agregar el producto al carrito.' });
+        console.error("Error adding product to wishlist:", error);
+        res.status(500).json({ error: 'Internal server error while adding the product to the wishlist.' });
     }   
 };
 
@@ -35,10 +35,10 @@ deleteFromWishlist = async (req, res) => {
 
     try {
         await wishlist.removeProduct(userId, productId);
-        res.status(200).json({ message: 'Producto eliminado del carrito exitosamente.' });
+        res.status(200).json({ message: 'Product removed from wishlist successfully.' });
     } catch (error) {
-        console.error("Error al eliminar producto del carrito:", error);
-        res.status(500).json({ error: 'Error interno del servidor al eliminar el producto del carrito.' });
+        console.error("Error removing product from wishlist:", error);
+        res.status(500).json({ error: 'Internal server error while removing the product from the wishlist.' });
     }
 };
 
