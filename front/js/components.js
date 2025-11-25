@@ -12,12 +12,8 @@ async function loadComponent(id, file, callback) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadComponent("header", "./includes/header.html", () => {
-    // Actualizar sección de usuario después de cargar el header
-    if (typeof Auth !== 'undefined') {
-      Auth.updateUserSection();
-    }
-  });
+  // Ya no es necesario el callback a Auth.updateUserSection()
+  loadComponent("header", "./includes/header.html"); 
 
   loadComponent("footer", "./includes/footer.html");
 });
