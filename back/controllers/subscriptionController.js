@@ -11,27 +11,27 @@ exports.subscribe = async(req, res) =>{
             return res.status(400).json({message: "Se requiere un email"});
         }
         // generate a coupon
-        const coupon = "DESC10-" + Math.random().toString(36).substring(2,8).toUpperCase(); 
+        const coupon = "WELCOME5"; 
         // remember tu put a logo later (Gael Emiliano)
         const html = `
-            <h1>¡Gracias por suscribirte!</h1>
-            <img src="https://tu-logo.com/logo.png" width="120" />
+            <h1>¡Thanks for subscribe!</h1>
+           <a href="https://ibb.co/HpLMB8FL"><img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" alt="logo-mock" border="0" width="120"/></a>
 
-            <p>Aquí está tu cupón de bienvenida:</p>
+            <p>Here is your welcome coupon:</p>
 
             <h2 style="color:#d9534f;">${coupon}</h2>
 
-            <p>Mi Empresa — <i>"Lema de la tienda"</i></p>
+            <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>
         `;
         await sendEmail({ // wait a promise to send a email
             to: email,
-            subject: "Cupón de suscripción",
+            subject: "Sub cuopon",
             html
         });
 
-        res.json({message: "Cupón enviado", coupon});
+        res.json({message: "Coupon send", coupon});
     }catch(error){
         console.error(error);
-        res.status(500).json({ message: "Error al enviar el cupón" });
+        res.status(500).json({ message: "Error send the coupon" });
     }
 };

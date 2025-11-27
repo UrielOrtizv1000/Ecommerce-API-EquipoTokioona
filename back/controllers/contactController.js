@@ -11,26 +11,26 @@ exports.sendContactMessage = async (req,res) => {
             return res.status(400).json({message: "Se requiere llenar todos los campos"});
         }
         const html = ` 
-            <h1>Mi Empresa</h1>
-            <img src="https://tu-logo.com/logo.png" width="120" />
+            <h1>Tokioona</h1>
+            <a href="https://ibb.co/HpLMB8FL"><img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" alt="logo-mock" border="0" width="120" /></a>
 
-            <p>Hola <strong>${name}</strong>,</p>
-            <p>Hemos recibido tu mensaje:</p>
+            <p>Hello <strong>${name}</strong>,</p>
+            <p>We have received your message:</p>
             <blockquote>${message}</blockquote>
 
-            <p><strong>En breve serás atendido.</strong></p>
-            <p><i>"Lema de la empresa"</i></p>
+            <p><strong>You will be attended shortly.</strong></p>
+            <p><i>"Recordar es volver a jugar"</i></p>
         `; // send this in html
 
         await sendEmail({ // wait a promise
             to: email,
-            subject: "Tu mensaje ha sido recibido",
+            subject: "Your message has been received",
             html
         });
 
-        res.json({ message: "Correo enviado correctamente"})
+        res.json({ message: "Email sent successfully"})
     } catch (error){
         console.error(error);
-        res.status(500).json({ message: "Error al enviar el correo" });
+        res.status(500).json({ message: "Error sending email" });
     }
 };

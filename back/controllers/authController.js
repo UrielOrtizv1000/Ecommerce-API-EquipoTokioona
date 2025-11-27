@@ -202,20 +202,20 @@ const sendResetPassword = async (req, res) => {
         const resetURL = `${process.env.FRONT_URL}/front/recuperar.html?token=${token}`;
 
         const html = `
-            <h1>Restablecer contraseña</h1>
-            <p>Haz clic para continuar:</p>
+            <h1>Password Reset</h1>
+            <p>Click below to continue:</p>
 
             <a href="${resetURL}" 
             style="background:#007bff;padding:10px 15px;color:white;border-radius:5px;text-decoration:none;">
-                Restablecer contraseña
+                Reset Password
             </a>
 
-            <p>Si no solicitaste esto, ignora este correo.</p>
+            <p>If you did not request this, please ignore this email.</p>
         `;
 
         await sendEmail({
             to: email,
-            subject: "Restablecer contraseña",
+            subject: "Password Reset",
             html,
         });
 
