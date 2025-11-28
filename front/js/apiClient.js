@@ -121,6 +121,17 @@ const ApiClient = {
 
   // Si params viene vacío → GET /api/products (todos)
   // Si trae filtros → GET /api/products/query?... (usa filterProductsBy)
+  // En la sección PRODUCTS de apiClient.js
+  // En la sección PRODUCTS de apiClient.js
+  // En la sección PRODUCTS de apiClient.js
+async getAllProducts() {
+  try {
+    const response = await fetch(`${BASE_URL}/products`);
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error al obtener productos.' };
+  }
+},
   async getProducts(params = {}) {
     const hasParams = Object.keys(params).length > 0;
 
