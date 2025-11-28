@@ -81,37 +81,64 @@ class Store {
         return card;
     }
 
-    getProductCardHTML(product) {
-    const isOnSale = product.is_on_sale;
-    const lowStock = product.stock < 10;
+createProductCard(product) {
+    const card = document.createElement("div");
+    card.className = "card";
     
-    // Manejo seguro de la imagen
-    const imageUrl = product.image_url || 'https://via.placeholder.com/300x300/cccccc/969696?text=Imagen+No+Disponible';
+    // Usar imagen de placeholder online si no hay imagen
+    const imageUrl = product.image_url || 'https://via.placeholder.com/300x200/cccccc/969696?text=Imagen+No+Disponible';
     
-    return `
+    // Obtener tags desde la base de datos (parsear JSON)
+    let tagsArray = [];
+    try {
+        if (product.tags) {
+            // Si tags es un string JSON, parsearlo
+            if (typeof product.tags === 'string') {
+                tagsArray = JSON.parse(product.tags);
+            } else if (Array.isArray(product.tags)) {
+                // Si ya es un array, usarlo directamente
+                tagsArray = product.tags;
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing tags for product:', product.name, error);
+        tagsArray = [];
+    }
+    
+    // Generar HTML de tags
+    const tagsHTML = tagsArray.map(tag => 
+        `<span class="tag">${tag}</span>`
+    ).join('');
+    
+    card.innerHTML = `
         <div class="card-header">
             <span class="wishlist-btn">
                 <i class="far fa-heart"></i>
             </span>
-            <img src="${imageUrl}" 
-                 alt="${product.name}" 
-                 class="product-image">
+            <img src="${imageUrl}" alt="${product.name}" class="product-image">
         </div>
-        <h4>${product.name || 'Producto'}</h4>
+        <h4>${product.name}</h4>
         <p>${product.description || 'Descripción no disponible'}</p>
-        <p class="price">$${parseFloat(product.price || 0).toFixed(2)}</p>
-        <p>Stock: ${product.stock || 0}</p>
+        <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
+        <p>Stock: ${product.stock}</p>
         <div class="tags">
-            ${isOnSale ? '<span class="tag">oferta</span>' : ''}
-            ${lowStock ? '<span class="tag">últimas unidades</span>' : ''}
-            ${product.category_name ? `<span class="tag">${product.category_name}</span>` : ''}
+            ${tagsHTML}  <!-- ← SOLO MOSTRAR TAGS DE LA BD -->
         </div>
         <div class="card-btn">
-            <button class="add-to-cart-btn" ${(product.stock || 0) === 0 ? 'disabled' : ''}>
-                ${(product.stock || 0) === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
+            <button class="add-to-cart-btn" ${product.stock === 0 ? 'disabled' : ''}>
+                ${product.stock === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
             </button>
         </div>
     `;
+
+    // Eventos
+    const wishlistBtn = card.querySelector('.wishlist-btn');
+    const cartBtn = card.querySelector('.add-to-cart-btn');
+
+    wishlistBtn.addEventListener('click', () => this.toggleWishlist(product.product_id, wishlistBtn));
+    cartBtn.addEventListener('click', () => this.addToCart(product.product_id, product.name));
+
+    return card;
 }
 
     setupCardEvents(card, product) {
@@ -177,18 +204,17 @@ class Store {
         }
     }
 
-    filterProducts(category) {
-        if (category === 'all') {
-            return this.allProducts;
-        }
-        
-        return this.allProducts.filter(product => {
-            const productCategory = product.category_name ? 
-                product.category_name.toLowerCase() : 
-                'general';
-            return productCategory === category;
-        });
-    }
+filterProducts(category) {
+    if (category === 'all') return this.allProducts;
+    
+    return this.allProducts.filter(product => {
+        // CORREGIDO: Usamos category_name que viene del JOIN
+        const productCategory = product.category_name ? 
+            product.category_name.toLowerCase() : 
+            'general';
+        return productCategory === category;
+    });
+}
 
     setupCategoryFilters() {
         const buttons = document.querySelectorAll(".sidebar button");

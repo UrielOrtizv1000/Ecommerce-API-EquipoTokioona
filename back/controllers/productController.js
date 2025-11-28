@@ -250,7 +250,7 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// Agregar en productController.js - CORREGIDO
+// Agregar en productController.js 
 exports.getAllProducts = async (req, res) => {
   try {
     const [products] = await pool.query(`
@@ -262,7 +262,9 @@ exports.getAllProducts = async (req, res) => {
         p.stock,
         p.image_url,
         p.is_on_sale,
-        c.category_name 
+        p.category_id,           -- ← Solo tenemos este campo
+        p.tags,
+        c.category_name          -- ← Pero unimos con categories para obtener el nombre
       FROM products p 
       LEFT JOIN categories c ON p.category_id = c.category_id 
       WHERE p.stock > 0
