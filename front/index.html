@@ -15,10 +15,9 @@
   <link rel="stylesheet" href="styles/footer.css">
 
   <!-- Scripts -->
-  <script src="js/components.js" defer></script> <!-- Loads header and footer -->
-  <script src="js/auth.js" defer></script>       <!-- User authentication -->
-  <script src="js/index.js" defer></script>      <!-- Main page logic -->
-  <script src="js/login.js" defer></script>      <!-- Login modal control -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
 </head>
 
 <body>
@@ -54,7 +53,7 @@
           <a href="store.html?category=grande" class="promo-card">
               <div class="category-card">
                 <div class="card-img">
-                  <img src="images/toys.png" alt="">
+                  <img src="http://localhost:3000/images/toys.png" alt="">
                 </div>
                 <div class="card-title">
                   <h2>juguetes grandes</h2>
@@ -65,7 +64,7 @@
           <a href="store.html?category=mediano" class="promo-card">
               <div class="category-card">
                 <div class="card-img">
-                  <img src="images/toys.png" alt="">
+                  <img src="http://localhost:3000/images/toys.png" alt="">
                 </div>
                 <div class="card-title">
                   <h2>juguetes medianos</h2>
@@ -76,7 +75,7 @@
           <a href="store.html?category=pequeno" class="promo-card">
               <div class="category-card">
                 <div class="card-img">
-                  <img src="images/toys.png" alt="">
+                  <img src="http://localhost:3000/images/toys.png" alt="">
                 </div>
                 <div class="card-title">
                   <h2>juguetes pequenos</h2>
@@ -105,31 +104,28 @@
   <div id="footer"></div>
 
   <!-- Login modal -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-content">
-      <h2>Iniciar Sesión</h2>
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
 
-      <form>
-        <!-- Name input field -->
-        <label for="name">Nombre</label>
-        <input type="text" id="name">
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
 
-        <!-- Email input field -->
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email">
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
 
-        <!-- Buttons section -->
-        <div class="modal-buttons">
-            <!-- Register button -->
-            <button type="button" id="register-btn">Registrarse</button>
-            <!-- Forgot password button -->
-            <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-            <!-- Submit/login button -->
-            <button type="submit" id="submit-btn">Aceptar</button>
+      <div id="captcha-container" style="margin: 10px 0;">
         </div>
-      </form>
-    </div>
+      
+      <div class="modal-buttons">
+          <button type="button" id="register-btn">Registrarse</button>
+          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+          <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
   </div>
+</div>
 
 </body>
 </html>

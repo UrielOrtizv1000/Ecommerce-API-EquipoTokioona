@@ -3,3 +3,247 @@ here u are going to administrate the products filters
 getAll, getById, getByCategory, getOnSale, 
 create (admin), update (admin), delete (admin)
 */
+const Product = require('../models/Product');
+const Category = require("../models/Category");
+
+// -- GET PRODUCT CONTROLLER --
+exports.getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.getProductById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        ok: false,
+        message: "Request not found"
+      });
+    }
+
+    res.status(200).json({ product });
+  } catch (error) {
+    console.error("Product query error: ", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+}
+
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await Category.getCategories();
+    res.status(200).json({
+      ok: true,
+      categories
+    });
+  } catch (error) {
+    console.error("Category query error: ", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+}
+
+exports.filterProductsBy = async (req, res) => {
+  try {
+    // Creating query string
+
+    // Check if there are no query parameters
+    if (Object.keys(req.query).length === 0)
+      return res.status(400).json({
+        ok: false,
+        message: "Filters were not applied"
+      });
+
+    // Setup variables for generating a query string
+    let numParams = 0;
+    let queryControl = "SELECT * FROM products WHERE ";
+    const queryValues = [];
+
+    for (const [key, value] of Object.entries(req.query)) {
+      // If current parameter has empty value
+      if (!value)
+        continue;
+
+      // If there are more than one parameters, append 'AND' into the query string
+      if (numParams > 0)
+        queryControl += "AND ";
+
+      // Switch for every valid parameter value
+      switch (key) {
+        case "category_id":
+          queryControl += "category_id = ? ";
+          break;
+        case "min_price":
+          queryControl += "price >= ? ";
+          break;
+        case "max_price":
+          queryControl += "price <= ? ";
+          break;
+        case "is_on_sale":
+          queryControl += "is_on_sale = ? ";
+          break;
+        default:
+          // If a wrong parameter was requested, return a 404 code
+          return res.status(404).json({
+            ok: false,
+            message: "Non-existent product filter was requested"
+          });
+      }
+
+      // Add current parameter value to result array
+      queryValues.push(value);
+      
+      numParams++;
+    }
+
+    // Execute query
+    const list = await Product.getProductsByFilter(queryControl, queryValues);
+    res.status(200).json({
+      ok: true,
+      list
+    });
+  } catch (error) {
+    console.log("Product filtering error");
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+}
+
+exports.createProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    } = req.body;
+
+    const newProductId = await Product.create({
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    });
+
+    res.status(201).json({
+      ok: true,
+      message: 'Product created successfully',
+      product_id: newProductId
+    });
+
+  } catch (err) {
+    console.error('Error creating product:', err);
+
+    res.status(500).json({
+      ok: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    } = req.body;
+
+    // Check if exists
+    const existing = await Product.getProductById(id);
+
+    if (!existing) {
+      return res.status(404).json({
+        ok: false,
+        message: "Product not found"
+      });
+    }
+
+    // Update
+    const updated = await Product.update(id, {
+      name,
+      description,
+      price,
+      stock,
+      image_url,
+      is_on_sale,
+      category_id
+    });
+
+    if (updated === 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "Product update failed"
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      message: "Product updated successfully",
+      product_id: id
+    });
+
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if the product exists
+    const product = await Product.getProductById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        ok: false,
+        message: "Product not found"
+      });
+    }
+
+    // Delete
+    const deleted = await Product.delete(id);
+
+    if (deleted === 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "Product deletion failed"
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      message: "Product deleted successfully",
+      product_id: id
+    });
+
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+};
+
