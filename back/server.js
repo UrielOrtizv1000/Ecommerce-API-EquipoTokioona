@@ -50,7 +50,7 @@ async function testDBConnection() {
 }
 
 // Routes under /api/products
-app.use("/api/products", productRoutes);
+app.use("/api/products", productRoutes);  //vería problemas aquí.
 
 
 app.listen(port, async () => {

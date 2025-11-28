@@ -5,6 +5,9 @@ create (admin), update (admin), delete (admin)
 */
 const Product = require('../models/Product');
 const Category = require("../models/Category");
+const pool = require("../db/conexion"); // ← ESTA LÍNEA DEBE ESTAR
+
+
 
 // -- GET PRODUCT CONTROLLER --
 exports.getProductById = async (req, res) => {
@@ -247,3 +250,36 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// Agregar en productController.js 
+exports.getAllProducts = async (req, res) => {
+  try {
+    const [products] = await pool.query(`
+      SELECT 
+        p.product_id,
+        p.name,
+        p.description,
+        p.price,
+        p.stock,
+        p.image_url,
+        p.is_on_sale,
+        p.category_id,           -- ← Solo tenemos este campo
+        p.tags,
+        c.category_name          -- ← Pero unimos con categories para obtener el nombre
+      FROM products p 
+      LEFT JOIN categories c ON p.category_id = c.category_id 
+      WHERE p.stock > 0
+      ORDER BY p.product_id
+    `);
+    
+    res.status(200).json({
+      ok: true,
+      products
+    });
+  } catch (error) {
+    console.error("Error getting all products:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Internal server error"
+    });
+  }
+};

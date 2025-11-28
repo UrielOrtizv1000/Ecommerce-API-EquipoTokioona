@@ -1,102 +1,454 @@
 // front/js/apiClient.js
 
-/**
- * Cliente centralizado para todas las peticiones al Backend.
- * Reemplaza la antigua carpeta 'api'.
- */
-const BASE_URL = 'http://localhost:3000/api'; // ASUMIR URL BASE DEL BACKEND
+const BASE_URL = 'http://localhost:3000/api';
 
 const ApiClient = {
-    // Función de utilidad para manejar la respuesta
-    _handleResponse: async (response) => {
-        const data = await response.json();
-        // El backend maneja 'ok: true/false' y un status http adecuado
-        if (response.ok) {
-            return { ok: true, data };
-        } else {
-            // El mensaje de error viene del backend
-            return { ok: false, message: data.message || 'Error desconocido del servidor' };
-        }
-    },
+  // ==========================
+  // Helpers
+  // ==========================
 
-    // --- AUTENTICACIÓN ---
+  async _handleResponse(response) {
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = null;
+    }
 
-    /**
-     * Petición de Login.
-     * @param {Object} credentials - { username, password, 'g-recaptcha-response' }
-     * @returns {Promise<Object>} - { ok: boolean, data/message }
-     */
-    async login(credentials) {
-        try {
-            const response = await fetch(`${BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credentials),
-            });
-            return ApiClient._handleResponse(response);
-        } catch (error) {
-            return { ok: false, message: 'Error de conexión con el servidor.' };
-        }
-    },
+    if (response.ok) {
+      return { ok: true, data };
+    } else {
+      return {
+        ok: false,
+        status: response.status,
+        message: (data && (data.message || data.error)) || 'Error desconocido del servidor'
+      };
+    }
+  },
 
-    /**
-     * Petición de Registro.
-     * @param {Object} userData - { username, email, password }
-     * @returns {Promise<Object>} - { ok: boolean, data/message }
-     */
-    async signup(userData) {
-        try {
-            const response = await fetch(`${BASE_URL}/auth/signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-            return ApiClient._handleResponse(response);
-        } catch (error) {
-            return { ok: false, message: 'Error de conexión con el servidor.' };
-        }
-    },
+  _authHeaders(extra = {}) {
+    const token = localStorage.getItem('token');
+    if (!token) return { ...extra };
+    return {
+      ...extra,
+      'Authorization': `Bearer ${token}`
+    };
+  },
 
-    /**
-     * Petición de Logout (protegida por token).
-     * @param {string} token - JWT del usuario.
-     * @returns {Promise<Object>} - { ok: boolean, data/message }
-     */
-    async logout(token) {
-        try {
-            const response = await fetch(`${BASE_URL}/auth/logout`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}` // Usar JWT
-                },
-            });
-            return ApiClient._handleResponse(response);
-        } catch (error) {
-            return { ok: false, message: 'Error de conexión al cerrar sesión.' };
-        }
-    },
+  // ==========================
+  // AUTH
+  // ==========================
 
-    // --- CAPTCHA ---
-    
-    /**
-     * Obtiene el script del Captcha Widget.
-     * @returns {Promise<string>} - HTML del widget.
-     */
-    async getCaptchaWidget() {
-        try {
-            const response = await fetch(`${BASE_URL}/auth/getCaptchaWidget`);
-            if (!response.ok) {
-                 return '<div class="captcha-error">No se pudo cargar el CAPTCHA.</div>';
-            }
-            return await response.text();
-        } catch (error) {
-            return '<div class="captcha-error">Error de red al cargar el CAPTCHA.</div>';
-        }
-    },
+  async signup(userData) {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error de conexión con el servidor.' };
+    }
+  },
 
-    // [Añadir otras peticiones (productos, carrito, etc.) aquí]
+  async login(credentials) {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error de conexión con el servidor.' };
+    }
+  },
+
+  async logout() {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error de conexión al cerrar sesión.' };
+    }
+  },
+
+  async getCaptchaWidget() {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/getCaptchaWidget`);
+      if (!response.ok) {
+        return '<div class="captcha-error">No se pudo cargar el CAPTCHA.</div>';
+      }
+      return await response.text();
+    } catch (error) {
+      return '<div class="captcha-error">Error de red al cargar el CAPTCHA.</div>';
+    }
+  },
+
+  async forgotPassword(email) {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al solicitar recuperación de contraseña.' };
+    }
+  },
+
+  async resetPassword({ token, password }) {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/resetPassword?token=${encodeURIComponent(token)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al restablecer contraseña.' };
+    }
+  },
+
+  // ==========================
+  // PRODUCTS
+  // ==========================
+
+  // Si params viene vacío → GET /api/products (todos)
+  // Si trae filtros → GET /api/products/query?... (usa filterProductsBy)
+  // En la sección PRODUCTS de apiClient.js
+  // En la sección PRODUCTS de apiClient.js
+  // En la sección PRODUCTS de apiClient.js
+async getAllProducts() {
+  try {
+    const response = await fetch(`${BASE_URL}/products`);
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error al obtener productos.' };
+  }
+},
+  async getProducts(params = {}) {
+    const hasParams = Object.keys(params).length > 0;
+
+    const url = hasParams
+      ? `${BASE_URL}/products/query?${new URLSearchParams(params).toString()}`
+      : `${BASE_URL}/products`;
+
+    try {
+      const response = await fetch(url);
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener productos.' };
+    }
+  },
+
+  async getProductById(productId) {
+    try {
+      const response = await fetch(`${BASE_URL}/products/${productId}`);
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener el producto.' };
+    }
+  },
+
+  async getCategories() {
+    try {
+      const response = await fetch(`${BASE_URL}/products/categories`);
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener categorías.' };
+    }
+  },
+
+  // ==========================
+  // CART
+  // ==========================
+
+  async getCart() {
+    try {
+      const response = await fetch(`${BASE_URL}/cart`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener el carrito.' };
+    }
+  },
+
+  // body esperado por el controller: { product_id, quantity }
+  async addToCart({ product_id, quantity }) {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/add`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ product_id, quantity })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al agregar al carrito.' };
+    }
+  },
+
+  // body esperado: { product_id, quantity }
+  async updateCartItem({ product_id, quantity }) {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/update`, {
+        method: 'PUT',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ product_id, quantity })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al actualizar el carrito.' };
+    }
+  },
+
+  // controller espera req.body.product_id
+  async removeFromCart(product_id) {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/remove`, {
+        method: 'DELETE',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ product_id })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al eliminar del carrito.' };
+    }
+  },
+
+  async clearCart() {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/clear`, {
+        method: 'DELETE',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al vaciar el carrito.' };
+    }
+  },
+
+  // body esperado: { state, shippingMethod }
+  async calculateTotals({ state, shippingMethod }) {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/calculate`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ state, shippingMethod })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al calcular totales.' };
+    }
+  },
+
+  // body esperado: { shipping: {...}, payment: {...} }
+  async checkout(payload) {
+    try {
+      const response = await fetch(`${BASE_URL}/cart/checkout`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(payload)
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al procesar la compra.' };
+    }
+  },
+
+  // ==========================
+  // WISHLIST
+  // ==========================
+
+  async getWishlist() {
+    try {
+      const response = await fetch(`${BASE_URL}/wishlist`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener la lista de deseos.' };
+    }
+  },
+
+  async addToWishlist(productId) {
+    try {
+      const response = await fetch(`${BASE_URL}/wishlist`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ productId })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al agregar a la lista de deseos.' };
+    }
+  },
+
+  async removeFromWishlist(productId) {
+    try {
+      const response = await fetch(`${BASE_URL}/wishlist/${productId}`, {
+        method: 'DELETE',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al eliminar de la lista de deseos.' };
+    }
+  },
+
+  // ==========================
+  // COUPONS
+  // ==========================
+
+  // controller.applyCoupon
+  async applyCoupon(code) {
+    try {
+      const response = await fetch(`${BASE_URL}/coupons/apply`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ code })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al aplicar el cupón.' };
+    }
+  },
+
+  async removeCoupon(code) {
+    try {
+      const response = await fetch(`${BASE_URL}/coupons/remove`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ code })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al eliminar el cupón.' };
+    }
+  },
+
+  // ==========================
+  // CONTACT
+  // ==========================
+
+  async sendContact({ name, email, message }) {
+    try {
+      const response = await fetch(`${BASE_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al enviar el mensaje.' };
+    }
+  },
+
+  // ==========================
+  // SUBSCRIPTION
+  // ==========================
+
+  async subscribe(email) {
+    try {
+      const response = await fetch(`${BASE_URL}/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al suscribirse.' };
+    }
+  },
+
+  // ==========================
+  // ORDERS
+  // ==========================
+
+  // Usa orderController.createOrder
+  async createOrder(orderData) {
+    try {
+      const response = await fetch(`${BASE_URL}/orders`, {
+        method: 'POST',
+        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(orderData)
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al crear la orden.' };
+    }
+  },
+
+  // Solo útiles si tienes endpoints GET /orders y /orders/:id
+  async getOrders() {
+    try {
+      const response = await fetch(`${BASE_URL}/orders`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener órdenes.' };
+    }
+  },
+
+  async getOrderById(orderId) {
+    try {
+      const response = await fetch(`${BASE_URL}/orders/${orderId}`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener la orden.' };
+    }
+  },
+
+  // ==========================
+  // ADMIN
+  // ==========================
+
+  async getTotalSales() {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/total-sales`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener ventas totales.' };
+    }
+  },
+
+  async getSalesByCategory() {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/sales-by-category`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener ventas por categoría.' };
+    }
+  },
+
+  async getInventoryReport() {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/inventory-report`, {
+        method: 'GET',
+        headers: this._authHeaders()
+      });
+      return this._handleResponse(response);
+    } catch (error) {
+      return { ok: false, message: 'Error al obtener inventario.' };
+    }
+  }
 };
