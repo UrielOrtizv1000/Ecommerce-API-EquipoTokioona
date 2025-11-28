@@ -5,7 +5,7 @@ const productsData = [
     desc: "El robot-dinosaurio interactivo más grande del 2025. ¡Habla, camina y lanza luces láser de verdad!",
     price: 349,
     category: "grande",
-    image: "prod1.png", 
+    image: "images/prod1.png",
     stock: 8,
     tags: ["nuevo", "popular", "grande", "2025"]
   },
@@ -15,7 +15,7 @@ const productsData = [
     desc: "Drone volador con cámara 4K, modo batalla y diseño de pterodáctilo. Ideal para niños y adultos.",
     price: 189,
     category: "mediano",
-    image: "prod2.png",   
+    image: "images/prod2.png",
     stock: 45,
     tags: ["nuevo", "popular", "mediano", "volador"]
   },
@@ -25,7 +25,7 @@ const productsData = [
     desc: "Castillo gigante iluminado de 1,20 m de alto con dragón animatrónico que escupe humo.",
     price: 279,
     category: "grande",
-    image: "prod3.png",   
+    image: "images/prod3.png",
     stock: 12,
     tags: ["épico", "grande", "dragones"]
   },
@@ -35,7 +35,7 @@ const productsData = [
     desc: "Pack de 4 mini robots de combate con arena de batalla portátil. ¡Peleas épicas en cualquier lugar!",
     price: 89,
     category: "pequeño",
-    image: "prod4.png",  
+    image: "images/prod4.png",
     stock: 87,
     tags: ["oferta", "pequeño", "batalla", "pack"]
   },
@@ -45,7 +45,7 @@ const productsData = [
     desc: "Unicornio robot gigante con alas LED, música y modo galope. El sueño de todo niño en 2025.",
     price: 399,
     category: "grande",
-    image: "prod5.png",  
+    image: "images/prod5.png",
     stock: 5,
     tags: ["exclusivo", "grande", "mágico", "popular"]
   },
@@ -55,7 +55,7 @@ const productsData = [
     desc: "La Nerf más grande jamás creada: 1,5 metros, dispara hasta 30 metros y 50 dardos seguidos.",
     price: 229,
     category: "grande",
-    image: "prod6.png",  
+    image: "images/prod6.png",
     stock: 19,
     tags: ["acción", "grande", "nerf", "épico"]
   }

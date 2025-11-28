@@ -72,24 +72,23 @@ function renderProducts(products, wishlistItems) {
     card.classList.add("card");
   
     card.innerHTML = `
-      <div class="card-header">
-        <span class="wishlist-btn ${activeClass}">
-          <i class="${iconClass} fa-heart"></i> 
-        </span>
-        <img src="http://localhost:3000/images/${p.image}" alt="${p.name}">
-      </div>
-      <h4>${p.name}</h4>
-      <p>${p.desc}</p>
-      <p class="price">$${p.price}</p>
-      <p>Stock: ${p.stock}</p>
-      <div class="tags">
-        ${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}
-      </div>
-      <div class="card-btn">
-        <button>Agregar al carrito</button>
-      </div>
-    `;
-
+          <div class="card-header">
+            <span class="wishlist-btn ${activeClass}">
+              <i class="${iconClass} fa-heart"></i> 
+            </span>
+            <img src="${p.image}" alt="${p.name}">
+          </div>
+          <h4>${p.name}</h4>
+          <p>${p.desc}</p>
+          <p class="price">$${p.price}</p>
+          <p>Stock: ${p.stock}</p>
+          <div class="tags">
+            ${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+          </div>
+          <div class="card-btn">
+            <button>Agregar al carrito</button>
+          </div>
+        `;
 
     container.appendChild(card);
 

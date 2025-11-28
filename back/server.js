@@ -1,15 +1,17 @@
-require("dotenv").config();
 console.log("🔥 JWT_SECRET EN USO →", process.env.JWT_SECRET);
 
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const path = require("path"); // <-- IMPORTANTE
 const pool = require("./db/conexion");
-
 const adminRoutes = require("./routes/adminRoutes");
+
+// const routes
 const cartRoutes = require('./routes/cartRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 const couponRoutes = require('./routes/couponRoutes');
+
+
 const contactRoutes = require("./routes/contactRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const orderRoutes = require("./routes/orderRoutes");
@@ -19,21 +21,24 @@ const productRoutes = require("./routes/productRoutes");
 const app = express();
 const port = process.env.PORT || 3000;
 
+
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));    // Required for x-www-form-urlencoded support
 app.use(express.json());
 
-
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/cart', cartRoutes);
 app.use("/api/coupons", couponRoutes);
+
+
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/subscribe", subscriptionRoutes);
 app.use("/api/orders", orderRoutes);
+
 app.use("/api/admin", adminRoutes);
+
 
 async function testDBConnection() {
     try {
@@ -44,7 +49,9 @@ async function testDBConnection() {
     }
 }
 
-app.use("/api/products", productRoutes);
+// Routes under /api/products
+app.use("/api/products", productRoutes);  //vería problemas aquí.
+
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
