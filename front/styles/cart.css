@@ -1,0 +1,251 @@
+/* Cart Specific Styles */
+.cart-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.cart-items {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.empty-cart-message {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.empty-cart-message p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+}
+
+.cart-item {
+    display: flex;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.item-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.item-price {
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.quantity-btn:hover {
+    background: #e9ecef;
+}
+
+.quantity-input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    margin: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.remove-btn:hover {
+    background: #fdf2f2;
+}
+
+.item-total {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 80px;
+    text-align: right;
+}
+
+.cart-summary {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    align-self: start;
+    position: sticky;
+    top: 100px;
+}
+
+.cart-summary h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.summary-details {
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.discount-row {
+    color: #27ae60;
+}
+
+.total-row {
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-bottom: none;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.coupon-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.coupon-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.coupon-input {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.coupon-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+}
+
+.coupon-input button {
+    border-radius: 0 4px 4px 0;
+    white-space: nowrap;
+}
+
+.coupon-message {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.coupon-message.success {
+    color: #27ae60;
+    background: #f0f9f4;
+    border: 1px solid #d1f0e0;
+}
+
+.coupon-message.error {
+    color: #e74c3c;
+    background: #fdf2f2;
+    border: 1px solid #fadbd8;
+}
+
+/* Responsive Cart */
+@media (max-width: 768px) {
+    .cart-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .cart-summary {
+        position: static;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .item-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+    
+    .item-details {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .item-total {
+        text-align: left;
+        margin-top: 10px;
+    }
+    
+    .coupon-input {
+        flex-direction: column;
+    }
+    
+    .coupon-input input {
+        border-radius: 4px;
+        border-right: 1px solid #ddd;
+        margin-bottom: 10px;
+    }
+    
+    .coupon-input button {
+        border-radius: 4px;
+    }
+}

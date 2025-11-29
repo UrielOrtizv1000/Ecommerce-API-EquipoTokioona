@@ -8,16 +8,16 @@
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/accesibility.css">
 
-    <!-- Header and footer styles -->
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/footer.css">
+  <!-- Header and footer styles -->
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+  <!-- Scripts -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
 </head>
 
 <body>
@@ -25,42 +25,72 @@
     <!-- Dynamic header insertion -->
     <div id="header"></div>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
+    <main class="container">
+        <section class="accessibility-intro">
+            <h2>Customiza tu experiencia</h2>
+            <p>Nosotros creemos que todo el mundo deberia tener acceso a nuestra tienda. Utiliza estas configuraciones para ajustar tu expriencia.</p>
+        </section>
+
+        <section class="accessibility-controls">
+            <div class="control-group">
+                <h3>Tema</h3>
+                <p>Escoje entre un tema oscuro y un tema claro segun tus preferencias.</p>
+                <div class="theme-controls">
+                    <button id="light-theme" class="theme-btn active">Modo claro</button>
+                    <button id="dark-theme" class="theme-btn">Modo oscuro</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Tamaño del texto</h3>
+                <p>AAjusta el tamaño del texto para ajustar tu lectura.</p>
+                <div class="text-controls">
+                    <button id="decrease-text" class="text-btn">-</button>
+                    <span id="current-size" class="current-size">Normal</span>
+                    <button id="increase-text" class="text-btn">+</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Restablecer configuraciones</h3>
+                <p>Restaura las configuraciondes de accesibilidad a sus valores por defecto.</p>
+                <button id="reset-settings" class="reset-btn">Restaurar</button>
+            </div>
+        </section>
+
+        <section class="accessibility-info">
+          <h3>Acerca de Nuestras Funciones de Accesibilidad</h3>
+          <p>Nuestro compromiso con la accesibilidad garantiza que todos los usuarios, independientemente de sus capacidades, puedan navegar y utilizar nuestra tienda en línea de manera efectiva.</p>
+          <p>Sus preferencias se guardarán y se aplicarán automáticamente en su próxima visita.</p>
+        </section>
     </main>
 
     <!-- Dynamic footer insertion -->
     <div id="footer"></div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
-
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
-
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
-
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
+  <!-- Login modal -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-content">
+      <h2>Iniciar Sesión</h2>
+    
+      <form id="login-form">
+        <label for="login-username">Nombre de Usuario</label>
+        <input type="text" id="login-username" required>
+      
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" required>
+      
+        <div id="captcha-container" style="margin: 10px 0;">
+          </div>
+        
+        <div class="modal-buttons">
+            <button type="button" id="register-btn">Registrarse</button>
+            <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+            <button type="submit" id="submit-btn">Aceptar</button>
         </div>
+      </form>
     </div>
+  </div>
 
 </body>
 </html>

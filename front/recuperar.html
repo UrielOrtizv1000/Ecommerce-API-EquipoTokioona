@@ -8,16 +8,16 @@
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/recuperar.css">
 
     <!-- Header and footer styles -->
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+  <!-- Scripts -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
 </head>
 
 <body>
@@ -25,42 +25,114 @@
     <!-- Dynamic header insertion -->
     <div id="header"></div>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña - Tienda Online</title>
+    <link rel="stylesheet" href="recovery.css">
+</head>
+<body>
+
     <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
-    </main>
 
-    <!-- Dynamic footer insertion -->
-    <div id="footer"></div>
+      <div class="recovery-container">
+        <div class="recovery-card">
+          <div class="recovery-header">
+            <h1>Recuperar Contraseña</h1>
+            <p>Ingresa tu correo electrónico para restablecer tu contraseña</p>
+          </div>
+          
+            <form id="recoveryForm" class="recovery-form">
+              <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="tu@email.com"
+                    required
+                    >
+                    <div id="emailError" class="error-message"></div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="captcha">Código de Seguridad</label>
+                    <div class="captcha-container">
+                      <div id="captchaText" class="captcha-text"></div>
+                      <button type="button" id="refreshCaptcha" class="refresh-btn">
+                        🔄
+                      </button>
+                    </div>
+                    <input 
+                    type="text" 
+                    id="captcha" 
+                    name="captcha" 
+                    placeholder="Ingresa el código mostrado"
+                    required
+                    >
+                    <div id="captchaError" class="error-message"></div>
+                  </div>
+                  
+                  <button type="submit" id="submitBtn" class="submit-btn">
+                    Enviar Enlace de Recuperación
+                  </button>
+                </form>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
-
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
-
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
-
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
+            <div class="recovery-footer">
+              <p>¿Recordaste tu contraseña? <a href="login.html">Iniciar Sesión</a></p>
+              <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
+            </div>
+            
+            <div id="successMessage" class="success-message hidden">
+              <div class="success-icon">✓</div>
+              <h3>¡Correo Enviado!</h3>
+              <p>Hemos enviado un enlace de recuperación a tu correo electrónico.</p>
+              <p>Revisa tu bandeja de entrada y sigue las instrucciones.</p>
+              <a href="login.html" class="back-login">Volver al Inicio de Sesión</a>
+            </div>
         </div>
-    </div>
-
-</body>
-</html>
+        
+        <div class="recovery-info">
+          <h3>¿Qué esperar?</h3>
+          <ul>
+            <li>Recibirás un correo con un enlace seguro</li>
+            <li>El enlace expirará en 1 hora por seguridad</li>
+            <li>Podrás crear una nueva contraseña</li>
+            <li>Tu cuenta actual permanecerá segura</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+      
+      <!-- Dynamic footer insertion -->
+      <div id="footer"></div>
+      
+      <!-- Login modal -->
+      <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+          <h2>Iniciar Sesión</h2>
+          
+          <form id="login-form">
+            <label for="login-username">Nombre de Usuario</label>
+            <input type="text" id="login-username" required>
+            
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" required>
+            
+            <div id="captcha-container" style="margin: 10px 0;">
+            </div>
+            
+            <div class="modal-buttons">
+              <button type="button" id="register-btn">Registrarse</button>
+              <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+              <button type="submit" id="submit-btn">Aceptar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+    </body>
+    </html>
+    

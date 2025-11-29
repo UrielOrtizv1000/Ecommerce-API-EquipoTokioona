@@ -1,3 +1,8 @@
+<!-- 
+    this page probably need a lot of reexploration and modifications
+    for the logic and data stream between this and the ckeckout page
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,59 +13,106 @@
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/cart.css">
 
-    <!-- Header and footer styles -->
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/footer.css">
+  <!-- Header and footer styles -->
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+  <!-- Scripts -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
 </head>
 
 <body>
 
     <!-- Dynamic header insertion -->
     <div id="header"></div>
+    <a href="checkout.html" style="padding-left: 200px; font-size: 20px;">(quitar) CKECKOUT ---> </a>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
+<main class="main-content">
+        <div class="container">
+            <h2 class="page-title">Shopping Cart</h2>
+            
+            <!-- Cart Items -->
+            <section class="cart-section">
+                <div class="cart-items" id="cart-items">
+                    <!-- Dynamic content will be inserted here -->
+                    <div class="empty-cart-message" id="empty-cart">
+                        <p>Your cart is empty</p>
+                        <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+                    </div>
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="cart-summary" id="cart-summary" style="display: none;">
+                    <h3>Order Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Taxes:</span>
+                            <span id="taxes">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span id="shipping">$0.00</span>
+                        </div>
+                        <div class="summary-row discount-row">
+                            <span>Discount:</span>
+                            <span id="discount">-$0.00</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Total:</span>
+                            <span id="total">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Coupon Section -->
+                    <div class="coupon-section">
+                        <label for="coupon-code">Coupon Code:</label>
+                        <div class="coupon-input">
+                            <input type="text" id="coupon-code" placeholder="Enter coupon code">
+                            <button id="apply-coupon" class="btn btn-secondary">Apply</button>
+                        </div>
+                        <p id="coupon-message" class="coupon-message"></p>
+                    </div>
+                    
+                    <button id="checkout-btn" class="btn btn-primary btn-large">Proceed to Checkout</button>
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Dynamic footer insertion -->
     <div id="footer"></div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
-
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
-
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
-
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
+  <!-- Login modal -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-content">
+      <h2>Iniciar Sesión</h2>
+    
+      <form id="login-form">
+        <label for="login-username">Nombre de Usuario</label>
+        <input type="text" id="login-username" required>
+      
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" required>
+      
+        <div id="captcha-container" style="margin: 10px 0;">
+          </div>
+        
+        <div class="modal-buttons">
+            <button type="button" id="register-btn">Registrarse</button>
+            <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+            <button type="submit" id="submit-btn">Aceptar</button>
         </div>
+      </form>
     </div>
+  </div>
 
 </body>
 </html>
