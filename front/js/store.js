@@ -84,19 +84,15 @@ class Store {
 createProductCard(product) {
     const card = document.createElement("div");
     card.className = "card";
-    
-    // Usar imagen de placeholder online si no hay imagen
+
     const imageUrl = product.image_url || 'https://via.placeholder.com/300x200/cccccc/969696?text=Imagen+No+Disponible';
-    
-    // Obtener tags desde la base de datos (parsear JSON)
+
     let tagsArray = [];
     try {
         if (product.tags) {
-            // Si tags es un string JSON, parsearlo
             if (typeof product.tags === 'string') {
                 tagsArray = JSON.parse(product.tags);
             } else if (Array.isArray(product.tags)) {
-                // Si ya es un array, usarlo directamente
                 tagsArray = product.tags;
             }
         }
@@ -104,12 +100,11 @@ createProductCard(product) {
         console.error('Error parsing tags for product:', product.name, error);
         tagsArray = [];
     }
-    
-    // Generar HTML de tags
+
     const tagsHTML = tagsArray.map(tag => 
         `<span class="tag">${tag}</span>`
     ).join('');
-    
+
     card.innerHTML = `
         <div class="card-header">
             <span class="wishlist-btn">
@@ -117,12 +112,12 @@ createProductCard(product) {
             </span>
             <img src="${imageUrl}" alt="${product.name}" class="product-image">
         </div>
-        <h4>${product.name}</h4>
+        <h4 class="product-title">${product.name}</h4>
         <p>${product.description || 'Descripción no disponible'}</p>
         <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
         <p>Stock: ${product.stock}</p>
         <div class="tags">
-            ${tagsHTML}  <!-- ← SOLO MOSTRAR TAGS DE LA BD -->
+            ${tagsHTML}
         </div>
         <div class="card-btn">
             <button class="add-to-cart-btn" ${product.stock === 0 ? 'disabled' : ''}>
@@ -131,15 +126,37 @@ createProductCard(product) {
         </div>
     `;
 
-    // Eventos
     const wishlistBtn = card.querySelector('.wishlist-btn');
     const cartBtn = card.querySelector('.add-to-cart-btn');
+    const imageEl = card.querySelector('.product-image');
+    const titleEl = card.querySelector('.product-title');
 
-    wishlistBtn.addEventListener('click', () => this.toggleWishlist(product.product_id, wishlistBtn));
-    cartBtn.addEventListener('click', () => this.addToCart(product.product_id, product.name));
+    // ❤️ Wishlist
+    wishlistBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleWishlist(product, wishlistBtn);
+    });
+
+    // 🛒 Botón agregar al carrito
+    cartBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleAddToCart(product);
+    });
+
+    // 🔗 Navegar al detalle al hacer clic en imagen o título
+    const goToDetail = () => {
+        // OJO: aquí usamos product.product_id
+        window.location.href = `product.html?id=${product.product_id}`;
+    };
+
+    imageEl.addEventListener('click', goToDetail);
+    titleEl.addEventListener('click', goToDetail);
 
     return card;
 }
+
+
+
 
     setupCardEvents(card, product) {
         const wishlistBtn = card.querySelector('.wishlist-btn');

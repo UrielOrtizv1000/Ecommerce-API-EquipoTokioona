@@ -1,29 +1,111 @@
-/* === RESET GENERAL === */
+/* =====================================================================
+    MASTER STYLES – TOKIOONA  
+===================================================================== */
+
+
+/* ============================================================
+   1. RESET GLOBAL
+============================================================ */
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
-  text-decoration: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* ============================================================
+   2. TIPOGRAFÍA BASE
+============================================================ */
 
 body {
-  line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.5;
 }
 
-/* sticky header */
-#header {
-  position: sticky;
-  top: 10px;
-  z-index: 1100;
+
+/* ============================================================
+   3. VARIABLES GLOBALES (USO FUTURO)
+============================================================ */
+
+:root {
+    --color-bg-light: #f5f5f7;
+    --color-bg-dark: #050509;
+
+    --color-text-light: #1d1d1f;
+    --color-text-dark: #f5f5f7;
+
+    --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.12);
+    --shadow-strong: 0 12px 28px rgba(0, 0, 0, 0.25);
+
+    --transition-fast: 0.25s ease;
+    --transition-medium: 0.4s ease;
+
+    --radius-small: 10px;
+    --radius-medium: 18px;
+    --radius-large: 22px;
 }
 
-/* title */
-.title{
-    display: flex;
-    justify-content: center;
+
+/* ============================================================
+   4. MODO OSCURO GLOBAL (excepto header)
+============================================================ */
+
+body.body-dark-theme {
+    background: var(--color-bg-dark);
+    color: var(--color-text-dark);
 }
-.title-txt{
-    width: 700px;
-    font-size: 35px;
+
+/* main */
+body.body-dark-theme main {
+    color: var(--color-text-dark);
+}
+
+/* footer */
+body.body-dark-theme footer {
+    background: #07070c !important;
+    color: var(--color-text-dark);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+/* ============================================================
+   5. TEXTOS GENERALES
+============================================================ */
+
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+    color: inherit;
+}
+
+p {
+    margin-bottom: 12px;
+    color: inherit;
+}
+
+a {
+    color: #0071e3;
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+}
+
+a:hover {
+    opacity: 0.7;
 }

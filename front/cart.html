@@ -1,67 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Tokioona</title>
 
-    <!-- General styles -->
-    <link rel="stylesheet" href="styles/master_styles.css">
-    <link rel="stylesheet" href="styles/login_styles.css">
+  <!-- General styles -->
+  <link rel="stylesheet" href="styles/master_styles.css">
+  <link rel="stylesheet" href="styles/login_styles.css">
+  <link rel="stylesheet" href="styles/cart.css">
 
-    <!-- Header and footer styles -->
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/footer.css">
+  <!-- Header and footer styles -->
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+  <!-- Scripts base (API, auth, header/footer dinámicos) -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
 </head>
 
 <body>
 
-    <!-- Dynamic header insertion -->
-    <div id="header"></div>
+  <!-- Dynamic header insertion -->
+  <div id="header"></div>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
-    </main>
+  <main class="main-content">
+    <div class="container">
 
-    <!-- Dynamic footer insertion -->
-    <div id="footer"></div>
+      <!-- Título de página (no usa <header> para no afectar el header global) -->
+      <section class="page-header">
+        <h1 class="page-title">Shopping Cart</h1>
+        <p class="page-subtitle">
+          Review the items in your cart before proceeding to checkout.
+        </p>
+      </section>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
+      <!-- Cart layout: items + summary (tipo Steam) -->
+      <section class="cart-section">
+        <div class="cart-layout">
+          
+          <!-- LEFT: Cart items list -->
+          <div class="cart-main">
+            <!-- Header row like Steam: columns -->
+            <div class="cart-header-row">
+              <span class="col-item">Item</span>
+              <span class="col-price">Price</span>
+              <span class="col-quantity">Quantity</span>
+              <span class="col-subtotal">Subtotal</span>
+              <span class="col-actions"></span>
+            </div>
 
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
+            <!-- Cart Items container used by JS -->
+            <div class="cart-items" id="cart-items">
+              <!-- Empty state (shown when there are no items) -->
+              <div class="empty-cart-message" id="empty-cart">
+                <p>Your cart is empty</p>
+                <!-- En Steam te mandan de vuelta a la tienda -->
+                <a href="store.html" class="btn btn-primary">Browse Store</a>
+              </div>
+            </div> <!-- /.cart-items -->
 
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
+          </div> <!-- /.cart-main -->
 
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
-        </div>
+          <!-- RIGHT: Order summary (totals, coupon, checkout) -->
+          <aside class="cart-summary" id="cart-summary" style="display: none;">
+            <h2>Order Summary</h2>
+
+            <div class="summary-details">
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="subtotal">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Taxes:</span>
+                <span id="taxes">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping:</span>
+                <span id="shipping">$0.00</span>
+              </div>
+              <div class="summary-row discount-row">
+                <span>Discount:</span>
+                <span id="discount">-$0.00</span>
+              </div>
+              <div class="summary-row total-row">
+                <span>Total:</span>
+                <span id="total">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Coupon Section -->
+            <section class="coupon-section">
+              <label for="coupon-code">Coupon Code:</label>
+              <div class="coupon-input">
+                <input type="text" id="coupon-code" placeholder="Enter coupon code">
+                <button id="apply-coupon" class="btn btn-secondary">Apply</button>
+              </div>
+              <p id="coupon-message" class="coupon-message"></p>
+            </section>
+
+            <button id="checkout-btn" class="btn btn-primary btn-large">
+              Proceed to Checkout
+            </button>
+          </aside>
+
+        </div> <!-- /.cart-layout -->
+      </section>
     </div>
+  </main>
 
+  <!-- Dynamic footer insertion -->
+  <div id="footer"></div>
+
+ <!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
+
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
+
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
+
+      <div id="captcha-container" style="margin: 10px 0;"></div>
+
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <!-- Script específico del carrito (página) -->
+  <script src="./js/cartPage.js"></script>
 </body>
 </html>
-

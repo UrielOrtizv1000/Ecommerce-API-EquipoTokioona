@@ -1,66 +1,259 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Page</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - Tokioona</title>
 
     <!-- General styles -->
-    <link rel="stylesheet" href="styles/master_styles.css">
-    <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/master_styles.css" />
+    <link rel="stylesheet" href="styles/login_styles.css" />
+    <link rel="stylesheet" href="styles/checkout.css" />
 
     <!-- Header and footer styles -->
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/footer.css" />
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+    <!-- Scripts base (sin defer porque dentro usan DOMContentLoaded) -->
+    <script src="./js/apiClient.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/components.js"></script>
 </head>
 
 <body>
-
     <!-- Dynamic header insertion -->
     <div id="header"></div>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
+    <main class="main-content">
+        <div class="container">
+            <h2 class="page-title">Checkout</h2>
+
+            <div class="checkout-container">
+                <!-- Shipping Information -->
+                <section class="checkout-section">
+                    <h3>Shipping Information</h3>
+                    <form id="shipping-form" class="checkout-form">
+                        <div class="form-group">
+                            <label for="full-name">Full Name *</label>
+                            <input type="text" id="full-name" name="full-name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address *</label>
+                            <input type="text" id="address" name="address" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="zip-code">ZIP Code *</label>
+                            <input type="text" id="zip-code" name="zip-code" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="MX">Mexico</option>
+                                <option value="CA">Canada</option>
+                                <!-- More countries can be added -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required />
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Payment Method -->
+                <section class="checkout-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-option">
+                            <input
+                                type="radio"
+                                id="credit-card"
+                                name="payment-method"
+                                value="credit-card"
+                                checked
+                            />
+                            <label for="credit-card">Credit Card</label>
+                            <div class="payment-details" id="credit-card-details">
+                                <div class="form-group">
+                                    <label for="card-number">Card Number *</label>
+                                    <input
+                                        type="text"
+                                        id="card-number"
+                                        name="card-number"
+                                        placeholder="1234 5678 9012 3456"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-name">Name on Card *</label>
+                                    <input type="text" id="card-name" name="card-name" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiry-date">Expiry Date *</label>
+                                        <input
+                                            type="text"
+                                            id="expiry-date"
+                                            name="expiry-date"
+                                            placeholder="MM/YY"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV *</label>
+                                        <input
+                                            type="text"
+                                            id="cvv"
+                                            name="cvv"
+                                            placeholder="123"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-option">
+                            <input
+                                type="radio"
+                                id="bank-transfer"
+                                name="payment-method"
+                                value="bank-transfer"
+                            />
+                            <label for="bank-transfer">Bank Transfer</label>
+                            <div
+                                class="payment-details"
+                                id="bank-transfer-details"
+                                style="display: none;"
+                            >
+                                <p>
+                                    After placing your order, you will receive instructions for
+                                    completing the bank transfer.
+                                </p>
+                                <div class="form-group">
+                                    <label for="account-holder">Account Holder Name *</label>
+                                    <input
+                                        type="text"
+                                        id="account-holder"
+                                        name="account-holder"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-option">
+                            <input
+                                type="radio"
+                                id="oxxo"
+                                name="payment-method"
+                                value="oxxo"
+                            />
+                            <label for="oxxo">OXXO Payment</label>
+                            <div
+                                class="payment-details"
+                                id="oxxo-details"
+                                style="display: none;"
+                            >
+                                <p>
+                                    After placing your order, you will receive a payment reference
+                                    to pay at any OXXO store.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Order Summary -->
+                <section class="checkout-section order-summary-section">
+                    <h3>Order Summary</h3>
+                    <div class="order-summary" id="order-summary">
+                        <!-- Dynamic content will be inserted here by checkout.js -->
+                    </div>
+
+                    <div class="order-totals">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="order-subtotal">$0.00</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Taxes:</span>
+                            <span id="order-taxes">$0.00</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Shipping:</span>
+                            <span id="order-shipping">$0.00</span>
+                        </div>
+                        <div class="total-row discount-row">
+                            <span>Discount:</span>
+                            <span id="order-discount">-$0.00</span>
+                        </div>
+                        <div class="total-row final-total">
+                            <span>Total:</span>
+                            <span id="order-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <button id="place-order" class="btn btn-primary btn-large">
+                        Place Order
+                    </button>
+                </section>
+            </div>
+        </div>
     </main>
 
     <!-- Dynamic footer insertion -->
     <div id="footer"></div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
 
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
 
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
 
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+      <div id="captcha-container" style="margin: 10px 0;"></div>
 
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+    <!-- Script específico del checkout (debe ir al final) -->
+    <script src="./js/checkout.js"></script>
 </body>
 </html>

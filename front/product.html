@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Producto - Tokioona</title>
+
+  <!-- General styles -->
+  <link rel="stylesheet" href="styles/master_styles.css">
+  <link rel="stylesheet" href="styles/login_styles.css">
+  <link rel="stylesheet" href="styles/product.css">
+  
+
+  <!-- Header and footer styles -->
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+   <!-- Scripts -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
+  <script src="./js/productPage.js"></script>
+</head>
+
+<body>
+
+  <!-- HEADER dinámico -->  
+  <div id="header"></div>
+
+  <main class="main-content">
+    <div class="product-container">
+
+      <!-- Imagen del producto -->
+      <div class="product-image-box">
+        <img id="product-image" src="" alt="Product image">
+      </div>
+
+      <!-- Información del producto -->
+      <div class="product-info">
+        <h1 id="product-name"></h1>
+        <p id="product-description"></p>
+
+        <p class="price-tag">
+          Precio: <span id="product-price"></span>
+        </p>
+
+        <p class="stock-tag">
+          Stock disponible: <span id="product-stock"></span>
+        </p>
+
+        <!-- Tags -->
+        <div id="product-tags" class="tags"></div>
+
+        <!-- Botón agregar al carrito -->
+        <button id="add-to-cart-btn" class="btn btn-primary btn-large">
+          Agregar al carrito
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER dinámico -->
+  <div id="footer"></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
+
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
+
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
+
+      <div id="captcha-container" style="margin: 10px 0;"></div>
+
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+</body>
+</html>

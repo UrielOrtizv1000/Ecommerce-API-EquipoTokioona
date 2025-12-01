@@ -1,3 +1,8 @@
+<!-- 
+  this page probably need a lot of reexploration and modifications of
+  the different value names or IDs
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,16 +13,17 @@
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Header and footer styles -->
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+  <!-- Scripts -->
+  <script src="./js/apiClient.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/components.js"></script>
+  
 </head>
 
 <body>
@@ -26,41 +32,255 @@
     <div id="header"></div>
 
     <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
-    </main>
+<!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <h5>Opciones</h5>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="dashboard">Dashboard</li>
+            <li class="nav-item" data-section="products">Gestión de Productos</li>
+            <li class="nav-item" data-section="sales">Ventas</li>
+            <li class="nav-item" data-section="inventory">Inventario</li>
+        </ul>
+    </div>
 
-    <!-- Dynamic footer insertion -->
-    <div id="footer"></div>
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="header">
+            <div class="welcome">Panel de Administración</div>
+            <div class="user-info">
+                <span>Bienvenido, Administrador</span>
+                <button class="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
+        <!-- Dashboard -->
+        <div id="dashboard" class="panel-section active-section">
+            <h2 class="section-title">Resumen General</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Ventas</div>
+                    <div class="stat-value">$12,450</div>
+                    <div class="stat-detail">+5.2% vs mes anterior</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Productos Activos</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-detail">8 por categoría</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Órdenes Pendientes</div>
+                    <div class="stat-value">7</div>
+                    <div class="stat-detail">3 sin procesar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Clientes Registrados</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-detail">+12 este mes</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Ventas por Categoría</h3>
+            <div class="chart-container">
+                <p class="placeholder-text">Gráfica de ventas por categoría - Se cargará dinámicamente desde el backend</p>
+            </div>
+        </div>
+
+        <!-- Gestión de Productos -->
+        <div id="products" class="panel-section">
+            <div class="products-header">
+                <h2 class="section-title">Gestión de Productos</h2>
+                <button class="add-product-btn" id="addProductBtn">Agregar Producto</button>
+            </div>
+            
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Disponibilidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>[Imagen]</td>
+                        <td>Producto Ejemplo 1</td>
+                        <td>Categoría A</td>
+                        <td>$99.99</td>
+                        <td>Disponible</td>
+                        <td>
+                            <button class="action-btn edit-btn">Editar</button>
+                            <button class="action-btn delete-btn">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>[Imagen]</td>
+                        <td>Producto Ejemplo 2</td>
+                        <td>Categoría B</td>
+                        <td>$149.99</td>
+                        <td>No Disponible</td>
+                        <td>
+                            <button class="action-btn edit-btn">Editar</button>
+                            <button class="action-btn delete-btn">Eliminar</button>
+                        </td>
+                    </tr>
+                    <!-- Más filas se cargarán dinámicamente desde el backend -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Ventas -->
+        <div id="sales" class="panel-section">
+            <h2 class="section-title">Reporte de Ventas</h2>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Ventas del Día</div>
+                    <div class="stat-value">$1,250</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Órdenes del Día</div>
+                    <div class="stat-value">8</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Historial de Ventas</h3>
+            <div class="chart-container">
+                <p class="placeholder-text">Tabla de historial de ventas - Se cargará dinámicamente desde el backend</p>
+            </div>
+        </div>
+
+        <!-- Inventario -->
+        <div id="inventory" class="panel-section">
+            <h2 class="section-title">Reporte de Inventario</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Productos en Categoría A</div>
+                    <div class="stat-value">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Productos en Categoría B</div>
+                    <div class="stat-value">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Productos en Categoría C</div>
+                    <div class="stat-value">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Productos Agotados</div>
+                    <div class="stat-value">3</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Detalle de Existencias</h3>
+            <div class="chart-container">
+                <p class="placeholder-text">Tabla de existencias por producto - Se cargará dinámicamente desde el backend</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar producto -->
+    <div id="productModal" class="modal">
         <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
-
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
-
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
-
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
+            <div class="modal-header">
+                <h3 class="modal-title">Agregar Producto</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="productName">Nombre del Producto</label>
+                    <input type="text" id="productName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Categoría</label>
+                    <select id="productCategory" class="form-control" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="categoria-a">Categoría A</option>
+                        <option value="categoria-b">Categoría B</option>
+                        <option value="categoria-c">Categoría C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Precio</label>
+                    <input type="number" id="productPrice" class="form-control" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Descripción</label>
+                    <textarea id="productDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productStock">Cantidad en Stock</label>
+                    <input type="number" id="productStock" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="productImage">Imagen del Producto</label>
+                    <input type="file" id="productImage" class="form-control">
+                    <small>Funcionalidad de subida de archivos - Se implementará en el backend</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
                 </div>
             </form>
         </div>
     </div>
 
+    </main>
+
+    <!-- Dynamic footer insertion -->
+    <div id="footer"></div>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
+
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
+
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
+
+      <div id="captcha-container" style="margin: 10px 0;"></div>
+
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+    <script src="js/admin.js"></script>
 </body>
 </html>
