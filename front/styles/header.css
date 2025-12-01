@@ -115,6 +115,7 @@ header:hover {
     gap: 12px;
 }
 
+/* Botón de login y otros botones dentro de navegación-b */
 .navigation-b .login-btn,
 .navigation-b button,
 .cart-btn {
@@ -136,6 +137,58 @@ header:hover {
     transform: scale(1.05);
     color: #fff;
     border-color: rgba(180, 120, 255, 0.7);
+}
+
+/* ============================================
+   USER MENU (Hola, usuario + carrito + logout)
+   ============================================ */
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 14px; /* más espacio entre saludo, carrito y botón */
+}
+
+/* (opcional) por si quieres estilizar el texto de "Hola, usuario" */
+.user-menu .user-greeting {
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   Estilo para el carrito
+   =========================== */
+
+/* El contenedor del carrito (cuando usas <a class="cart-link">) */
+.cart-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 4px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+}
+
+/* El ícono del carrito (funciona tanto si viene de <a.cart-link> como de .user-menu) */
+.cart-icon {
+    width: 26px;
+    height: auto;
+    cursor: pointer;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.45));
+    transition: transform 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
+}
+
+/* Efecto hover tipo glass para el carrito */
+.cart-link:hover,
+.user-menu .cart-icon:hover {
+    background: rgba(160, 100, 255, 0.25);
+}
+
+.cart-link:hover .cart-icon,
+.user-menu .cart-icon:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 5px rgba(180, 120, 255, 0.8));
+    opacity: 0.9;
 }
 
 /* ============================================

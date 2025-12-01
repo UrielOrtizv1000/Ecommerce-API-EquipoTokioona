@@ -15,9 +15,13 @@
   <link rel="stylesheet" href="styles/footer.css">
 
   <!-- Scripts -->
-  <script src="./js/apiClient.js"></script>
-  <script src="./js/auth.js"></script>
-  <script src="./js/components.js"></script>
+<script src="./js/apiClient.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/components.js"></script>
+<script src="./js/subscription.js"></script>
+
+
+
 </head>
 
 <body>
@@ -93,39 +97,70 @@
       <p>Próximamente...</p>
     </section>
 
-    <!-- Subscribe section -->
+        <!-- Subscribe section -->
     <section class="subscribe-section">
       <h2>Suscríbete</h2>
       <p>Recibe nuestras ofertas, cupones y novedades!</p>
+
+      <form id="subscribe-form" class="subscribe-form">
+        <input 
+          type="email" 
+          id="subscribe-email" 
+          name="email" 
+          required 
+          placeholder="Tu correo electrónico"
+        >
+        <button type="submit" class="subscribe-btn">Suscribirme</button>
+      </form>
+
+      <p id="subscribe-feedback" class="subscribe-feedback"></p>
     </section>
+
   </main>
 
   <!-- Dynamic footer insertion -->
   <div id="footer"></div>
 
-  <!-- Login modal -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-content">
-      <h2>Iniciar Sesión</h2>
-    
-      <form id="login-form">
-        <label for="login-username">Nombre de Usuario</label>
-        <input type="text" id="login-username" required>
-      
-        <label for="login-password">Contraseña</label>
-        <input type="password" id="login-password" required>
-      
-        <div id="captcha-container" style="margin: 10px 0;">
-          </div>
-        
-        <div class="modal-buttons">
-            <button type="button" id="register-btn">Registrarse</button>
-            <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-            <button type="submit" id="submit-btn">Aceptar</button>
-        </div>
-      </form>
-    </div>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
+
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
+
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
+
+      <div id="captcha-container" style="margin: 10px 0;"></div>
+
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
   </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>
