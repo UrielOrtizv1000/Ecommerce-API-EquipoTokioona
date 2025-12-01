@@ -356,18 +356,21 @@ async getAllProducts() {
   // SUBSCRIPTION
   // ==========================
 
-  async subscribe(email) {
-    try {
-      const response = await fetch(`${BASE_URL}/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      return this._handleResponse(response);
-    } catch (error) {
-      return { ok: false, message: 'Error al suscribirse.' };
-    }
-  },
+// front/js/apiClient.js
+
+async subscribe(email) {
+  try {
+    const response = await fetch(`${BASE_URL}/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error al suscribirse.' };
+  }
+},
+
 
   // ==========================
   // ORDERS

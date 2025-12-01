@@ -15,9 +15,13 @@
   <link rel="stylesheet" href="styles/footer.css">
 
   <!-- Scripts -->
-  <script src="./js/apiClient.js"></script>
-  <script src="./js/auth.js"></script>
-  <script src="./js/components.js"></script>
+<script src="./js/apiClient.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/components.js"></script>
+<script src="./js/subscription.js"></script>
+
+
+
 </head>
 
 <body>
@@ -93,11 +97,25 @@
       <p>Próximamente...</p>
     </section>
 
-    <!-- Subscribe section -->
+        <!-- Subscribe section -->
     <section class="subscribe-section">
       <h2>Suscríbete</h2>
       <p>Recibe nuestras ofertas, cupones y novedades!</p>
+
+      <form id="subscribe-form" class="subscribe-form">
+        <input 
+          type="email" 
+          id="subscribe-email" 
+          name="email" 
+          required 
+          placeholder="Tu correo electrónico"
+        >
+        <button type="submit" class="subscribe-btn">Suscribirme</button>
+      </form>
+
+      <p id="subscribe-feedback" class="subscribe-feedback"></p>
     </section>
+
   </main>
 
   <!-- Dynamic footer insertion -->
