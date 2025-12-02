@@ -479,3 +479,130 @@ main {
 .card:nth-child(6) {
     animation-delay: 0.30s;
 }
+
+
+/* DARK THEME */
+
+/* Sidebar */
+.body-dark-theme .sidebar {
+    background: #1c1c1e;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
+    border-radius: 18px 0 0 18px;
+}
+
+.body-dark-theme .sidebar:hover {
+    background-color: #2c2c2e;
+}
+
+.body-dark-theme .sidebar h3,
+.body-dark-theme .sidebar h2 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .sidebar button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #f5f5f7;
+}
+
+.body-dark-theme .sidebar button:hover {
+    background: rgba(160, 100, 255, 0.35);
+}
+
+.body-dark-theme .sidebar button.active {
+    background: #4cc9f0;
+    color: #111;
+    border-color: #4cc9f0;
+}
+
+/* Filters in sidebar (price, offers) */
+.body-dark-theme .price-filters label {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .price-filters input {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.5);
+    color: #f5f5f7;
+}
+
+.body-dark-theme .price-filters input::placeholder {
+    color: rgba(245, 245, 247, 0.5);
+}
+
+.body-dark-theme .price-filters input:focus {
+    border-color: #9f7bff;
+    box-shadow: 0 0 0 1px rgba(159, 123, 255, 0.7);
+}
+
+.body-dark-theme .offer-filter {
+    color: #d1d1d6;
+}
+
+/* Main content: products section */
+.body-dark-theme .main-content h1 {
+    color: #f5f5f7;
+}
+
+/* Mensajes de estado */
+.body-dark-theme .loading,
+.body-dark-theme .no-products {
+    color: #999;
+}
+
+.body-dark-theme .error {
+    background: #3c3c43;
+    border: 1px solid #7f8c8d;
+    color: #ffb3b3;
+}
+
+.body-dark-theme .error button {
+    background: #b00020;
+    color: #fff;
+}
+
+
+/* Product grid */
+.body-dark-theme .card {
+    background: #1c1c1e;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Corazón wishlist */
+.body-dark-theme .wishlist-btn {
+    color: #f5f5f7;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Textos de la card */
+.body-dark-theme .product-title {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .card p {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .card p:nth-of-type(2) {
+    color: #999;
+}
+
+/* Precio y stock */
+.body-dark-theme .price {
+    color: #f5f5f7;
+}
+
+/* Product tags */
+.body-dark-theme .tag {
+    background: #2c2c2e;
+    color: #d1d1d6;
+}
+
+/* Button */
+.body-dark-theme .card-btn button {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .card-btn button:hover:not([disabled]) {
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+}

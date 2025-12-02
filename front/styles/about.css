@@ -239,3 +239,52 @@ main {
     pointer-events: none;
     animation: liquid-blob 18s ease-in-out infinite;
 }
+
+
+
+/*  DARK THEME */
+
+.body-dark-theme .container-txt h3, .body-dark-theme .title-txt p {
+    color: #d1d1d6; 
+}
+
+.body-dark-theme .dev-card h1, .body-dark-theme .dev-card h3,
+.body-dark-theme .info-section h3, .body-dark-theme .info-section h1 {
+    color: #d3d3d3;
+}
+
+.body-dark-theme .description-container{
+    background: #1d1d5b;
+}
+
+.body-dark-theme .dev-card{
+    background: #2c2c72;
+}
+
+.body-dark-theme .info-section {
+    background: #2a2a74;
+}
+
+.body-dark-theme {
+    background: #111114;
+}
+
+.body-dark-theme .description-container{
+    border: 1px solid rgba(72, 72, 74, 0.9);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+}
+
+.body-dark-theme .dev-card{
+    border: 1px solid rgba(72, 72, 74, 0.9);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .dev-card:hover {
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
+    border-color: rgba(90, 90, 92, 0.9);
+}
+
+.body-dark-theme .info-section {
+    border: 1px solid rgba(72, 72, 74, 0.9);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}

@@ -342,3 +342,90 @@ main.main-content {
     filter: blur(0);
   }
 }
+
+/* DARK THEME */
+
+/* Page title */
+.body-dark-theme .page-title {
+    color: #f5f5f7;
+}
+
+/* Shipping & Payment Sections (columnas 1 y 2) */
+.body-dark-theme .checkout-section {
+    background: #1c1c1e;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .checkout-section h3 {
+    color: #f5f5f7;
+}
+
+/* Formulario */
+.body-dark-theme .form-group label {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .form-group input,
+.body-dark-theme .form-group select {
+    padding: 8px 10px;
+    border: 1px solid #48484a;
+    font-size: 0.9rem;
+    background: #2c2c2e;
+    color: #f5f5f7;
+}
+
+.body-dark-theme .form-group input:focus,
+.body-dark-theme .form-group select:focus {
+    border-color: #4cc9f0;
+    box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+    background: #2c2c2e;
+}
+
+/* Payment methods */
+.body-dark-theme .payment-option {
+    border: 1px solid #48484a;
+    background: #2c2c2e;
+}
+
+.body-dark-theme .payment-option:hover {
+    border-color: #58585a;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.body-dark-theme .payment-option label {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .payment-details {
+    border-top: 1px solid #48484a;
+    color: #d1d1d6;
+}
+
+/* Order summary (Columna derecha) */
+
+.body-dark-theme .order-summary-section {
+    background: #1c1c1e;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
+}
+
+.body-dark-theme .order-summary {
+    background: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px solid #36363a;
+}
+
+.body-dark-theme .summary-item {
+    border-bottom: 1px solid #36363a;
+}
+
+.body-dark-theme .summary-item-name {
+    color: #f5f5f7;
+}
+
+/* Totals */
+.body-dark-theme .order-totals {
+    border-top: 1px solid #36363a;
+}
+
+.body-dark-theme .final-total {
+    border-top: 1px solid #36363a;
+}

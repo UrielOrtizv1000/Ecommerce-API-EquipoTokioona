@@ -423,3 +423,122 @@ main > section {
 .subscribe-section {
   animation: fadeInSoft 0.7s ease-out both;
 }
+
+/* DARK THEME */
+
+.body-dark-theme {
+    background: #111114;
+    color: #f5f5f7;
+}
+
+/* Hero section */
+.body-dark-theme .hero-container {
+    background: radial-gradient(circle at top left, #1c1c1e 0%, #111114 45%, #2a2c3a 100%);
+    border: 1px solid #36363a;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+}
+
+.body-dark-theme .hero-text h1 {
+    color: #f5f5f7;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .hero-text p {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .hero-button button {
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.55);
+}
+
+.body-dark-theme .hero-button button:hover {
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.65);
+}
+
+/* Featured categories */
+.body-dark-theme .categories-title h2 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .card-img {
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+    border: 1px solid #36363a;
+}
+
+.body-dark-theme .card-title h2 {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .promo-card:hover .card-img {
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.65);
+}
+
+/* Offers section */
+.body-dark-theme .offers-section {
+    background: #1c1c1e;
+    border: 1px solid #36363a;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .offers-section h2 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .offers-section p {
+    color: #d1d1d6;
+}
+
+/* Subscribe section */
+.body-dark-theme .subscribe-section {
+    background: radial-gradient(circle at top, #1c1c1e 0%, #111114 60%, #2a2c3a 100%);
+    border: 1px solid #36363a;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+.body-dark-theme .subscribe-section h2 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .subscribe-section p {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .subscribe-form input[type="email"] {
+    border: 1px solid #55555a;
+    background: #2c2c2e;
+    color: #f5f5f7;
+}
+
+.body-dark-theme .subscribe-form input[type="email"]::placeholder {
+    color: #999999;
+}
+
+.body-dark-theme .subscribe-form input[type="email"]:focus {
+    border-color: #1d8ef0;
+    box-shadow: 0 0 0 3px rgba(29, 142, 240, 0.35);
+    background-color: #2c2c2e;
+}
+
+.body-dark-theme .subscribe-btn {
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .subscribe-btn:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.65);
+}
+
+.body-dark-theme .subscribe-btn:active {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+.body-dark-theme .subscribe-feedback {
+    color: #999999;
+}
+
+.body-dark-theme .subscribe-feedback.success {
+    color: #69b977;
+}
+
+.body-dark-theme .subscribe-feedback.error {
+    color: #cf6679;
+}

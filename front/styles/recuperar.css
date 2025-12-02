@@ -253,3 +253,115 @@ main {
         padding: 30px 20px;
     }
 }
+
+/* DARK THEME */
+
+.body-dark-theme .recovery-container {
+    background: #1c1c1e;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+}
+
+/* Header (Texto) */
+.body-dark-theme .recovery-header h1 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .recovery-header p {
+    color: #d1d1d6;
+}
+
+/* Formulario */
+.body-dark-theme .form-group label {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .form-group input {
+    background: #2c2c2e;
+    border: 2px solid #3c3c43;
+    color: #f5f5f7;
+}
+
+.body-dark-theme .form-group input:focus {
+    border-color: #667eea;
+}
+
+/* Captcha */
+.body-dark-theme .captcha-text {
+    background: #3c3c43;
+    color: #f5f5f7;
+    border: 1px dashed #55555a;
+}
+
+.body-dark-theme .refresh-btn {
+    background: #4cc9f0;
+}
+
+.body-dark-theme .refresh-btn:hover {
+    background: #34b3e0;
+}
+
+/* Botón de envío */
+.body-dark-theme .submit-btn {
+    background: linear-gradient(135deg, #4cc9f0 0%, #a064ff 100%);
+}
+
+.body-dark-theme .submit-btn:disabled {
+    background: #55555a;
+}
+
+/* Footer (Enlaces) */
+.body-dark-theme .recovery-footer {
+    border-top: 1px solid #3c3c43;
+}
+
+.body-dark-theme .recovery-footer p {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .recovery-footer a {
+    color: #4cc9f0;
+}
+
+/* Mensajes de estado */
+.body-dark-theme .error-message {
+    color: #cf6679;
+}
+
+.body-dark-theme .success-message h3 {
+    color: #5abf6c;
+}
+
+.body-dark-theme .success-message p {
+    color: #d1d1d6;
+}
+
+.body-dark-theme .success-icon {
+    background: #5abf6c;
+}
+
+.body-dark-theme .back-login {
+    background: #4cc9f0;
+}
+
+.body-dark-theme .back-login:hover {
+    background: #34b3e0;
+}
+
+/* Panel de información lateral */
+.body-dark-theme .recovery-info {
+    background: #2c2c2e;
+    border-left: 1px solid #3c3c43;
+}
+
+.body-dark-theme .recovery-info h3 {
+    color: #f5f5f7;
+}
+
+.body-dark-theme .recovery-info li {
+    color: #d1d1d6;
+    border-bottom: 1px solid #3c3c43;
+}
+
+.body-dark-theme .recovery-info li:before {
+    color: #5abf6c;
+}

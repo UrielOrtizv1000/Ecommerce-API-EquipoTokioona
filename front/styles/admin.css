@@ -256,3 +256,117 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* DARK THEME */
+
+.body-dark-theme {
+    background-color: #111114;
+    color: #f5f5f7;
+}
+
+/* Sidebar */
+.body-dark-theme .sidebar {
+    background-color: #1c1c1e;
+    border-right: 1px solid #36363a;
+}
+.body-dark-theme .logo-container {
+    border-bottom: 1px solid #36363a;
+}
+.body-dark-theme .nav-menu {
+    border-top: 1px solid #36363a;
+}
+.body-dark-theme .nav-item {
+    border-bottom: 1px solid #36363a;
+}
+.body-dark-theme .nav-item:hover {
+    background-color: #36363a;
+}
+.body-dark-theme .nav-item.active {
+    background-color: #1d8ef0;
+}
+
+/* Main Content */
+.body-dark-theme .header {
+    border-bottom: 1px solid #36363a;
+}
+.body-dark-theme .welcome {
+    color: #f5f5f7;
+}
+.body-dark-theme .logout-btn {
+    background-color: #cf6679;
+}
+
+/* Panel Sections */
+.body-dark-theme .panel-section {
+    background-color: #1c1c1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.body-dark-theme .section-title {
+    color: #f5f5f7;
+    border-bottom: 1px solid #36363a;
+}
+
+/* Products Table */
+.body-dark-theme .products-table th, .body-dark-theme .products-table td {
+    border-bottom: 1px solid #36363a;
+}
+.body-dark-theme .products-table th {
+    background-color: #2c2c2e;
+}
+.body-dark-theme .products-table td {
+    color: #d1d1d6;
+}
+.body-dark-theme .edit-btn {
+    background-color: #1d8ef0;
+}
+.body-dark-theme .delete-btn {
+    background-color: #cf6679;
+}
+
+/* Stats */
+.body-dark-theme .stat-card {
+    background-color: #2c2c2e;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.body-dark-theme .stat-value {
+    color: #f5f5f7;
+}
+.body-dark-theme .stat-label {
+    color: #999999;
+}
+.body-dark-theme .chart-container {
+    background-color: #2c2c2e;
+}
+.body-dark-theme .placeholder-text {
+    color: #999999;
+}
+
+/* Forms */
+.body-dark-theme .form-group label {
+    color: #f5f5f7;
+}
+.body-dark-theme .form-control {
+    background-color: #36363a;
+    border: 1px solid #555;
+    color: #f5f5f7;
+}
+.body-dark-theme .btn-primary {
+    background-color: #1d8ef0;
+}
+.body-dark-theme .btn-secondary {
+    background-color: #7f8c8d;
+}
+
+/* Modal */
+.body-dark-theme .modal-content {
+    background-color: #1c1c1e;
+}
+.body-dark-theme .modal-header {
+    border-bottom: 1px solid #36363a;
+}
+.body-dark-theme .modal-title {
+    color: #f5f5f7;
+}
+.body-dark-theme .close-btn {
+    color: #999999;
+}

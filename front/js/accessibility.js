@@ -1,8 +1,8 @@
 // front/js/accessibility.js
 
 (function () {
-  const THEME_KEY = "accessibility_theme";        // 'light' | 'dark'
-  const FONT_KEY  = "accessibility_font_size";   // 'small' | 'normal' | 'large'
+  const THEME_KEY = "tokioona_theme";        // 'light' | 'dark'
+  const FONT_KEY  = "tokioona_textSize";   // 'small' | 'normal' | 'large'
 
   document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
@@ -162,7 +162,7 @@
 
     function saveTheme(theme) {
       try {
-        localStorage.setItem(THEME_KEY, theme);
+        localStorage.setItem(THEME_KEY, theme); 
       } catch (e) {
         console.warn("No se pudo guardar el tema en localStorage:", e);
       }
@@ -170,7 +170,7 @@
 
     function saveFont(size) {
       try {
-        localStorage.setItem(FONT_KEY, size);
+        localStorage.setItem(FONT_KEY, size); 
       } catch (e) {
         console.warn("No se pudo guardar el tamaño de fuente:", e);
       }
