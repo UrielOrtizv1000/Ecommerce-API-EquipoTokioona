@@ -199,3 +199,35 @@ header:hover {
         display: none;
     }
 }
+.cart-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.cart-icon {
+  width: 26px;
+  height: auto;
+  display: block;
+}
+
+.cart-count-badge {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;              /* 👈 abajo a la derecha */
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+
+  background: #ff3b30;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 0 0 2px #111; /* borde que separa del icono */
+}

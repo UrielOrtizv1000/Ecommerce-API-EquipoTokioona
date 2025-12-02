@@ -24,15 +24,33 @@
 
     <main>
         <div class="layout">
-            <aside class="sidebar">
-                <h3>Categorías</h3>
-                <ul>
-                    <li><button data-category="all" class="active">Todos</button></li>
-                    <li><button data-category="figuras">Figuras</button></li>
-                    <li><button data-category="peluches">Peluches</button></li>
-                    <li><button data-category="joyeria">Joyería</button></li>
-                </ul>
-            </aside>
+<aside class="sidebar">
+  <h3>Categorías</h3>
+  <ul id="category-list">
+    <li><button data-category="all" class="active">Todos</button></li>
+    <!-- Las demás categorías se inyectan desde la BD -->
+  </ul>
+
+  <h3>Precio</h3>
+  <div class="price-filters">
+    <label>
+      Mín:
+      <input type="number" id="price-min" placeholder="0">
+    </label>
+    <label>
+      Máx:
+      <input type="number" id="price-max" placeholder="9999">
+    </label>
+  </div>
+
+  <h3>Ofertas</h3>
+  <label class="offer-filter">
+    <input type="checkbox" id="filter-offer">
+    Solo productos en oferta
+  </label>
+</aside>
+
+
 
             <main class="main-content">
                 <h1>Nuestra Tienda</h1>

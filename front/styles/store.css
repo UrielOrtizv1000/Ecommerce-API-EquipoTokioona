@@ -23,6 +23,7 @@ main {
   box-sizing: border-box;
 }
 
+
 /* ================================
    Sidebar section: navigation & categories
    ================================ */
@@ -33,10 +34,10 @@ main {
   color: #f5f5f7;
   padding: 20px;
   box-sizing: border-box;
-  margin-left: 20px;      
+  margin-left: 20px;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-right: 0;    
+  margin-right: 0;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
   border-radius: 18px 0 0 18px;
   order: 2;
@@ -58,7 +59,7 @@ main {
 .sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 18px;
 }
 
 .sidebar li {
@@ -75,7 +76,7 @@ main {
   color: #f5f5f7;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 
 .sidebar button:hover {
@@ -83,22 +84,111 @@ main {
   transform: translateX(2px);
 }
 
+.sidebar button.active {
+  background: #f5f5f7;
+  color: #111;
+  border-color: #f5f5f7;
+}
+
+/* ================================
+   Filters in sidebar (price, offers)
+   ================================ */
+
+.price-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.price-filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: #f5f5f7;
+}
+
+.price-filters input {
+  margin-top: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+  color: #f5f5f7;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.price-filters input::placeholder {
+  color: rgba(245, 245, 247, 0.6);
+}
+
+.price-filters input:focus {
+  border-color: #9f7bff;
+  box-shadow: 0 0 0 1px rgba(159, 123, 255, 0.5);
+}
+
+.offer-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #f5f5f7;
+}
+
+.offer-filter input[type="checkbox"] {
+  accent-color: #9f7bff;
+}
+
+
 /* ================================
    Main content: products section
    ================================ */
 
 .main-content {
   flex: 1;
-  padding: 24px;      
+  padding: 24px;
   margin-left: 250px;
   box-sizing: border-box;
   order: 1;
 }
+
 .main-content h1 {
-  margin: 0 0 20px;
+  margin: 16px 0 20px;
   font-size: 1.6rem;
   color: #424245;
 }
+
+/* mensajes de estado (cargando / sin productos / error) */
+.loading,
+.no-products {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.error {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border-radius: 12px;
+  background: #ffeeee;
+  border: 1px solid #ffb3b3;
+  color: #a30000;
+  font-size: 0.95rem;
+}
+
+.error button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #a30000;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.86rem;
+}
+
 
 /* ================================
    Product grid: max 3 columns
@@ -110,47 +200,68 @@ main {
   gap: 20px;
 }
 
-/* Ensures the card serves as the context for absolute positioning */
+/* Card base look */
 .card {
-  position: relative; 
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 12px 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
 }
 
+/* Header area: image + wishlist + badge */
 .card-header {
   position: relative;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
+/* Corazón wishlist */
 .wishlist-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  
   cursor: pointer;
-  z-index: 10; 
+  z-index: 10;
   color: #fff;
-  font-size: 1.5em; 
-  
+  font-size: 1.5em;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 50%;
-  padding: 5px 6px; 
-  line-height: 1; 
-  transition: color 0.2s;
+  padding: 5px 6px;
+  line-height: 1;
+  transition: color 0.2s, transform 0.2s;
 }
 
 .wishlist-btn:hover {
-  color: red; 
+  color: red;
+  transform: scale(1.1);
 }
 
 .wishlist-btn .fas.fa-heart {
-    color: red;
-} 
-
-/* Style for the heart when it's "active" (filled) */
-.wishlist-btn.active .fas.fa-heart,
-.wishlist-btn:hover { 
-    color: #ff4d4d; /* Added to wishlist */
+  color: red;
 }
 
+.wishlist-btn.active .fas.fa-heart {
+  color: #ff4d4d;
+}
+
+/* Badge de oferta */
+.badge-offer {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ff4d4d;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.5);
+}
+
+/* Imagen del producto */
 .card-header img {
   width: 100%;
   height: 160px;
@@ -159,11 +270,38 @@ main {
   margin-bottom: 10px;
 }
 
+/* Textos de la card */
 .card h2,
 .card h3,
 .card p {
   margin: 4px 0;
   color: #424245;
+}
+
+.product-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.card p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Precio y stock */
+.price {
+  font-weight: 700;
+  margin-top: 6px;
+  font-size: 1rem;
+  color: #1d8ef0;
+}
+
+.card p:nth-of-type(2) {
+  /* "Stock:" en tu estructura actual */
+  font-size: 0.88rem;
+  color: #555;
 }
 
 /* ================================
@@ -185,6 +323,7 @@ main {
   color: #424245;
 }
 
+
 /* ================================
    "Add to cart" button container
    ================================ */
@@ -195,10 +334,7 @@ main {
   margin-top: auto;
 }
 
-/* ================================
-   Liquid effect button (hover animation)
-   ================================ */
-
+/* Button base + disabled state  */
 .card-btn button {
   position: relative;
   overflow: hidden;
@@ -213,7 +349,14 @@ main {
   background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
   background-size: 220% 220%;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.card-btn button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+  background: #9e9e9e;
 }
 
 .card-btn button::before {
@@ -229,16 +372,17 @@ main {
   pointer-events: none;
 }
 
-.card-btn button:hover {
+.card-btn button:hover:not([disabled]) {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
   animation: liquid-gradient 4s ease-in-out infinite;
 }
 
-.card-btn button:hover::before {
+.card-btn button:hover:not([disabled])::before {
   opacity: 1;
   animation: liquid-blob 5s ease-in-out infinite;
 }
+
 
 /* ================================
    Liquid animations for button hover
@@ -256,15 +400,22 @@ main {
   100% { transform: translate(-10%, -10%); }
 }
 
+
 /* ================================
    Responsive layout adjustments
    ================================ */
+
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+  }
+}
 
 @media (max-width: 800px) {
   .layout {
     flex-direction: column;
   }
-  
+
   .sidebar {
     width: auto;
     margin: 16px;
@@ -275,6 +426,7 @@ main {
 
   .main-content {
     order: 2;
+    margin-left: 0;
   }
 
   .grid {
@@ -284,7 +436,7 @@ main {
 
 
 /* ============================================
-   Animations (DELETE FADE IF U HATE IT, LOL)
+   Animations
    ============================================ */
 
 @keyframes fadeInSoft {
