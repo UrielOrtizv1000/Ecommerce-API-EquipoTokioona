@@ -139,7 +139,7 @@ calculate: async (req, res) => {
       if (!state) {
         return res.status(400).json({
           success: false,
-          message: "State is required"
+          message: "Country/State is required"
         });
       }
 

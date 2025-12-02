@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initCheckoutPage() {
   // Referencias a elementos del DOM
   orderItemsContainer = document.getElementById('order-summary');
-  subtotalEl        = document.getElementById('order-subtotal');
-  taxesEl           = document.getElementById('order-taxes');
-  shippingEl        = document.getElementById('order-shipping');
-  discountEl        = document.getElementById('order-discount');
-  totalEl           = document.getElementById('order-total');
-  countrySelect     = document.getElementById('country');
+  subtotalEl          = document.getElementById('order-subtotal');
+  taxesEl             = document.getElementById('order-taxes');
+  shippingEl          = document.getElementById('order-shipping');
+  discountEl          = document.getElementById('order-discount');
+  totalEl             = document.getElementById('order-total');
+  countrySelect       = document.getElementById('country');
 
   // Si no hay contenedor, salimos (por si se usa este JS en otra página sin querer)
   if (!orderItemsContainer) return;
