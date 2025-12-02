@@ -1,0 +1,344 @@
+/* ================================
+   Global settings & base layout
+   ================================ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f5f5f7;
+  margin: 0;
+}
+
+main.main-content {
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.main-content .container {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+}
+
+/* Page title */
+
+.page-title {
+  margin: 0 0 18px;
+  font-size: 1.7rem;
+  color: #424245;
+}
+
+/* ================================
+   Checkout layout
+   ================================ */
+
+.checkout-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Cada bloque (shipping, payment, summary) */
+
+.checkout-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  animation: fadeInUpCheckout 0.6s ease-out;
+}
+
+.checkout-section h3 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+/* ================================
+   Form styles (Shipping & payment)
+   ================================ */
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #d2d2d7;
+  font-size: 0.9rem;
+  background: #f9f9fb;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #1d8ef0;
+  box-shadow: 0 0 0 2px rgba(29, 142, 240, 0.18);
+  background: #ffffff;
+}
+
+/* Filed rows (expiry + CVV) */
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* CVV más pequeño */
+#cvv {
+  width: 100%;
+  max-width: 120px; /* Ajusta sin romper diseño */
+}
+
+/* Fecha un poco más amplia */
+#expiry-date {
+  width: 100%;
+}
+
+/* ================================
+   Payment methods
+   ================================ */
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.payment-option {
+  border-radius: 14px;
+  border: 1px solid #e5e5ea;
+  padding: 10px 12px;
+  background: #fafafa;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.payment-option:hover {
+  border-color: #c7c7cc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.payment-option input[type="radio"] {
+  margin-right: 6px;
+}
+
+.payment-option label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  cursor: pointer;
+}
+
+/* Bloques de detalles de método de pago */
+
+.payment-details {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e5ea;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* ================================
+   Order summary (right column)
+   ================================ */
+
+.order-summary-section {
+  background: rgba(34, 34, 34, 0.96);
+  color: #f5f5f7;
+}
+
+.order-summary-section h3 {
+  color: #ffffff;
+}
+
+/* Lista de productos (lado derecho) */
+
+.order-summary {
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px 10px;
+  margin-bottom: 14px;
+  max-height: 260px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.86rem;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-item-name {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.summary-item-qty {
+  font-size: 0.8rem;
+  color: #d2d2d7;
+}
+
+.summary-item-price {
+  font-weight: 500;
+  font-size: 0.86rem;
+}
+
+/* Totales */
+
+.order-totals {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.total-row span:first-child {
+  color: #e5e5ea;
+}
+
+.total-row span:last-child {
+  color: #ffffff;
+}
+
+.discount-row span:last-child {
+  color: #ffcc00;
+}
+
+.final-total {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Botón principal de compra */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 16px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+}
+
+.btn-large {
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 1024px) {
+  .checkout-container {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr);
+    grid-template-rows: auto auto;
+  }
+
+  .order-summary-section {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .checkout-section {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .order-summary {
+    max-height: 220px;
+  }
+}
+
+/* ================================
+   Animations
+   ================================ */
+
+@keyframes fadeInUpCheckout {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}

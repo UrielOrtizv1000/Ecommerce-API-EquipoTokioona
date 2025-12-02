@@ -1,0 +1,555 @@
+/* ================================
+   GLOBAL SETTINGS & BASE STYLES
+   ================================ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f5f5f7;
+  margin: 0;
+  color: #1d1d1f;
+}
+
+main.container {
+  max-width: 1000px;
+  margin: 32px auto 40px;
+  padding: 0 20px 40px;
+  box-sizing: border-box;
+  animation: fadeInSoft 0.7s ease-out;
+}
+
+/* Para asegurar que nada se pegue a los bordes en pantallas pequeñas */
+@media (max-width: 480px) {
+  main.container {
+    padding: 0 14px 32px;
+  }
+}
+
+/* ================================
+   TYPOGRAPHY & GENERAL TEXT
+   ================================ */
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ================================
+   INTRO SECTION
+   ================================ */
+
+.accessibility-intro {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px 22px 22px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 26px;
+  position: relative;
+  overflow: hidden;
+}
+
+.accessibility-intro::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle at center, rgba(100, 149, 237, 0.22), transparent 55%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.accessibility-intro h2 {
+  font-size: 1.8rem;
+  color: #424245;
+  margin-bottom: 8px;
+}
+
+.accessibility-intro p {
+  font-size: 0.98rem;
+  color: #6e6e73;
+  max-width: 90%;
+}
+
+/* Pequeño badge decorativo arriba del título */
+
+.accessibility-intro::after {
+  content: "Accesibilidad";
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(34, 34, 34, 0.92);
+  color: #f5f5f7;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* ================================
+   CONTROLS LAYOUT
+   ================================ */
+
+.accessibility-controls {
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Para móviles y tablets pequeñas */
+@media (max-width: 800px) {
+  .accessibility-controls {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
+
+/* Cada bloque (Tema, Texto, Reset) */
+.control-group {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+.control-group:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.control-group:nth-child(2) {
+  animation-delay: 0.10s;
+}
+
+.control-group:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+/* Línea decorativa lateral */
+.control-group::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 4px;
+  height: 46px;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(180deg, #1d8ef0, #06d0f9, #345ce0);
+  opacity: 0.65;
+}
+
+/* Títulos y párrafos dentro de control-group */
+
+.control-group h3 {
+  margin-left: 6px;
+  font-size: 1.15rem;
+  color: #424245;
+  margin-bottom: 4px;
+}
+
+.control-group p {
+  margin-left: 6px;
+  font-size: 0.92rem;
+  color: #6e6e73;
+}
+
+/* ================================
+   THEME CONTROLS (Modo claro/oscuro)
+   ================================ */
+
+.theme-controls {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+  position: relative;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid #d2d2d7;
+  background: #f2f2f7;
+  color: #1d1d1f;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: 
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease,
+    border-color 0.25s ease;
+}
+
+.theme-btn span.icon-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #d2d2d7;
+  display: inline-block;
+  transition: background 0.2s ease;
+}
+
+/* Estado hover general */
+.theme-btn:hover {
+  background: #e5e5ea;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* Estado active (tema seleccionado) */
+.theme-btn.active {
+  background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+}
+
+.theme-btn.active span.icon-dot {
+  background: #ffffff;
+}
+
+/* Indicador sutil de "selected" */
+.theme-btn.active::after {
+  content: "✔";
+  font-size: 0.75rem;
+  margin-left: 2px;
+}
+
+/* ================================
+   TEXT SIZE CONTROLS (Ajuste de fuente)
+   ================================ */
+
+.text-controls {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #f5f5f7;
+}
+
+.text-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #d2d2d7;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.text-btn:hover {
+  background: #e5e5ea;
+  border-color: #b0b0b5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.14);
+}
+
+/* Etiqueta que muestra el tamaño actual */
+.current-size {
+  min-width: 72px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #424245;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e3e3e8;
+}
+
+/* Estados de tamaño (puedes manejarlos con JS cambiando clases si quieres) */
+
+.current-size--small {
+  color: #555;
+}
+
+.current-size--normal {
+  color: #1d1d1f;
+}
+
+.current-size--large {
+  color: #1d8ef0;
+}
+
+/* ================================
+   RESET CONTROLS
+   ================================ */
+
+.reset-btn {
+  margin-top: 14px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: #ff3b30;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 59, 48, 0.35);
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+}
+
+.reset-btn:hover {
+  background: #e0291f;
+  box-shadow: 0 9px 22px rgba(255, 59, 48, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ================================
+   ACCESSIBILITY INFO SECTION
+   ================================ */
+
+.accessibility-info {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 20px 22px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.accessibility-info h3 {
+  font-size: 1.2rem;
+  color: #424245;
+  margin-bottom: 8px;
+}
+
+.accessibility-info p {
+  font-size: 0.95rem;
+  color: #6e6e73;
+  margin-bottom: 6px;
+}
+
+.accessibility-info p:last-child {
+  margin-bottom: 0;
+}
+
+/* Banda decorativa de fondo */
+.accessibility-info::before {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle at center, rgba(52, 92, 224, 0.18), transparent 55%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Un pequeño iconito tipo “info” */
+
+.accessibility-info::after {
+  content: "i";
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(52, 92, 224, 0.12);
+  border: 1px solid rgba(52, 92, 224, 0.6);
+  color: #345ce0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Para que el texto no se pegue al iconito */
+.accessibility-info h3,
+.accessibility-info p {
+  margin-left: 32px;
+}
+
+/* ================================
+   GENERIC BUTTON CLASS (por consistencia)
+   ================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 16px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+}
+
+/* ================================
+   DARK THEME PREVIEW (opcional)
+   ================================ */
+
+/* Podrías usar esta clase en el body cuando cambie el tema con JS */
+
+.body-dark-theme {
+  background: #111114;
+  color: #f5f5f7;
+}
+
+.body-dark-theme main.container {
+  background: transparent;
+}
+
+.body-dark-theme .control-group,
+.body-dark-theme .accessibility-intro,
+.body-dark-theme .accessibility-info {
+  background: rgba(28, 28, 30, 0.96);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.7);
+}
+
+.body-dark-theme h2,
+.body-dark-theme h3 {
+  color: #f5f5f7;
+}
+
+.body-dark-theme p {
+  color: #d1d1d6;
+}
+
+.body-dark-theme .theme-btn {
+  background: rgba(44, 44, 46, 0.9);
+  color: #f5f5f7;
+  border-color: rgba(72, 72, 74, 0.9);
+}
+
+.body-dark-theme .theme-btn:hover {
+  background: rgba(58, 58, 60, 0.95);
+}
+
+.body-dark-theme .text-controls {
+  background: rgba(44, 44, 46, 0.9);
+}
+
+.body-dark-theme .current-size {
+  background: rgba(28, 28, 30, 0.96);
+  border-color: rgba(72, 72, 74, 0.9);
+  color: #f5f5f7;
+}
+
+.body-dark-theme .reset-btn {
+  box-shadow: 0 8px 20px rgba(255,69,58,0.6);
+}
+
+/* ================================
+   FOCUS STATES (ACCESIBILIDAD REAL)
+   ================================ */
+
+.theme-btn:focus,
+.text-btn:focus,
+.reset-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.6);
+}
+
+/* ================================
+   SCROLLBARS (SUAVE Y DISCRETO)
+   ================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7c7cc;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a7;
+}
+
+/* ================================
+   HELPER CLASSES (por si los usas)
+   ================================ */
+
+.mt-0 { margin-top: 0 !important; }
+.mt-8 { margin-top: 8px !important; }
+.mt-12 { margin-top: 12px !important; }
+.mt-16 { margin-top: 16px !important; }
+.mt-20 { margin-top: 20px !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-8 { margin-bottom: 8px !important; }
+.mb-12 { margin-bottom: 12px !important; }
+.mb-16 { margin-bottom: 16px !important; }
+.mb-20 { margin-bottom: 20px !important; }
+
+.text-center { text-align: center !important; }
+.text-right  { text-align: right !important; }
+
+/* ================================
+   ANIMATIONS (MISMOS ESTILO STORE)
+   ================================ */
+
+@keyframes fadeInSoft {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInUp {
+  0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Animación para pequeños pulsos de accesibilidad (por si luego los usas) */
+@keyframes pulseSoft {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,122,255,0.25); }
+  70%  { transform: scale(1.02); box-shadow: 0 0 0 8px rgba(0,122,255,0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,122,255,0); }
+}
+
+/* Ejemplo de clase para resaltar algo temporalmente */
+.highlight-accessibility {
+  animation: pulseSoft 1.2s ease-out 1;
+}

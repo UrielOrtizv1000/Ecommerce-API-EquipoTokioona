@@ -12,6 +12,7 @@ body {
 
 main {
   padding: 40px 24px 80px;
+  animation: fadeInSoft 0.7s ease-out;
 }
 
 main > section {
@@ -37,6 +38,11 @@ main > section {
   gap: 32px;
   border: 1px solid #d2d2d7;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+  animation: fadeInSoft 0.7s ease-out both;
+}
+
+.hero-text {
+  max-width: 580px;
 }
 
 /* === IMPROVED TEXT === */
@@ -62,8 +68,20 @@ main > section {
   letter-spacing: -0.01em;
 }
 
+/* Contenedor del botón del hero */
+.hero-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.hero-button a {
+  text-decoration: none;
+}
+
 /* ==================================================
-efecto líquido
+   Botón con efecto líquido
    ================================================== */
 
 .hero-button button {
@@ -139,6 +157,10 @@ efecto líquido
   letter-spacing: -0.02em;
 }
 
+.categories-container {
+  width: 100%;
+}
+
 .categories-card-collection {
   display: grid;
   grid-template-columns: repeat(3, minmax(220px, 1fr));
@@ -166,6 +188,7 @@ efecto líquido
   overflow: hidden;
   box-shadow: 0 10px 26px rgba(0,0,0,0.15);
   border: 1px solid #d2d2d7;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .card-img img {
@@ -186,7 +209,6 @@ efecto líquido
 
 .promo-card:hover .card-img {
   transform: translateY(-4px);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
   box-shadow: 0 16px 34px rgba(0,0,0,0.20);
 }
 
@@ -207,6 +229,8 @@ efecto líquido
   font-size: 1.9rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 
 .offers-section p {
@@ -233,14 +257,92 @@ efecto líquido
   font-size: 1.9rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 
 .subscribe-section p {
   color: #55555a;
   font-size: 1.08rem;
   line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 18px;
 }
 
+/* Formulario de suscripción */
+
+.subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 520px;
+  margin: 0 auto 12px;
+}
+
+.subscribe-form input[type="email"] {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid #c7c7cc;
+  font-size: 0.98rem;
+  outline: none;
+  background: #ffffff;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.subscribe-form input[type="email"]::placeholder {
+  color: #a1a1a6;
+}
+
+.subscribe-form input[type="email"]:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.18);
+  background-color: #ffffff;
+}
+
+.subscribe-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
+  background-size: 200% 200%;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-position 0.35s ease;
+  white-space: nowrap;
+}
+
+.subscribe-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.22);
+  background-position: 100% 50%;
+}
+
+.subscribe-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.20);
+}
+
+.subscribe-feedback {
+  min-height: 20px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #3c3c43;
+}
+
+/* Puedes usar clases extra en JS para éxito / error */
+.subscribe-feedback.success {
+  color: #1c7c2f;
+}
+
+.subscribe-feedback.error {
+  color: #b00020;
+}
 
 /* ================================
    Responsive
@@ -252,50 +354,72 @@ efecto líquido
     align-items: flex-start;
   }
 
+  .hero-button {
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+
   .categories-card-collection {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
+@media (max-width: 600px) {
+  main {
+    padding: 24px 16px 56px;
+  }
+
+  .hero-container {
+    padding: 28px 22px;
+    border-radius: 24px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.1rem;
+  }
+
+  .subscribe-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .subscribe-form input[type="email"],
+  .subscribe-btn {
+    width: 100%;
+  }
+}
+
 /* ============================================
-   Animations (DELETE FADE IF U HATE IT, LOL)
+   Animations
    ============================================ */
 
 @keyframes fadeInSoft {
-    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+  0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes fadeInUp {
-    0%   { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-main {
-    animation: fadeInSoft 0.7s ease-out;
-}
-
-.hero-container {
-    animation: fadeInSoft 0.7s ease-out both;
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .categories-card-collection .promo-card {
-    opacity: 0;
-    animation: fadeInUp 0.7s ease-out forwards;
+  opacity: 0;
+  animation: fadeInUp 0.7s ease-out forwards;
 }
 
 .categories-card-collection .promo-card:nth-child(2) {
-    animation-delay: 0.08s;
+  animation-delay: 0.08s;
 }
 
 .categories-card-collection .promo-card:nth-child(3) {
-    animation-delay: 0.16s;
+  animation-delay: 0.16s;
 }
 
 .offers-section {
-    animation: fadeInSoft 0.7s ease-out both;
+  animation: fadeInSoft 0.7s ease-out both;
 }
 
 .subscribe-section {
-    animation: fadeInSoft 0.7s ease-out both;
+  animation: fadeInSoft 0.7s ease-out both;
 }

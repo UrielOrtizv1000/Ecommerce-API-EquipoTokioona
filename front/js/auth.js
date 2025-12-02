@@ -9,12 +9,7 @@ const Auth = {
         const result = await ApiClient.login(credentials);
         
         if (result.ok) {
-            // No necesitas la data del usuario en el frontend, el JWT ya la tiene.
-            // Opcional: Podrías decodificar el JWT aquí para obtener el nombre de usuario
-            // si el backend lo incluyera en el token y lo necesitaras para la UI.
-            // Para simplificar, solo guardamos el token.
             const token = result.data.token;
-            // Para obtener la data del usuario de forma simple para la UI:
             const userData = this._decodeToken(token); 
 
             if (userData) {
@@ -30,12 +25,9 @@ const Auth = {
 
     // Registro de nuevo usuario
     async register(userData) {
-        // En tu backend, el registro no devuelve un token, así que
-        // tras el registro exitoso, el usuario debe redirigirse al login.
         const result = await ApiClient.signup(userData);
         
         if (result.ok) {
-            // Registro exitoso, no hay sesión automática
             return { success: true, message: "Registro exitoso. ¡Inicia sesión!" };
         } else {
             return { success: false, message: result.message };
@@ -52,14 +44,14 @@ const Auth = {
     async logout() {
         const token = this.getToken();
         if (token) {
-            // Petición al backend para disponer del token (opcional, pero buena práctica)
+            // ApiClient.logout no necesita el token como parámetro,
+            // lo toma de los headers internos, pero pasar el arg no rompe nada.
             await ApiClient.logout(token); 
         }
 
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         this.updateUserSection();
-        // Redireccionar o recargar la página principal
         window.location.href = 'index.html'; 
     },
 
@@ -82,18 +74,19 @@ const Auth = {
     // Función para decodificar el JWT (simple, sin validación de firma)
     _decodeToken(token) {
         try {
-            // Payload está en la segunda parte del JWT (entre los puntos)
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                  .split('')
+                  .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                  .join('')
+            );
             
             const payload = JSON.parse(jsonPayload);
-            // El payload de tu backend es { id, email, role }. Usamos el email como "nombre"
             return { 
                 id: payload.id, 
-                name: payload.email || 'Usuario', // Usar email como nombre visible
+                name: payload.email || 'Usuario',
                 role: payload.role 
             };
         } catch (e) {
@@ -113,26 +106,49 @@ const Auth = {
 
         if (user) {
             section.innerHTML = `
-                <div class="user-menu">
-                    <span>Hola, ${user.name}</span>
-                    <img src="images/cart.svg" alt="Carrito" class="cart-icon" onclick="location.href='cart.html'">
-                    <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
+            <div class="user-menu">
+                <span>Hola, ${user.name}</span>
+                
+                <div class="cart-wrapper" onclick="location.href='cart.html'">
+                    <img 
+                      src="http://localhost:3000/images/carrito.png" 
+                      alt="Carrito" 
+                      class="cart-icon"
+                    >
+                    <span id="cart-count-badge" class="cart-count-badge">0</span>
                 </div>
+
+                <button onclick="Auth.logout()" class="logout-btn">
+                    Cerrar sesión
+                </button>
+            </div>
             `;
+
+            // 👉 Actualizamos contador después de pintar el HTML
+            this.updateCartCount();
         } else {
             section.innerHTML = `
-                <button type="button" class="login-btn" onclick="openLoginModal()">Inicia sesión</button>
+                <button type="button" class="login-btn" onclick="openLoginModal()">
+                    Inicia sesión
+                </button>
             `;
         }
     },
 
-    // Inicializa la lógica de eventos de login/registro/captcha
+    // Inicializa la lógica de eventos de login/registro/captcha/recuperación
     async init() {
         await this._loadCaptcha();
+
         this._setupModalEvents();
         this._setupLoginHandler();
         this._setupRegisterHandler();
-        this.updateUserSection(); // Actualiza al cargar la página
+        this._setupForgotPasswordHandler();
+        
+        // Primero dibujamos la sección usuario (crea el badge)
+        this.updateUserSection();
+
+        // Si quieres forzar una actualización extra del badge:
+        // this.updateCartCount();
     },
 
     // Carga el CAPTCHA de reCAPTCHA
@@ -141,10 +157,8 @@ const Auth = {
         if (captchaContainer) {
             const htmlWidget = await ApiClient.getCaptchaWidget();
             captchaContainer.innerHTML = htmlWidget;
-            // Cargar el script de Google reCAPTCHA
             if (window.grecaptcha === undefined && htmlWidget.includes('g-recaptcha')) {
                  const script = document.createElement('script');
-                 // Asume que el backend usa la clave de sitio para generar el widget
                  script.src = "https://www.google.com/recaptcha/api.js"; 
                  script.async = true;
                  script.defer = true;
@@ -182,24 +196,25 @@ const Auth = {
         
         if (forgotBtn) {
             forgotBtn.addEventListener("click", () => {
-                // Implementar aquí la lógica o modal para Forgot Password (petición al backend)
-                alert("Funcionalidad de recuperación de contraseña próximamente...");
+                openForgotModal();
             });
         }
     },
 
     // Maneja el envío del formulario de login
     _setupLoginHandler() {
-        const loginForm = document.getElementById("login-form"); // Usar ID fijo
+        const loginForm = document.getElementById("login-form");
         const submitBtn = document.getElementById("submit-btn");
 
         if (loginForm) {
             loginForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 
-                const username = document.getElementById("login-username").value; // Usar username
+                const username = document.getElementById("login-username").value;
                 const password = document.getElementById("login-password").value;
-                const captchaResponse = grecaptcha ? grecaptcha.getResponse() : null; // Obtener respuesta del CAPTCHA
+                const captchaResponse = (typeof grecaptcha !== "undefined")
+                    ? grecaptcha.getResponse()
+                    : null;
 
                 if (!username || !password) {
                     this._showError(loginForm, "Por favor, completa todos los campos.");
@@ -211,7 +226,6 @@ const Auth = {
                     return;
                 }
                 
-                // Deshabilitar botón durante la petición
                 if (submitBtn) {
                     submitBtn.disabled = true;
                     submitBtn.textContent = "Iniciando sesión...";
@@ -221,7 +235,7 @@ const Auth = {
                     const credentials = { 
                         username, 
                         password, 
-                        'g-recaptcha-response': captchaResponse // Nombre de campo que espera el backend
+                        'g-recaptcha-response': captchaResponse
                     };
                     
                     const result = await Auth.login(credentials);
@@ -230,15 +244,15 @@ const Auth = {
                         closeLoginModal();
                         this._showSuccess("¡Inicio de sesión exitoso!");
                         this.updateUserSection();
-                        // setTimeout(() => window.location.reload(), 1000);
                     } else {
                         this._showError(loginForm, result.message);
-                        grecaptcha.reset(); // Resetear CAPTCHA después de un intento fallido
+                        if (typeof grecaptcha !== "undefined") {
+                            grecaptcha.reset();
+                        }
                     }
                 } catch (error) {
                     this._showError(loginForm, "Error durante el login");
                 } finally {
-                    // Rehabilitar botón
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.textContent = "Aceptar";
@@ -257,7 +271,7 @@ const Auth = {
             registerForm.addEventListener("submit", async (event) => {
                 event.preventDefault();
 
-                const username = document.getElementById("name").value; // Asumiendo 'name' es 'username'
+                const username = document.getElementById("name").value;
                 const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
                 const confirmPassword = document.getElementById("confirmPassword").value;
@@ -265,13 +279,11 @@ const Auth = {
 
                 errorElement.textContent = "";
 
-                // Validaciones del frontend (simples)
                 if (password !== confirmPassword) {
                     errorElement.textContent = "Las contraseñas no coinciden.";
                     return;
                 }
                 
-                // Deshabilitar botón durante el registro
                 const originalText = submitButton.textContent;
                 submitButton.disabled = true;
                 submitButton.textContent = "Registrando...";
@@ -281,8 +293,7 @@ const Auth = {
                     const result = await Auth.register(userData);
                     
                     if (result.success) {
-                        this._showSuccess(result.message); // Muestra mensaje de éxito de registro
-                        // Redirigir a la página principal/login
+                        this._showSuccess(result.message);
                         setTimeout(() => {
                             window.location.href = "index.html";
                         }, 2000);
@@ -292,17 +303,48 @@ const Auth = {
                 } catch (error) {
                     errorElement.textContent = "Error durante el registro";
                 } finally {
-                    // Rehabilitar botón
                     submitButton.disabled = false;
                     submitButton.textContent = originalText;
                 }
             });
         }
     },
+
+    // Maneja el envío del formulario "Olvidé mi contraseña"
+    _setupForgotPasswordHandler() {
+        const form = document.getElementById("forgot-form");
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const emailInput = document.getElementById("forgot-email");
+            const email = emailInput ? emailInput.value.trim() : "";
+
+            if (!email) {
+                alert("Ingresa tu correo");
+                return;
+            }
+
+            try {
+                const result = await ApiClient.forgotPassword(email);
+
+                if (result.ok) {
+                    alert("Te enviamos un correo con instrucciones para recuperar tu contraseña.");
+                    closeForgotModal();
+                } else {
+                    alert(result.message || "Error enviando correo de recuperación.");
+                }
+
+            } catch (error) {
+                console.error("Error en forgotPassword:", error);
+                alert("Error de conexión.");
+            }
+        });
+    },
     
     // Muestra un error temporal en el formulario o en la página
     _showError(parent, message) {
-        // Lógica de visualización de error (como la que ya tenías)
         const existingError = parent.querySelector('.error-message');
         if (existingError) existingError.remove();
 
@@ -314,13 +356,11 @@ const Auth = {
         errorElement.style.textAlign = 'center';
         
         parent.appendChild(errorElement);
-        // Opcional: remover el error después de 5 segundos
         setTimeout(() => errorElement.remove(), 5000);
     },
 
     // Muestra un mensaje de éxito temporal
     _showSuccess(message) {
-        // Lógica de visualización de éxito (similar a la que ya tenías)
         const successElement = document.createElement('div');
         successElement.className = 'success-message';
         successElement.textContent = message;
@@ -337,6 +377,46 @@ const Auth = {
         document.body.appendChild(successElement);
         
         setTimeout(() => successElement.remove(), 3000);
+    },
+
+    // --- CONTADOR DEL CARRITO EN HEADER ---
+    async updateCartCount() {
+        const badge = document.getElementById("cart-count-badge");
+        if (!badge) return;
+
+        // Si no hay sesión, ocultamos el badge
+        if (!this.isAuthenticated()) {
+            badge.style.display = "none";
+            return;
+        }
+
+        try {
+            const result = await ApiClient.getCart();
+
+            if (!result.ok) {
+                badge.style.display = "none";
+                return;
+            }
+
+            const data = result.data || {};
+            let items = data.items || data.cart || data;
+
+            if (!Array.isArray(items)) items = [];
+
+            const totalQty = items.reduce((sum, item) => {
+                return sum + (Number(item.quantity) || 0);
+            }, 0);
+
+            if (totalQty > 0) {
+                badge.textContent = totalQty > 99 ? "99+" : totalQty;
+                badge.style.display = "inline-flex";
+            } else {
+                badge.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Error actualizando contador del carrito:", err);
+            badge.style.display = "none";
+        }
     }
 };
 
@@ -349,8 +429,17 @@ function openLoginModal() {
 function closeLoginModal() {
     const modal = document.getElementById('login-modal');
     if (modal) modal.style.display = 'none';
-    // Opcional: Limpiar el CAPTCHA al cerrar
     if (window.grecaptcha) grecaptcha.reset(); 
+}
+
+function openForgotModal() {
+    const modal = document.getElementById('forgot-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeForgotModal() {
+    const modal = document.getElementById('forgot-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 // Inicializar Auth cuando se carga la página

@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Page</title>
+    <title>Accesibilidad – Tokioona</title>
 
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
+    <link rel="stylesheet" href="styles/accessibility.css">
 
     <!-- Header and footer styles -->
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/footer.css">
 
-    <!-- Scripts for components and login -->
-    <script src="js/components.js" defer></script> <!-- Loads header and footer dynamically -->
-    <script src="js/auth.js" defer></script>       <!-- User authentication logic -->
-    <script src="js/index.js" defer></script>      <!-- Main page logic -->
-    <script src="js/login.js" defer></script>      <!-- Login modal logic -->
+    <!-- Scripts base -->
+    <script src="./js/apiClient.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/components.js"></script>
+    
+    <!-- Script específico de accesibilidad (lógica de los botones) -->
+    <script src="./js/accessibility.js" defer></script>
 </head>
 
 <body>
@@ -25,42 +28,97 @@
     <!-- Dynamic header insertion -->
     <div id="header"></div>
 
-    <main>
-        <!-- Page visible content in Spanish -->
-        <h1>Contenido</h1>
-        <p>Aquí va el contenido de esta página.</p>
+    <main class="container">
+        <section class="accessibility-intro">
+            <h2>Personaliza tu experiencia</h2>
+            <p>
+                Creemos que todas las personas deben tener acceso a nuestra tienda. 
+                Utiliza estas configuraciones para ajustar tu experiencia de navegación.
+            </p>
+        </section>
+
+        <section class="accessibility-controls">
+            <div class="control-group">
+                <h3>Tema</h3>
+                <p>Elige entre un tema claro u oscuro según tus preferencias.</p>
+                <div class="theme-controls">
+                    <button id="light-theme" class="theme-btn active" type="button">Modo claro</button>
+                    <button id="dark-theme" class="theme-btn" type="button">Modo oscuro</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Tamaño del texto</h3>
+                <p>Ajusta el tamaño del texto para mejorar tu lectura.</p>
+                <div class="text-controls">
+                    <button id="decrease-text" class="text-btn" type="button" aria-label="Disminuir tamaño de texto">-</button>
+                    <span id="current-size" class="current-size" aria-live="polite">Normal</span>
+                    <button id="increase-text" class="text-btn" type="button" aria-label="Aumentar tamaño de texto">+</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Restablecer configuraciones</h3>
+                <p>Restaura las configuraciones de accesibilidad a sus valores por defecto.</p>
+                <button id="reset-settings" class="reset-btn" type="button">Restaurar</button>
+            </div>
+        </section>
+
+        <section class="accessibility-info">
+            <h3>Acerca de nuestras funciones de accesibilidad</h3>
+            <p>
+                Nuestro compromiso con la accesibilidad garantiza que todos los usuarios, 
+                independientemente de sus capacidades, puedan navegar y utilizar nuestra tienda en línea de manera efectiva.
+            </p>
+            <p>
+                Tus preferencias se guardarán y se aplicarán automáticamente en tu próxima visita.
+            </p>
+        </section>
     </main>
 
     <!-- Dynamic footer insertion -->
     <div id="footer"></div>
 
-    <!-- Login modal -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-content">
-            <!-- Modal title -->
-            <h2>Iniciar Sesión</h2>
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-content">
+      <h2>Iniciar sesión</h2>
 
-            <form>
-                <!-- Name input field -->
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre">
+      <form id="login-form">
+        <label for="login-username">Nombre de usuario</label>
+        <input type="text" id="login-username" required>
 
-                <!-- Email input field -->
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo">
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" required>
 
-                <!-- Buttons section -->
-                <div class="modal-buttons">
-                    <!-- Register button -->
-                    <button type="button" id="register-btn">Registrarse</button>
-                    <!-- Forgot password button -->
-                    <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-                    <!-- Submit/login button -->
-                    <button type="submit" id="submit-btn">Aceptar</button>
-                </div>
-            </form>
+        <div id="captcha-container" style="margin: 10px 0;"></div>
+
+        <div class="modal-buttons">
+          <button type="button" id="register-btn">Registrarse</button>
+          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+          <button type="submit" id="submit-btn">Aceptar</button>
         </div>
+      </form>
     </div>
+  </div>
+
+  <!-- FORGOT PASSWORD MODAL -->
+  <div class="modal-overlay" id="forgot-modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Recuperar contraseña</h2>
+
+      <form id="forgot-form">
+        <label for="forgot-email">Correo electrónico</label>
+        <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+        <div class="modal-buttons">
+          <button type="button" onclick="closeForgotModal()">Cancelar</button>
+          <button type="submit">Enviar instrucciones</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 
 </body>
 </html>
