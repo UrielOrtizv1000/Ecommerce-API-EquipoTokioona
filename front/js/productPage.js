@@ -39,7 +39,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (stockEl) stockEl.textContent = product.stock;
 
     if (imageEl) {
-        imageEl.src = product.image_url || "https://via.placeholder.com/400x300?text=Sin+imagen";
+        const baseImageUrl = "http://localhost:3000/images/";
+
+        if (product.image_url) {
+            const imgPath = product.image_url.startsWith("http")
+                ? product.image_url
+                : baseImageUrl + product.image_url;
+            imageEl.src = imgPath;
+        } else {
+            imageEl.src = "https://via.placeholder.com/400x300?text=Sin+imagen";
+        }
+
         imageEl.alt = product.name;
     }
 

@@ -44,6 +44,8 @@ const Auth = {
     async logout() {
         const token = this.getToken();
         if (token) {
+            // ApiClient.logout no necesita el token como parámetro,
+            // lo toma de los headers internos, pero pasar el arg no rompe nada.
             await ApiClient.logout(token); 
         }
 
@@ -103,16 +105,32 @@ const Auth = {
         const user = this.getUser();
 
         if (user) {
-           section.innerHTML = `
-    <div class="user-menu">
-        <span>Hola, ${user.name}</span>
-        <img src="images/carrito.png" alt="Carrito" class="cart-icon" style="width:26px;cursor:pointer;" onclick="location.href='cart.html'">
-        <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
-    </div>
-`;
+            section.innerHTML = `
+            <div class="user-menu">
+                <span>Hola, ${user.name}</span>
+                
+                <div class="cart-wrapper" onclick="location.href='cart.html'">
+                    <img 
+                      src="http://localhost:3000/images/carrito.png" 
+                      alt="Carrito" 
+                      class="cart-icon"
+                    >
+                    <span id="cart-count-badge" class="cart-count-badge">0</span>
+                </div>
+
+                <button onclick="Auth.logout()" class="logout-btn">
+                    Cerrar sesión
+                </button>
+            </div>
+            `;
+
+            // 👉 Actualizamos contador después de pintar el HTML
+            this.updateCartCount();
         } else {
             section.innerHTML = `
-                <button type="button" class="login-btn" onclick="openLoginModal()">Inicia sesión</button>
+                <button type="button" class="login-btn" onclick="openLoginModal()">
+                    Inicia sesión
+                </button>
             `;
         }
     },
@@ -120,11 +138,17 @@ const Auth = {
     // Inicializa la lógica de eventos de login/registro/captcha/recuperación
     async init() {
         await this._loadCaptcha();
+
         this._setupModalEvents();
         this._setupLoginHandler();
         this._setupRegisterHandler();
-        this._setupForgotPasswordHandler();   // 👈 AQUÍ ENTRAMOS AL FLUJO DE RECUPERACIÓN
+        this._setupForgotPasswordHandler();
+        
+        // Primero dibujamos la sección usuario (crea el badge)
         this.updateUserSection();
+
+        // Si quieres forzar una actualización extra del badge:
+        // this.updateCartCount();
     },
 
     // Carga el CAPTCHA de reCAPTCHA
@@ -172,7 +196,6 @@ const Auth = {
         
         if (forgotBtn) {
             forgotBtn.addEventListener("click", () => {
-                // 👇 Ahora abre el modal de recuperación
                 openForgotModal();
             });
         }
@@ -287,10 +310,10 @@ const Auth = {
         }
     },
 
-    // 👇 NUEVO: Maneja el envío del formulario "Olvidé mi contraseña"
+    // Maneja el envío del formulario "Olvidé mi contraseña"
     _setupForgotPasswordHandler() {
         const form = document.getElementById("forgot-form");
-        if (!form) return; // si no existe el modal/forma, no hace nada
+        if (!form) return;
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -354,6 +377,46 @@ const Auth = {
         document.body.appendChild(successElement);
         
         setTimeout(() => successElement.remove(), 3000);
+    },
+
+    // --- CONTADOR DEL CARRITO EN HEADER ---
+    async updateCartCount() {
+        const badge = document.getElementById("cart-count-badge");
+        if (!badge) return;
+
+        // Si no hay sesión, ocultamos el badge
+        if (!this.isAuthenticated()) {
+            badge.style.display = "none";
+            return;
+        }
+
+        try {
+            const result = await ApiClient.getCart();
+
+            if (!result.ok) {
+                badge.style.display = "none";
+                return;
+            }
+
+            const data = result.data || {};
+            let items = data.items || data.cart || data;
+
+            if (!Array.isArray(items)) items = [];
+
+            const totalQty = items.reduce((sum, item) => {
+                return sum + (Number(item.quantity) || 0);
+            }, 0);
+
+            if (totalQty > 0) {
+                badge.textContent = totalQty > 99 ? "99+" : totalQty;
+                badge.style.display = "inline-flex";
+            } else {
+                badge.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Error actualizando contador del carrito:", err);
+            badge.style.display = "none";
+        }
     }
 };
 
