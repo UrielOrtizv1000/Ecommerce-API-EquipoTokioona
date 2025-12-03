@@ -13,7 +13,7 @@ const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
-
+const addressRoutes = require("./routes/AddressRoutes");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -40,7 +40,7 @@ app.use("/api/subscribe", subscriptionRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
-
+app.use("/api/address", addressRoutes);
 async function testDBConnection() {
   try {
     const [rows] = await pool.query("SELECT 1 + 1 AS result");
