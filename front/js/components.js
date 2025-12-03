@@ -16,64 +16,64 @@ async function loadComponent(id, file, callback) {
 }
 
 /**
- * Aplica el tema (claro/oscuro) y tamaño de texto
- * guardados en localStorage a TODAS las páginas
- * que cargan este archivo.
+ * Aplica el tema y el tamaño de texto guardados en localStorage.
+ * Ahora sincronizado con la lógica de 'rem' de accessibility.js
  */
 function applyGlobalAccessibilityStyles() {
-  // ---- TEMA ----
+  // ==========================
+  //  1. APLICAR TEMA
+  // ==========================
   const theme = localStorage.getItem("tokioona_theme") || "light";
   const isDark = theme === "dark";
 
-  // Clase en <body> para que el master_styles.css pinte todo
+  // Clase en <body> para el CSS oscuro
   document.body.classList.toggle("body-dark-theme", isDark);
 
-  // Footer (el header NO lo tocamos a propósito)
+  // Footer (si existe)
   const footerEl = document.getElementById("footer");
   if (footerEl) {
     footerEl.classList.toggle("footer-dark-theme", isDark);
   }
 
-  // ---- TAMAÑO DE TEXTO ----
+  // ==========================
+  //  2. APLICAR TAMAÑO DE TEXTO
+  // ==========================
+  // Leemos la preferencia guardada
   const textSize = localStorage.getItem("tokioona_textSize") || "normal";
+  
+  // Definimos el porcentaje base igual que en accessibility.js
+  let rootSize = "100%"; 
 
-  document.body.classList.remove("text-small", "text-normal", "text-large");
-
-  switch (textSize) {
-    case "small":
-      document.body.classList.add("text-small");
-      break;
-    case "large":
-      document.body.classList.add("text-large");
-      break;
-    default:
-      document.body.classList.add("text-normal");
-      break;
+  if (textSize === "small") {
+    rootSize = "90%";
+  } else if (textSize === "large") {
+    rootSize = "115%";
   }
+
+  // Aplicamos el cambio al HTML para que los 'rem' del CSS funcionen
+  document.documentElement.style.fontSize = rootSize;
 }
 
-// Escucha el evento que dispara accesibility.js
+// Escucha eventos personalizados (si accessibility.js emite alguno)
 window.addEventListener("accessibilitySettingsChanged", () => {
   applyGlobalAccessibilityStyles();
 });
 
-// Cuando se carga el DOM en CUALQUIER página:
+// Al cargar el DOM
 window.addEventListener("DOMContentLoaded", () => {
   // 1) Cargar header
-  loadComponent("header", "./includes/header.html", () => {
-    // El header mantiene sus estilos propios
-  });
+  loadComponent("header", "./includes/header.html");
 
-  // 2) Cargar footer y aplicar tema/texto después
+  // 2) Cargar footer y aplicar estilos cuando esté listo
   loadComponent("footer", "./includes/footer.html", () => {
     applyGlobalAccessibilityStyles();
   });
 
-  // 3) Inicializar Auth
+  // 3) Inicializar Auth si existe
   if (typeof Auth !== "undefined" && Auth.init) {
     Auth.init();
   }
 
-  // 4) Aplicar tema/tamaño una vez más por si footer tarda
+  // 4) Aplicar estilos inmediatamente al cuerpo de la página
   applyGlobalAccessibilityStyles();
 });

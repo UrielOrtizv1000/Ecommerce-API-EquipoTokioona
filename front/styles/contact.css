@@ -1,19 +1,6 @@
 /* ============================================
-   Global typography & base colors
-   ============================================ */
-
-html, body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    padding: 0;
-    color: #1d1d1f;
-    background: #f5f5f7;
-}
-
-/* ============================================
    Main layout for Contact Page
-   ============================================ */
+============================================ */
 
 main {
     max-width: 1100px;
@@ -23,7 +10,7 @@ main {
 
 /* ============================================
    Page title section
-   ============================================ */
+============================================ */
 
 .title {
     text-align: center;
@@ -32,7 +19,6 @@ main {
 }
 
 .title-txt p {
-    margin: 0;
     font-size: 1.9rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -42,7 +28,7 @@ main {
 
 /* ============================================
    Contact form container (card)
-   ============================================ */
+============================================ */
 
 .contact-form {
     max-width: 750px;
@@ -50,24 +36,23 @@ main {
     padding: 28px 26px;
 
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: var(--radius-large);
     border: 1px solid #d2d2d7;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-soft);
 
     animation: fadeInUp 0.7s ease-out both;
-    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
 }
 
-/* Slight hover for the whole form card */
 .contact-form:hover {
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-strong);
     transform: translateY(-2px);
     border-color: #c8c8d0;
 }
 
 /* ============================================
    Form structure
-   ============================================ */
+============================================ */
 
 form {
     display: flex;
@@ -86,7 +71,7 @@ form {
     flex-direction: column;
 }
 
-/* Labels: field titles */
+/* Labels */
 .form-group label {
     margin-bottom: 6px;
     font-weight: 600;
@@ -94,27 +79,22 @@ form {
     color: #2c2c2e;
 }
 
-/* Inputs and textarea base style */
+/* Inputs / textarea */
 .form-group input,
 .form-group textarea {
     padding: 12px 14px;
     border: 1px solid #d2d2d7;
-    border-radius: 14px;
-
+    border-radius: var(--radius-medium);
     font-size: 0.95rem;
-    background: #f5f5f7;
+    background: var(--color-bg-light);
     letter-spacing: -0.01em;
 
     transition:
-        border-color 0.25s ease,
-        background 0.25s ease,
-        box-shadow 0.25s ease,
+        border-color var(--transition-fast),
+        background var(--transition-fast),
+        box-shadow var(--transition-fast),
         transform 0.18s ease;
 }
-
-/* ============================================
-   Hover effect when entering input areas
-   ============================================ */
 
 .form-group:hover input,
 .form-group:hover textarea {
@@ -124,7 +104,6 @@ form {
     transform: translateY(-1px);
 }
 
-/* Focus state (stronger highlight) */
 .form-group input:focus,
 .form-group textarea:focus {
     background: #ffffff;
@@ -134,8 +113,8 @@ form {
 }
 
 /* ============================================
-   liquid gradient submit button
-   ============================================ */
+   Submit button
+============================================ */
 
 .btn-enviar {
     position: relative;
@@ -144,18 +123,16 @@ form {
     padding: 12px 32px;
     border-radius: 999px;
     border: none;
-
     cursor: pointer;
+
     font-size: 1rem;
     font-weight: 600;
     color: #ffffff;
 
-    /* Blue liquid gradient BUTTONNNNNNNNN */
     background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
     background-size: 230% 230%;
-
     box-shadow: 0 12px 26px rgba(0,0,0,0.22);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.5s ease;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-position 0.5s ease;
 
     width: fit-content;
 }
@@ -174,7 +151,6 @@ form {
     pointer-events: none;
 }
 
-/* Button hover animation */
 .btn-enviar:hover {
     transform: translateY(-2px);
     box-shadow: 0 16px 34px rgba(0,0,0,0.28);
@@ -188,28 +164,25 @@ form {
 }
 
 /* ============================================
-   Animations (DELETE FADE IF U HATE IT, LOL)
-   ============================================ */
+   Animations
+============================================ */
 
 @keyframes fadeInSoft {
     0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Card fade-up animation */
 @keyframes fadeInUp {
     0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
     100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-/* Liquid gradient movement */
 @keyframes liquid-gradient {
     0%   { background-position: 0% 50%; }
     50%  { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* Organic inner glow movement */
 @keyframes liquid-blob {
     0%   { transform: translate(-10%, -10%); }
     50%  { transform: translate(15%, 15%); }
@@ -217,8 +190,138 @@ form {
 }
 
 /* ============================================
-   Responsive behavior (small screens)
-   ============================================ */
+   Modal flotante
+============================================ */
+
+.contact-modal.hidden {
+    display: none;
+}
+
+.contact-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.35);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 999;
+    animation: fadeInModal 0.35s ease;
+}
+
+.contact-modal-content {
+    background: #ffffff;
+    padding: 28px 34px;
+    border-radius: var(--radius-medium);
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.20);
+    animation: slideUp 0.35s ease;
+    position: relative;
+}
+
+.contact-modal-content h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #555;
+}
+
+.close-modal-btn:hover {
+    color: #000;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(22px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================
+   DARK THEME (respeta masterStyles)
+============================================ */
+
+.body-dark-theme .title-txt p {
+    color: var(--color-text-dark);
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.08);
+}
+
+.body-dark-theme .contact-form {
+    background: #1c1c1e;
+    border: 1px solid #48484A;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.7);
+}
+
+.body-dark-theme .contact-form:hover {
+    box-shadow: 0 14px 34px rgba(0,0,0,0.85);
+    border-color: #5a5a5c;
+}
+
+.body-dark-theme .form-group label {
+    color: var(--color-text-dark);
+}
+
+.body-dark-theme .form-group input,
+.body-dark-theme .form-group textarea {
+    background: #2c2c2e;
+    border: 1px solid #48484A;
+    color: var(--color-text-dark);
+}
+
+.body-dark-theme .form-group:hover input,
+.body-dark-theme .form-group:hover textarea {
+    background: #303032;
+    border-color: #5577ff;
+    box-shadow: 0 0 0 3px rgba(29,142,240,0.25);
+}
+
+.body-dark-theme .form-group input:focus,
+.body-dark-theme .form-group textarea:focus {
+    background: #303032;
+    border-color: #1d8ef0;
+    box-shadow: 0 0 0 4px rgba(29,142,240,0.35);
+}
+
+.body-dark-theme .contact-modal {
+    background: rgba(0,0,0,0.65);
+}
+
+.body-dark-theme .contact-modal-content {
+    background: #1c1c1e;
+    color: var(--color-text-dark);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.40);
+}
+
+.body-dark-theme .close-modal-btn {
+    color: #a1a1a6;
+}
+
+.body-dark-theme .close-modal-btn:hover {
+    color: var(--color-text-dark);
+}
+
+/* ============================================
+   Responsive
+============================================ */
 
 @media (max-width: 800px) {
     .form-row {
@@ -232,75 +335,4 @@ form {
     .title-txt p {
         font-size: 1.7rem;
     }
-}
-
-/* ===== Modal flotante para contacto ===== */
-
-.contact-modal.hidden {
-  display: none;
-}
-
-.contact-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(6px);
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  animation: fadeInModal 0.35s ease;
-}
-
-.contact-modal-content {
-  background: white;
-  padding: 28px 34px;
-  border-radius: 18px;
-  max-width: 420px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 18px 45px rgba(0,0,0,0.20);
-  animation: slideUp 0.35s ease;
-  position: relative;
-}
-
-.contact-modal-content h3 {
-  margin-top: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-}
-
-.contact-modal-content p {
-  margin-top: 12px;
-  font-size: 1.12rem;
-  color: #444;
-}
-
-.close-modal-btn {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: #555;
-}
-
-.close-modal-btn:hover {
-  color: #000;
-}
-
-/* Animaciones */
-@keyframes fadeInModal {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(22px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
 }
