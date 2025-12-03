@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "checkout.html";
     });
   }
+
+  setupCouponHandler();
 });
+
 
 
 async function loadCart() {
@@ -174,5 +177,39 @@ async function removeItem(productId) {
     return;
   }
 
+  
+
   loadCart();
+}
+
+function setupCouponHandler() {
+  const btn = document.getElementById("apply-coupon");
+  const input = document.getElementById("coupon-code");
+  const msg = document.getElementById("coupon-message");
+
+  if (!btn || !input) return;
+
+  btn.addEventListener("click", async () => {
+    const code = input.value.trim();
+    if (!code) {
+      msg.textContent = "Please enter a coupon code.";
+      msg.style.color = "red";
+      return;
+    }
+
+    // Llamar a backend
+    const result = await ApiClient.applyCoupon(code);
+
+    if (!result.ok || !result.data) {
+      msg.textContent = result.message || "Invalid coupon.";
+      msg.style.color = "red";
+      return;
+    }
+
+    msg.textContent = "Coupon applied successfully!";
+    msg.style.color = "green";
+
+    // Recargar carrito para mostrar descuento
+    loadCart();
+  });
 }

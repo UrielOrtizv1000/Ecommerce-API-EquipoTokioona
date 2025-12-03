@@ -23,7 +23,8 @@ const Order = {
     taxes, 
     shipping, 
     total,
-    shippingAddressId 
+    shippingAddressId,
+    paymentMethod
   }) {
 
     const conn = await pool.getConnection();
@@ -43,7 +44,7 @@ const Order = {
           shipping,
           discount,
           total,
-          "card",               // default payment method
+          paymentMethod,               // default payment method
           shippingAddressId     // NEW FIELD
         ]
       );
