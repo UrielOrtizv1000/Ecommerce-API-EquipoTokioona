@@ -1,7 +1,7 @@
 // front/js/cartPage.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadCart(); // lo que ya tienes
+  loadCart();
 
   const checkoutBtn = document.getElementById("checkout-btn");
   if (checkoutBtn) {
@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setupCouponHandler();
 });
-
-
 
 async function loadCart() {
   const itemsContainer = document.getElementById("cart-items");
@@ -43,6 +41,12 @@ async function loadCart() {
       </div>
     `;
     if (summaryBox) summaryBox.style.display = "none";
+
+    // 🔁 Actualizar sección de usuario y contador si existen
+    if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+      Auth.updateUserSection();
+      Auth.updateCartCount();
+    }
     return;
   }
 
@@ -59,6 +63,12 @@ async function loadCart() {
     itemsContainer.innerHTML = "";
     if (emptyMessage) emptyMessage.style.display = "block";
     if (summaryBox) summaryBox.style.display = "none";
+
+    // Carrito vacío → actualizar UI del usuario y contador
+    if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+      Auth.updateUserSection();
+      Auth.updateCartCount();
+    }
     return;
   }
 
@@ -68,6 +78,12 @@ async function loadCart() {
 
   renderCartItems(items, itemsContainer);
   updateSummary(items, { subtotalEl, taxesEl, shippingEl, discountEl, totalEl });
+
+  // ✅ Actualizar sección de usuario y contador del carrito en el header
+  if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+    Auth.updateUserSection();
+    Auth.updateCartCount();
+  }
 }
 
 // Pinta los items del carrito en el DOM
@@ -164,7 +180,7 @@ async function changeQuantity(productId, newQty) {
     return;
   }
 
-  // Volver a cargar el carrito actualizado
+  // Volver a cargar el carrito actualizado (y actualizará el contador)
   loadCart();
 }
 
@@ -177,8 +193,7 @@ async function removeItem(productId) {
     return;
   }
 
-  
-
+  // Recargar carrito y contador
   loadCart();
 }
 
@@ -209,7 +224,7 @@ function setupCouponHandler() {
     msg.textContent = "Coupon applied successfully!";
     msg.style.color = "green";
 
-    // Recargar carrito para mostrar descuento
+    // Recargar carrito para mostrar descuento y refrescar contador
     loadCart();
   });
 }
