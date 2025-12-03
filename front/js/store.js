@@ -8,6 +8,21 @@ class Store {
         this.priceMax = null;
         this.onlyOffers = false;
 
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        const offerParam = urlParams.get('offer');
+
+        // 1. Procesar categoría desde la URL
+        if (categoryParam) {
+            this.currentCategory = categoryParam.toLowerCase().trim();
+        }
+
+        // 2. Procesar ofertas desde la URL
+        if (offerParam === 'true' || offerParam === '1') {
+            this.onlyOffers = true;
+        }
+
         this.init();
     }
 
@@ -26,8 +41,22 @@ class Store {
         // 4) Conectar eventos de filtros (precio + ofertas)
         this.setupFilterControls();
 
-        // 5) Primer render con todos los productos
+        // 5) Marcar checkbox de ofertas si viene en la URL
+        this.setupUrlFilters();
+
+        // 6) Primer render con todos los productos
         this.applyFilters();
+    }
+
+    // Método para configurar filtros desde URL
+    setupUrlFilters() {
+        // Marcar checkbox de ofertas si viene en la URL
+        if (this.onlyOffers) {
+            const offerCheckbox = document.getElementById("filter-offer");
+            if (offerCheckbox) {
+                offerCheckbox.checked = true;
+            }
+        }
     }
 
     // ==========================
@@ -445,8 +474,22 @@ createProductCard(product) {
     setupCategoryFilters() {
         const buttons = document.querySelectorAll(".sidebar button");
         console.log(`🔘 Encontrados ${buttons.length} botones de categoría`);
+        // DEPURACIÓN: Mostrar todos los valores de data-category
+    buttons.forEach((btn, index) => {
+        console.log(`Botón ${index}:`, {
+            text: btn.textContent,
+            dataCategory: btn.dataset.category,
+            dataset: btn.dataset
+        });
+    });
 
+        // Activar botón según categoría actual
         buttons.forEach((btn) => {
+            const btnCategory = btn.dataset.category;
+            if (btnCategory === this.currentCategory) {
+                btn.classList.add("active");
+            }
+
             btn.addEventListener("click", () => {
                 const category = btn.dataset.category;
                 console.log(`🎯 Filtrando por categoría: ${category}`);
@@ -458,8 +501,25 @@ createProductCard(product) {
                 btn.classList.add("active");
 
                 this.applyFilters();
+
+                // Actualizar URL sin recargar la página
+                this.updateUrlWithCategory(category);
             });
         });
+    }
+
+    // Nuevo método para actualizar la URL
+    updateUrlWithCategory(category) {
+        const url = new URL(window.location);
+
+        if (category && category !== 'all') {
+            url.searchParams.set('category', category);
+        } else {
+            url.searchParams.delete('category');
+        }
+
+        // Actualizar URL sin recargar
+        window.history.pushState({}, '', url);
     }
 
     // ==========================

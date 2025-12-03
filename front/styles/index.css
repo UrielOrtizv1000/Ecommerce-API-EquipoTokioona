@@ -213,34 +213,6 @@ main > section {
 }
 
 /* ================================
-   Offers section
-   ================================ */
-
-.offers-section {
-  text-align: center;
-  padding: 32px 20px;
-  border-radius: 26px;
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
-}
-
-.offers-section h2 {
-  font-size: 1.9rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-top: 0;
-  margin-bottom: 8px;
-}
-
-.offers-section p {
-  margin: 0;
-  color: #55555a;
-  font-size: 1.08rem;
-  line-height: 1.5;
-}
-
-/* ================================
    Subscribe section
    ================================ */
 
@@ -358,6 +330,51 @@ main > section {
 }
 .img-social img{
   width: 200px;
+}
+
+/* ================================
+   Offers section
+   ================================ */
+
+.offers-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 680px;
+  
+  padding: 32px 20px;
+  border-radius: 26px;
+  background: radial-gradient(circle at top, #ffffff 0%, #ffffff 60%, #c8cbe2 100%);
+  border: 1px solid #d2d2d7;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+}
+.offers-title{
+  margin-bottom: 35px;
+  font-weight: bold;
+}
+.offers-wrapper{
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  gap: 15px;
+}
+.offer-card:hover{
+  transform: scale(0.9) rotate(2deg);
+}
+.offer-card {
+    background: linear-gradient(white,rgb(238, 239, 244));
+    border: 1px solid #d2d2d7;
+    padding: 10px;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    text-align: center;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    padding: 35px;
+}
+.offer{
+  color: black;
+  font-weight: bold;
 }
 
 /* ================================

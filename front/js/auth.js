@@ -106,7 +106,7 @@ const Auth = {
            section.innerHTML = `
     <div class="user-menu">
         <span>Hola, ${user.name}</span>
-        <img src="images/carrito.png" alt="Carrito" class="cart-icon" style="width:26px;cursor:pointer;" onclick="location.href='cart.html'">
+        <img src="http://localhost:3000/images/carrito.png" alt="Carrito" class="cart-icon" style="width:26px;cursor:pointer;" onclick="location.href='cart.html'">
         <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
     </div>
 `;

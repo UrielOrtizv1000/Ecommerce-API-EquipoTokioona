@@ -15,12 +15,6 @@
   <link rel="stylesheet" href="styles/footer.css">
 
   <!-- Scripts -->
-<<<<<<< HEAD
-  <script src="./js/apiClient.js"></script>
-  <script src="./js/auth.js"></script>
-  <script src="./js/components.js"></script>
-  <script src="./js/subscription.js"></script>
-=======
 <script src="./js/apiClient.js"></script>
 <script src="./js/auth.js"></script>
 <script src="./js/components.js"></script>
@@ -28,7 +22,6 @@
 
 
 
->>>>>>> develop
 </head>
 
 <body>
@@ -61,7 +54,7 @@
       <div class="categories-container">
         <div class="categories-card-collection">
 
-          <a href="store.html?category=grande" class="promo-card">
+          <a href="store.html?category=infantiles" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes grandes">
@@ -72,7 +65,7 @@
             </div>
           </a>
 
-          <a href="store.html?category=mediano" class="promo-card">
+          <a href="store.html?category=juegos y diversion" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes medianos">
@@ -83,7 +76,7 @@
             </div>
           </a>
 
-          <a href="store.html?category=pequeno" class="promo-card">
+          <a href="store.html?category=juguetes de jardin" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes pequeños">
@@ -97,21 +90,53 @@
         </div>
       </div>
     </section>
+    
+    <!-- <a href="store.html?offer=true">ofertas</a> -->
 
-    <!-- Offers section -->
+    <!-- Offers section --> 
     <section class="offers-section">
-      <h2>Productos en oferta</h2>
-      <p>Muy pronto encontrarás aquí nuestras mejores promociones.</p>
+      <div class="offers-title">
+        <h2>Conoce nuestras ofertas!</h2>
+      </div>
+      
+      <div class="offers-wrapper">
+        <div class="offer-card">
+          <a href="store.html?offer=true">
+            <div class="offer">
+              Todas las ofertas
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=infantiles&offer=true">
+            <div class="offer">
+              Ofertas en juguetes infantiles
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=juegos y diversion&offer=true">
+            <div class="offer">
+              Ofertas en juegos y diversion
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=juguetes de jardin&offer=true">
+            <div class="offer">
+              Ofertas en juguetes de jardin
+            </div>
+          </a>
+        </div>
+      </div>
+      
     </section>
+    
 
         <!-- Subscribe section -->
     <section class="subscribe-section">
       <h2>Suscríbete</h2>
-<<<<<<< HEAD
-      <p>Recibe nuestras ofertas, cupones y novedades directamente en tu correo.</p>
-=======
       <p>Recibe nuestras ofertas, cupones y novedades!</p>
->>>>>>> develop
 
       <form id="subscribe-form" class="subscribe-form">
         <input 
