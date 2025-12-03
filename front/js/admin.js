@@ -30,23 +30,138 @@ async function authFetch(endpoint, options = {}) {
 // ==========================================
 async function loadDashboardStats() {
     try {
-        // 1. Total de Ventas
-        const salesRes = await authFetch('/admin/total_sales');
-        const salesData = await salesRes.json();
-        if (salesData.ok) {
-            // Buscamos la tarjeta de Total Ventas (ajusta el selector según tu HTML exacto o agrega IDs)
-            // Aquí asumo que es la primera .stat-value
-            document.querySelectorAll('.stat-value')[0].textContent = `$${salesData.total_sales.toFixed(2)}`;
-        }
+        const res = await authFetch('/admin/stats');
+        const data = await res.json();
 
-        // 2. Reporte de Inventario (para llenar las tarjetas de categorías o gráfica)
-        const invRes = await authFetch('/admin/inventory');
-        const invData = await invRes.json();
+        if (res.ok && data.ok) {
+            const stats = data.stats;
+
+            document.getElementById('stat-sales').textContent = `$${stats.sales.toFixed(2)}`;
+            document.getElementById('stat-products').textContent = stats.products;
+            document.getElementById('stat-orders').textContent = stats.orders;
+            document.getElementById('stat-users').textContent = stats.users;
+        }
 
         loadSalesChart();
 
     } catch (error) {
         console.error("Error cargando dashboard:", error);
+    }
+}
+
+async function loadSalesSection() {
+    try {
+        const res = await authFetch('/admin/sales-page');
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+            // 1. Llenar tarjetas de hoy
+            document.getElementById('daily-sales-total').textContent = `$${Number(data.daily.total).toFixed(2)}`;
+            document.getElementById('daily-orders-count').textContent = data.daily.count;
+
+            // 2. Llenar tabla de historial
+            const tbody = document.querySelector('#sales-table tbody');
+            tbody.innerHTML = '';
+
+            data.history.forEach(order => {
+                const date = new Date(order.order_date).toLocaleDateString();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${order.order_id}</td>
+                    <td>${date}</td>
+                    <td>${order.name}</td>
+                    <td>$${Number(order.grand_total).toFixed(2)}</td>
+                    <td>
+                        <span style="
+                            padding: 4px 8px; 
+                            border-radius: 12px; 
+                            font-size: 0.85em; 
+                            background: ${getStatusColor(order.order_status)}; 
+                            color: white;">
+                            ${order.order_status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch (error) {
+        console.error("Error cargando ventas:", error);
+    }
+}
+
+function getStatusColor(status) {
+    if (status === 'Completed') return '#28a745'; 
+    if (status === 'Pending') return '#ffc107';  
+    if (status === 'Cancelled') return '#dc3545'; 
+    return '#6c757d';
+}
+
+async function loadInventorySection() {
+    try {
+        const res = await authFetch('/admin/inventory');
+        const data = await res.json();
+
+        // 1. Verificamos si es un Array (Lista)
+        if (!Array.isArray(data)) return;
+
+        const statsContainer = document.getElementById('inventory-stats');
+        const tbody = document.getElementById('inventory-table-body');
+
+        // Limpiamos contenido previo
+        statsContainer.innerHTML = '';
+        tbody.innerHTML = '';
+
+        let totalOutOfStock = 0;
+
+        // 2. Recorremos los grupos (Infantiles, Juegos, etc.)
+        data.forEach(group => {
+            const categoryName = group.category;
+            const products = group.products;
+
+            // Crear tarjeta de estadística para esta categoría
+            statsContainer.innerHTML += `
+                <div class="stat-card">
+                    <div class="stat-label">En ${categoryName}</div>
+                    <div class="stat-value">${products.length}</div>
+                </div>
+            `;
+
+            products.forEach(p => {
+                if (p.stock <= 0) totalOutOfStock++;
+
+                let statusBadge = '';
+                if (p.stock === 0) {
+                    statusBadge = '<span style="color:white; background:#dc3545; padding:2px 8px; border-radius:10px; font-size:0.85em;">Agotado</span>';
+                } else if (p.stock < 5) {
+                    statusBadge = '<span style="color:black; background:#ffc107; padding:2px 8px; border-radius:10px; font-size:0.85em;">Bajo Stock</span>';
+                } else {
+                    statusBadge = '<span style="color:white; background:#28a745; padding:2px 8px; border-radius:10px; font-size:0.85em;">Normal</span>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.product_id}</td>
+                    <td>${p.name}</td>
+                    <td>${categoryName}</td>
+                    <td style="font-weight: bold; font-size: 1.1em;">${p.stock}</td>
+                    <td>${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        // 3. Agregar tarjeta de Agotados al principio
+        const outOfStockCard = `
+            <div class="stat-card" style="border-left: 4px solid #dc3545;">
+                <div class="stat-label">Productos Agotados</div>
+                <div class="stat-value">${totalOutOfStock}</div>
+            </div>
+        `;
+        statsContainer.insertAdjacentHTML('afterbegin', outOfStockCard);
+
+    } catch (error) {
+        console.error("Error cargando inventario:", error);
     }
 }
 
@@ -112,24 +227,42 @@ async function loadSalesChart() {
 let currentEditingId = null; // Para saber si estamos editando o creando
 
 // A. Cargar lista de productos en la tabla
+// A. Cargar lista de productos en la tabla
 async function loadProductsTable() {
     try {
-        const res = await fetch(`${API_URL}/products`); // Esta ruta es pública según tu router
+        const res = await fetch(`${API_URL}/products`);
         const data = await res.json();
         
         const tbody = document.querySelector('.products-table tbody');
-        tbody.innerHTML = ''; // Limpiar tabla actual
+        tbody.innerHTML = ''; 
 
         if (data.ok) {
             data.products.forEach(p => {
+                let tagsHtml = '<span style="color: #ccc; font-style: italic; font-size: 0.8em;">Sin tags</span>';
+                if (p.tags) {
+                    try {
+                        const tagsArray = typeof p.tags === 'string' ? JSON.parse(p.tags) : p.tags;
+                        if (Array.isArray(tagsArray) && tagsArray.length > 0) {
+                            tagsHtml = tagsArray.map(tag => 
+                                `<span style="background: #e9ecef; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 4px;">${tag}</span>`
+                            ).join('');
+                        }
+                    } catch (e) { console.warn("Error tags", e); }
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${p.product_id}</td>
-                    <td><img src="${p.image_url || 'https://placehold.co/50'}" alt="img" width="50"></td>
+                    <td>
+                        <img src="${p.image_url || 'https://placehold.co/50'}" 
+                             alt="img" 
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                    </td>
                     <td>${p.name}</td>
                     <td>${p.category_name || 'Sin categoría'}</td>
                     <td>$${Number(p.price).toFixed(2)}</td>
-                    <td>${p.stock > 0 ? '<span style="color:green">Disponible</span>' : '<span style="color:red">Agotado</span>'}</td>
+                    <td>${p.stock > 0 ? '<span style="color:green; font-weight:bold;">Disponible</span>' : '<span style="color:red; font-weight:bold;">Agotado</span>'}</td>
+                    <td>${tagsHtml}</td>
                     <td>
                         <button class="action-btn edit-btn" onclick="openEditModal(${p.product_id})">Editar</button>
                         <button class="action-btn delete-btn" onclick="deleteProduct(${p.product_id})">Eliminar</button>
@@ -244,8 +377,6 @@ document.getElementById('productForm').addEventListener('submit', async function
             method: method,
             headers: {
                 'Authorization': `Bearer ${token}`
-                // IMPORTANTE: NO poner 'Content-Type': 'application/json'
-                // Fetch detecta FormData y pone el Content-Type correcto automáticamente
             },
             body: formData
         });
@@ -280,7 +411,6 @@ document.getElementById('productForm').addEventListener('submit', async function
 
 // F. Eliminar Producto
 window.deleteProduct = async function(id) {
-    // Usamos Swal para confirmar
     const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: "No podrás revertir esto. El producto ID " + id + " será eliminado.",
@@ -339,10 +469,11 @@ function showSection(sectionId) {
         loadProductsTable();
         loadCategoriesIntoSelect();
     }
+    if (sectionId === 'sales') loadSalesSection();
+    if (sectionId === 'inventory') loadInventorySection();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar Auth
     if (!token) {
         console.warn("No hay token, redirigiendo...");
         window.location.href = 'index.html'; 

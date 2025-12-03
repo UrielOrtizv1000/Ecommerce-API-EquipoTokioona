@@ -67,5 +67,10 @@ async function resetPassword(password, user_id) {
   return rows.affectedRows;
 }
 
+async function countAll() {
+    const [rows] = await pool.query("SELECT COUNT(*) as total FROM users");
+    return rows[0].total;
+}
 
-module.exports = { createUser, userLogin, getUserByEmail, resetPassword };
+
+module.exports = { createUser, userLogin, getUserByEmail, resetPassword, countAll };

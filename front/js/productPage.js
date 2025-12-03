@@ -73,18 +73,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 5) Botón "Agregar al carrito"
     const addBtn = document.getElementById("add-to-cart-btn");
+
+    const user = Auth.getUser();
+    const isAdmin = user && user.role === 'admin';
+
     if (addBtn) {
+        if (isAdmin) {
+            addBtn.disabled = true;
+            addBtn.textContent = "Vista de Administrador";
+            addBtn.style.backgroundColor = "#ccc";
+            addBtn.style.cursor = "not-allowed";
+        } else if ((product.stock || 0) <= 0) {
+            addBtn.disabled = true;
+            addBtn.textContent = "Sin Stock";
+        } else {
+            addBtn.disabled = false;
+            addBtn.textContent = "Agregar al Carrito";
+        }
+
         addBtn.addEventListener("click", async () => {
-            if (!Auth.isAuthenticated()) {
-                alert("Debes iniciar sesión para agregar al carrito.");
+            if (isAdmin) {
+                alert("Los administradores no pueden realizar compras.");
                 return;
             }
 
+            // 2. Verificación de autenticación
+            if (!Auth.isAuthenticated()) {
+                alert("Debes iniciar sesión para agregar al carrito.");
+                // Opcional: openLoginModal();
+                return;
+            }
+
+            // 3. Verificación de stock
             if ((product.stock || 0) <= 0) {
                 alert("Este producto no tiene stock disponible.");
                 return;
             }
 
+            // 4. Llamada a la API
             const res = await ApiClient.addToCart({
                 product_id: product.product_id || productId,
                 quantity: 1

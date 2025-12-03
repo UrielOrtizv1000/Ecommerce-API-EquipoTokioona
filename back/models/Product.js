@@ -98,6 +98,25 @@ const Product = {
     `);
 
     return rows;
+  },
+
+  async countActive() {
+      const [rows] = await pool.query("SELECT COUNT(*) as total FROM products WHERE stock > 0");
+      return rows[0].total;
+  },
+
+async getInventoryReport() {
+    const [rows] = await pool.query(`
+      SELECT 
+        p.product_id,
+        p.name,
+        p.stock,
+        c.category_name
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.category_id
+      ORDER BY p.stock ASC
+    `);
+    return rows;
   }
 };
 

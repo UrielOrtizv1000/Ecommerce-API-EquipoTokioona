@@ -87,6 +87,39 @@ const Order = {
     `);
 
     return rows;
+  },
+  
+  async countPending() {
+    const [rows] = await pool.query("SELECT COUNT(*) as total FROM orders WHERE order_status != 'Completed' AND order_status != 'Cancelled'");
+    return rows[0].total;
+  },
+
+  async getDailyStats() {
+    const [rows] = await pool.query(`
+      SELECT 
+        COUNT(*) as count, 
+        SUM(grand_total) as total 
+      FROM orders 
+      WHERE DATE(order_date) = CURDATE()
+    `); // CURDATE Current Date
+    return rows[0];
+  },
+
+  async getRecentOrders() {
+    const [rows] = await pool.query(`
+      SELECT 
+        o.order_id,
+        o.order_date,
+        o.grand_total,
+        o.order_status,
+        u.name, 
+        u.email
+      FROM orders o
+      JOIN users u ON o.user_id = u.user_id
+      ORDER BY o.order_date DESC
+      LIMIT 20
+    `);
+    return rows;
   }
 
 };

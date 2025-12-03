@@ -152,6 +152,9 @@ class Store {
     // TARJETA DE PRODUCTO
     // ==========================
     createProductCard(product) {
+        const user = Auth.getUser(); 
+        const isAdmin = user && user.role === 'admin';
+
         const card = document.createElement("div");
         card.className = "card";
 
@@ -197,27 +200,34 @@ class Store {
             ? `<span class="badge-offer">Oferta</span>`
             : "";
 
-        card.innerHTML = `
-            <div class="card-header">
-                <span class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </span>
-                ${offerBadge}
-                <img src="${imageUrl}" alt="${product.name}" class="product-image">
-            </div>
-            <h4 class="product-title">${product.name}</h4>
-            <p>${product.description || "Descripción no disponible"}</p>
-            <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
-            <p>Stock: ${product.stock}</p>
-            <div class="tags">
-                ${tagsHTML}
-            </div>
-            <div class="card-btn">
-                <button class="add-to-cart-btn" ${product.stock === 0 ? "disabled" : ""}>
-                    ${product.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
-                </button>
-            </div>
-        `;
+            card.innerHTML = `
+                <div class="card-header">
+
+                    ${!isAdmin ? `
+                        <span class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </span>
+                    ` : ''} 
+                    ${offerBadge}
+                    <img src="${imageUrl}" alt="${product.name}" class="product-image">
+                </div>
+                <h4 class="product-title">${product.name}</h4>
+                <p>${product.description || "Descripción no disponible"}</p>
+                <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
+                <p>Stock: ${product.stock}</p>
+                <div class="tags">
+                    ${tagsHTML}
+                </div>
+                <div class="card-btn">
+                    <button 
+                        class="add-to-cart-btn" 
+                        ${(isAdmin || product.stock === 0) ? "disabled" : ""} 
+                        style="${isAdmin ? 'cursor: not-allowed; opacity: 0.6;' : ''}"
+                    >
+                        ${isAdmin ? "Vista Admin" : (product.stock === 0 ? "Sin Stock" : "Agregar al Carrito")}
+                    </button>
+                </div>
+            `;
 
         const wishlistBtn = card.querySelector(".wishlist-btn");
         const cartBtn = card.querySelector(".add-to-cart-btn");
@@ -225,10 +235,13 @@ class Store {
         const titleEl = card.querySelector(".product-title");
 
         // ❤️ Wishlist
-        wishlistBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            this.handleWishlist(product, wishlistBtn);
-        });
+
+        if (wishlistBtn) { 
+            wishlistBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.handleWishlist(product, wishlistBtn);
+            })
+        };
 
         // 🛒 Botón agregar al carrito
         cartBtn.addEventListener("click", (e) => {
