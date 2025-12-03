@@ -33,7 +33,7 @@ app.use("/images", express.static(imagesPath));
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons", couponRoutes);
-
+app.use("/api/address", addressRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/subscribe", subscriptionRoutes);
