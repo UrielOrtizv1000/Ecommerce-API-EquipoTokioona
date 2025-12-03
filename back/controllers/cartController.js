@@ -204,7 +204,8 @@ const cartController = {
         taxes: totals.taxes,
         shipping: totals.shippingCost,
         total: totals.total,
-        shippingAddressId
+        shippingAddressId,
+        paymentMethod: payment.method
       });
 
       // REDUCE STOCK
@@ -218,7 +219,7 @@ const cartController = {
       // GENERATE PDF
       const pdfPath = await generatePDF({
         id: orderId,
-        customerName: shipping?.name,
+        customerName: shipping?.recipientName,
         items,
         subtotal: totals.subtotal,
         discount: totals.discount,

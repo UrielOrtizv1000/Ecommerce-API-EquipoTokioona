@@ -18,10 +18,12 @@ const CartCoupon = {
   },
 
   getByUser: async (userId) => {
-    const sql = 'SELECT * FROM cart_coupons WHERE user_id = ?';
+    const sql = 'SELECT * FROM cart_coupons WHERE user_id = ? LIMIT 1';
     const [rows] = await db.execute(sql, [userId]);
     return rows;
   }
 };
+
+
 
 module.exports = CartCoupon;

@@ -17,6 +17,8 @@ const couponController = {
     const coupon = await Coupon.findByCode(code.trim().toUpperCase());
     if (!coupon) return res.status(404).json({ success: false, message: 'Cupón not found' });
 
+    
+
     // Valite date
     if (coupon.expiry_date && new Date(coupon.expiry_date) < new Date()) {
       return res.status(400).json({ success: false, message: 'Expired Coupon' });
