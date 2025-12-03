@@ -312,7 +312,7 @@ main > section {
   width: 700px;
   display: flex;
   background: radial-gradient(circle at top, #ffffff 0%, #ffffff 60%, #c8cbe2 100%);  border-radius: 50px;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.1);
   border: 1px solid #d2d2d7;
 
 }
