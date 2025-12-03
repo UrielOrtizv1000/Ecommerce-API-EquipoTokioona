@@ -52,18 +52,18 @@ const ApiClient = {
     }
   },
 
-  async login(credentials) {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
-      });
-      return this._handleResponse(response);
-    } catch (error) {
-      return { ok: false, message: 'Error de conexión con el servidor.' };
-    }
-  },
+async login(credentials) {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error de conexión con el servidor.' };
+  }
+},
 
   async logout() {
     try {
@@ -77,17 +77,31 @@ const ApiClient = {
     }
   },
 
-  async getCaptchaWidget() {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/getCaptchaWidget`);
-      if (!response.ok) {
-        return '<div class="captcha-error">No se pudo cargar el CAPTCHA.</div>';
-      }
-      return await response.text();
-    } catch (error) {
-      return '<div class="captcha-error">Error de red al cargar el CAPTCHA.</div>';
+async getCaptcha() {
+  try {
+    console.log('🔍 Solicitando CAPTCHA al backend...');
+    const response = await fetch(`${BASE_URL}/auth/getCaptcha`);
+    
+    console.log('🔍 Response status:', response.status);
+    
+    if (!response.ok) {
+      console.error('❌ Error en respuesta de CAPTCHA:', response.status);
+      throw new Error('Failed to fetch CAPTCHA');
     }
-  },
+    
+    const data = await response.json();
+    console.log('✅ CAPTCHA recibido - ID:', data.captchaId?.substring(0, 10) + '...');
+    
+    return data;
+  } catch (error) {
+    console.error('❌ Error fetching CAPTCHA:', error);
+    return { 
+      ok: false, 
+      message: 'No se pudo cargar el CAPTCHA',
+      error: error.message 
+    };
+  }
+},
 
   async forgotPassword(email) {
     try {

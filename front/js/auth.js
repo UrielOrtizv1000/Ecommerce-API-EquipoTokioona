@@ -137,21 +137,55 @@ const Auth = {
         // this.updateCartCount();
     },
 
-    // Carga el CAPTCHA de reCAPTCHA
-    async _loadCaptcha() {
-        const captchaContainer = document.getElementById('captcha-container');
-        if (captchaContainer) {
-            const htmlWidget = await ApiClient.getCaptchaWidget();
-            captchaContainer.innerHTML = htmlWidget;
-            if (window.grecaptcha === undefined && htmlWidget.includes('g-recaptcha')) {
-                 const script = document.createElement('script');
-                 script.src = "https://www.google.com/recaptcha/api.js"; 
-                 script.async = true;
-                 script.defer = true;
-                 document.head.appendChild(script);
-            }
+// Reemplazar la función _loadCaptcha
+async _loadCaptcha() {
+  const captchaContainer = document.getElementById('captcha-container');
+  if (captchaContainer) {
+    try {
+      // Solicitar nuevo CAPTCHA al backend
+      const response = await ApiClient.getCaptcha();
+      
+      if (response.ok) {
+        // Crear elemento de CAPTCHA
+        const captchaHtml = `
+          <div class="captcha-wrapper" id="captcha-wrapper-${response.captchaId}">
+            <div class="captcha-image">
+              <div class="captcha-text">${response.captchaText}</div>
+            </div>
+            <div class="captcha-controls">
+              <input 
+                type="text" 
+                id="captcha-input" 
+                placeholder="Ingresa el texto de arriba" 
+                required
+                maxlength="6"
+                style="margin: 10px 0; padding: 8px; width: 200px;"
+              >
+              <button type="button" id="reload-captcha" style="margin-left: 10px; padding: 8px;">
+                ↻ Actualizar
+              </button>
+            </div>
+            <input type="hidden" id="captcha-id" value="${response.captchaId}">
+            <small style="color: #666; font-size: 12px;">Ingresa las 6 letras/números que ves arriba</small>
+          </div>
+        `;
+        
+        captchaContainer.innerHTML = captchaHtml;
+        
+        // Agregar evento para recargar CAPTCHA
+        const reloadBtn = document.getElementById('reload-captcha');
+        if (reloadBtn) {
+          reloadBtn.addEventListener('click', () => this._loadCaptcha());
         }
-    },
+      } else {
+        captchaContainer.innerHTML = '<div class="captcha-error">Error al cargar CAPTCHA</div>';
+      }
+    } catch (error) {
+      captchaContainer.innerHTML = '<div class="captcha-error">Error de conexión</div>';
+      console.error('Error loading CAPTCHA:', error);
+    }
+  }
+},
     
     // Configura eventos del modal (cerrar al click fuera, botones)
     _setupModalEvents() {
@@ -187,66 +221,78 @@ const Auth = {
         }
     },
 
-    // Maneja el envío del formulario de login
-    _setupLoginHandler() {
-        const loginForm = document.getElementById("login-form");
-        const submitBtn = document.getElementById("submit-btn");
+// Modificar el handler de login
+_setupLoginHandler() {
+  const loginForm = document.getElementById("login-form");
+  const submitBtn = document.getElementById("submit-btn");
 
-        if (loginForm) {
-            loginForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                const username = document.getElementById("login-username").value;
-                const password = document.getElementById("login-password").value;
-                const captchaResponse = (typeof grecaptcha !== "undefined")
-                    ? grecaptcha.getResponse()
-                    : null;
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+      const captchaText = document.getElementById("captcha-input")?.value;
+      const captchaId = document.getElementById("captcha-id")?.value;
 
-                if (!username || !password) {
-                    this._showError(loginForm, "Por favor, completa todos los campos.");
-                    return;
-                }
-                
-                if (!captchaResponse) {
-                    this._showError(loginForm, "Por favor, verifica el CAPTCHA.");
-                    return;
-                }
-                
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = "Iniciando sesión...";
-                }
+      // 🔴 LOG CRUCIAL en frontend
+      console.log('🔍 FRONTEND - Datos a enviar:', {
+        username,
+        password: '***', // No mostrar contraseña completa
+        captchaId,
+        captchaText,
+        captchaInputElement: document.getElementById("captcha-input"),
+        captchaIdElement: document.getElementById("captcha-id")
+      });
 
-                try {
-                    const credentials = { 
-                        username, 
-                        password, 
-                        'g-recaptcha-response': captchaResponse
-                    };
-                    
-                    const result = await Auth.login(credentials);
-                    
-                    if (result.success) {
-                        closeLoginModal();
-                        this._showSuccess("¡Inicio de sesión exitoso!");
-                        this.updateUserSection();
-                    } else {
-                        this._showError(loginForm, result.message);
-                        if (typeof grecaptcha !== "undefined") {
-                            grecaptcha.reset();
-                        }
-                    }
-                } catch (error) {
-                    this._showError(loginForm, "Error durante el login");
-                } finally {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = "Aceptar";
-                    }
-                }
-            });
+      if (!username || !password) {
+        this._showError(loginForm, "Por favor, completa todos los campos.");
+        return;
+      }
+      
+      if (!captchaText || !captchaId) {
+        this._showError(loginForm, "Por favor, completa el CAPTCHA.");
+        return;
+      }
+      
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Iniciando sesión...";
+      }
+
+      try {
+        const credentials = { 
+          username, 
+          password, 
+          captchaId,
+          captchaText
+        };
+        
+        const result = await Auth.login(credentials);
+        
+        if (result.ok) {
+          closeLoginModal();
+          this._showSuccess("¡Inicio de sesión exitoso!");
+          this.updateUserSection();
+          // Recargar CAPTCHA para próxima vez
+          await this._loadCaptcha();
+        } else {
+          this._showError(loginForm, result.message);
+          // Recargar CAPTCHA si hay error
+          await this._loadCaptcha();
         }
-    },
+      } catch (error) {
+        this._showError(loginForm, "Error durante el login");
+        await this._loadCaptcha();
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Aceptar";
+        }
+      }
+    });
+  }
+},
 
     // Maneja el envío del formulario de registro
     _setupRegisterHandler() {

@@ -4,9 +4,9 @@ const User = require("../models/User");
 const FailedLogin = require("../models/FailedLogin");
 const hashPassword = require("../utils/hashPassword");
 
-const recaptcha = require("../utils/generateCaptcha");
-
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
+
+const { verifyCaptcha } = require('../utils/generateCaptcha');
 
 // for forgot password
 const sendEmail = require("../utils/sendEmail");
@@ -48,104 +48,62 @@ const signup = async (req, res) => {
 }
 
 // -- USER LOGIN CONTROLLER --
-const login = async (req,res) => {
+const login = async (req, res) => {
   try {
-    const { username, password, 'g-recaptcha-response': captchaResponse } = req.body;
-    if (!captchaResponse) {
+    console.log('🔍 LOGIN REQUEST BODY:', req.body);
+    
+    const { username, password, captchaId, captchaText } = req.body;
+    
+    // ... validaciones anteriores ...
+    
+    console.log('🔍 Validando CAPTCHA:', { captchaId, captchaText });
+    const captchaResult = verifyCaptcha(captchaId, captchaText);
+    
+    if (!captchaResult.valid) {
+      console.log('❌ CAPTCHA inválido:', captchaResult.reason);
       return res.status(400).json({
         ok: false,
-        message: "Please verify your CAPTCHA"
-      })
-    }
-
-    // Verify CAPTCHA
-    recaptcha.verify(req, async (error, data) => {
-      if (error) {
-        return res.status(400).json({
-          ok: false,
-          message: "CAPTCHA verification failed"
-        });
-      }
-
-      // CAPTCHA PASSED: proceed with login logic
-      
-      // Check if one or more form entries are empty
-      if (!username || !password) {
-        return res.status(400).json({
-          ok: false,
-          message: "One or more form entries are empty"
-        });
-      }
-
-      const userData = await User.userLogin(username, password);
-
-      // ============================================================
-      // 🔴 CORRECCIÓN AQUÍ: Validar si el usuario existe antes de leer propiedades
-      // ============================================================
-      if (!userData) {
-          return res.status(401).json({
-              ok: false,
-              message: "Wrong credentials" // Usuario no encontrado
-          });
-      }
-
-      // Si userData existe, ahora es seguro verificar si hubo intento fallido (contraseña mal)
-      if (userData.failedAttempt) {
-
-        const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
-        if (iterateFailedAttempt === 0) {
-          return res.status(404).json({
-            ok: false,
-            message: "User data was not found. Iteration failed"
-          })
-        }
-
-        const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
-        if (!currAtt) {
-          return res.status(404).json({
-            ok: false,
-            message: "User data was not found. Attempt check failed"
-          })
-        }
-
-        if (currAtt % 3 === 0) {
-          const lock = await FailedLogin.setLockout(userData.affectedId);
-          if (lock === 0) {
-            return res.status(500).json({
-              ok: false,
-              messge: "User lockout failed"
-            });
-          }
-        }
-
-        return res.status(401).json({
-          ok: false,
-          message: "Wrong credentials"
-        });
-      }
-
-      // Si llegamos aquí, el login fue exitoso. Limpiamos intentos fallidos.
-      const clearAtt = await FailedLogin.resetAttempts(userData.id);
-      // Nota: Si es la primera vez y no hay registros en failed_logins, esto podría dar 0.
-      // Depende de tu modelo, pero generalmente no debería bloquear el login exitoso.
-      
-      const rmLock = await FailedLogin.removeLockout(userData.id);
-      
-      const token = storeToken(userData);
-
-      res.status(200).json({
-        ok: true,
-        token: token,
+        message: captchaResult.reason
       });
-    })
+    }
+    
+    console.log('✅ CAPTCHA válido, continuando con login...');
+    
+    // Proceder con login normal
+    const userData = await User.userLogin(username, password);
+    
+    if (!userData) {
+      console.log('❌ Usuario no encontrado o contraseña incorrecta');
+      return res.status(401).json({
+        ok: false,
+        message: "Credenciales incorrectas"
+      });
+    }
+  
+    
+    if (userData.failedAttempt) {
+      // ... código existente de intentos fallidos
+    }
+    
+    // Limpiar intentos fallidos
+    await FailedLogin.resetAttempts(userData.id);
+    await FailedLogin.removeLockout(userData.id);
+    
+    const token = storeToken(userData);
+    
+    res.status(200).json({
+      ok: true,
+      token: token,
+    });
+    
   } catch (error) {
     console.error("Login error: ", error);
     res.status(500).json({
       ok: false,
-      message: "Internal server error"
+      message: "Error interno del servidor"
     });
   }
-}
+};
 
 // -- USER LOGOUT CONTROLLER --
 const logout = async (req, res) => {

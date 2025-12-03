@@ -167,28 +167,29 @@
   <!-- Dynamic footer insertion -->
   <div id="footer"></div>
 
-  <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-content">
-      <h2>Iniciar sesión</h2>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar sesión</h2>
 
-      <form id="login-form">
-        <label for="login-username">Nombre de usuario</label>
-        <input type="text" id="login-username" required>
+    <form id="login-form">
+      <label for="login-username">Nombre de usuario</label>
+      <input type="text" id="login-username" required>
 
-        <label for="login-password">Contraseña</label>
-        <input type="password" id="login-password" required>
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
 
-        <div id="captcha-container" style="margin: 10px 0;"></div>
+      <!-- CAPTCHA Container -->
+      <div id="captcha-container" style="margin: 15px 0; padding: 15px; background: #1e1e1f73; border-radius: 4px;"></div>
 
-        <div class="modal-buttons">
-          <button type="button" id="register-btn">Registrarse</button>
-          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-          <button type="submit" id="submit-btn">Aceptar</button>
-        </div>
-      </form>
-    </div>
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
   </div>
+</div>
 
   <!-- FORGOT PASSWORD MODAL -->
   <div class="modal-overlay" id="forgot-modal" style="display:none;">
