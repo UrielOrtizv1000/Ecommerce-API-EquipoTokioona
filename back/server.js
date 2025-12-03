@@ -40,7 +40,6 @@ app.use("/api/subscribe", subscriptionRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/address", addressRoutes);
 async function testDBConnection() {
   try {
     const [rows] = await pool.query("SELECT 1 + 1 AS result");

@@ -105,43 +105,13 @@ const Auth = {
         const user = this.getUser(); 
 
         if (user) {
-            let actionButtonHtml = '';
-
-            if (user.role === 'admin') {
-                actionButtonHtml = `
-                    <button onclick="window.location.href='admin.html'" class="admin-panel-btn" style="margin-right: 15px; cursor: pointer;">
-                        ⚙️ Panel Admin
-                    </button>
-                `;
-            } else {
-                actionButtonHtml = `
-                    <div class="cart-wrapper" onclick="location.href='cart.html'">
-                        <img 
-                          src="http://localhost:3000/images/carrito.png" 
-                          alt="Carrito" 
-                          class="cart-icon"
-                        >
-                        <span id="cart-count-badge" class="cart-count-badge">0</span>
-                    </div>
-                `;
-            }
-
-            section.innerHTML = `
-            <div class="user-menu">
-                <span>Hola, ${user.name}</span>
-                
-                ${actionButtonHtml}
-
-                <button onclick="Auth.logout()" class="logout-btn">
-                    Cerrar sesión
-                </button>
-            </div>
-            `;
-
-            if (user.role !== 'admin') {
-                this.updateCartCount();
-            }
-
+           section.innerHTML = `
+    <div class="user-menu">
+        <span>Hola, ${user.name}</span>
+        <img src="http://localhost:3000/images/carrito.png" alt="Carrito" class="cart-icon" style="width:26px;cursor:pointer;" onclick="location.href='cart.html'">
+        <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
+    </div>
+`;
         } else {
             section.innerHTML = `
                 <button type="button" class="login-btn" onclick="openLoginModal()">

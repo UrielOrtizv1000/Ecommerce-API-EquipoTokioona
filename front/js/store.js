@@ -8,6 +8,21 @@ class Store {
         this.priceMax = null;
         this.onlyOffers = false;
 
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        const offerParam = urlParams.get('offer');
+
+        // 1. Procesar categoría desde la URL
+        if (categoryParam) {
+            this.currentCategory = categoryParam.toLowerCase().trim();
+        }
+
+        // 2. Procesar ofertas desde la URL
+        if (offerParam === 'true' || offerParam === '1') {
+            this.onlyOffers = true;
+        }
+
         this.init();
     }
 
@@ -26,8 +41,22 @@ class Store {
         // 4) Conectar eventos de filtros (precio + ofertas)
         this.setupFilterControls();
 
-        // 5) Primer render con todos los productos
+        // 5) Marcar checkbox de ofertas si viene en la URL
+        this.setupUrlFilters();
+
+        // 6) Primer render con todos los productos
         this.applyFilters();
+    }
+
+    // Método para configurar filtros desde URL
+    setupUrlFilters() {
+        // Marcar checkbox de ofertas si viene en la URL
+        if (this.onlyOffers) {
+            const offerCheckbox = document.getElementById("filter-offer");
+            if (offerCheckbox) {
+                offerCheckbox.checked = true;
+            }
+        }
     }
 
     // ==========================
@@ -200,34 +229,27 @@ class Store {
             ? `<span class="badge-offer">Oferta</span>`
             : "";
 
-            card.innerHTML = `
-                <div class="card-header">
-
-                    ${!isAdmin ? `
-                        <span class="wishlist-btn">
-                            <i class="far fa-heart"></i>
-                        </span>
-                    ` : ''} 
-                    ${offerBadge}
-                    <img src="${imageUrl}" alt="${product.name}" class="product-image">
-                </div>
-                <h4 class="product-title">${product.name}</h4>
-                <p>${product.description || "Descripción no disponible"}</p>
-                <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
-                <p>Stock: ${product.stock}</p>
-                <div class="tags">
-                    ${tagsHTML}
-                </div>
-                <div class="card-btn">
-                    <button 
-                        class="add-to-cart-btn" 
-                        ${(isAdmin || product.stock === 0) ? "disabled" : ""} 
-                        style="${isAdmin ? 'cursor: not-allowed; opacity: 0.6;' : ''}"
-                    >
-                        ${isAdmin ? "Vista Admin" : (product.stock === 0 ? "Sin Stock" : "Agregar al Carrito")}
-                    </button>
-                </div>
-            `;
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="wishlist-btn">
+                    <i class="far fa-heart"></i>
+                </span>
+                ${offerBadge}
+                <img src="${imageUrl}" alt="${product.name}" class="product-image">
+            </div>
+            <h4 class="product-title">${product.name}</h4>
+            <p>${product.description || "Descripción no disponible"}</p>
+            <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
+            <p>Stock: ${product.stock}</p>
+            <div class="tags">
+                ${tagsHTML}
+            </div>
+            <div class="card-btn">
+                <button class="add-to-cart-btn" ${product.stock === 0 ? "disabled" : ""}>
+                    ${product.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
+                </button>
+            </div>
+        `;
 
         const wishlistBtn = card.querySelector(".wishlist-btn");
         const cartBtn = card.querySelector(".add-to-cart-btn");
@@ -235,13 +257,10 @@ class Store {
         const titleEl = card.querySelector(".product-title");
 
         // ❤️ Wishlist
-
-        if (wishlistBtn) { 
-            wishlistBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                this.handleWishlist(product, wishlistBtn);
-            })
-        };
+        wishlistBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.handleWishlist(product, wishlistBtn);
+        });
 
         // 🛒 Botón agregar al carrito
         cartBtn.addEventListener("click", (e) => {
@@ -376,8 +395,22 @@ class Store {
     setupCategoryFilters() {
         const buttons = document.querySelectorAll(".sidebar button");
         console.log(`🔘 Encontrados ${buttons.length} botones de categoría`);
+        // DEPURACIÓN: Mostrar todos los valores de data-category
+    buttons.forEach((btn, index) => {
+        console.log(`Botón ${index}:`, {
+            text: btn.textContent,
+            dataCategory: btn.dataset.category,
+            dataset: btn.dataset
+        });
+    });
 
+        // Activar botón según categoría actual
         buttons.forEach((btn) => {
+            const btnCategory = btn.dataset.category;
+            if (btnCategory === this.currentCategory) {
+                btn.classList.add("active");
+            }
+
             btn.addEventListener("click", () => {
                 const category = btn.dataset.category;
                 console.log(`🎯 Filtrando por categoría: ${category}`);
@@ -389,8 +422,25 @@ class Store {
                 btn.classList.add("active");
 
                 this.applyFilters();
+
+                // Actualizar URL sin recargar la página
+                this.updateUrlWithCategory(category);
             });
         });
+    }
+
+    // Nuevo método para actualizar la URL
+    updateUrlWithCategory(category) {
+        const url = new URL(window.location);
+
+        if (category && category !== 'all') {
+            url.searchParams.set('category', category);
+        } else {
+            url.searchParams.delete('category');
+        }
+
+        // Actualizar URL sin recargar
+        window.history.pushState({}, '', url);
     }
 
     // ==========================
