@@ -311,17 +311,26 @@ main > section {
 .socialMedia-section{
   width: 700px;
   display: flex;
-  background-color: white;
-  border-radius: 50px;
+  background: radial-gradient(circle at top, #ffffff 0%, #ffffff 60%, #c8cbe2 100%);  border-radius: 50px;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.25);
+  border: 1px solid #d2d2d7;
 
 }
 .socialMedia-section div{
   margin: 50px;
 }
+.socialMedia-section h1{
+  color: black;
+}
 .img-social img{
   width: 200px;
+  border-radius: 15px;
+  transition: transform 0.18s ease
 }
+.img-social img:hover{
+  transform: scale(95%);  
+}
+
 
 /* ================================
    Offers section
@@ -449,7 +458,7 @@ main > section {
    DARK THEME
    ============================================================ */
 
-/* Sidebar */
+
 .body-dark-theme .hero-container {
   background: radial-gradient(circle at top left, #101016 0%, #2f2f36 45%, #242436 100%);
   box-shadow: 0 8px 22px rgba(42, 37, 103, 0.75);
@@ -483,7 +492,7 @@ main > section {
 .body-dark-theme .subscribe-section {
   background: radial-gradient(circle at top, #3a3a54 0%, #101016 60%, #21212d 100%);
   border: 1px solid #5b5b73;
-  box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 22px rgba(42, 37, 103, 0.75);
 }
 
 .body-dark-theme .subscribe-section p {
@@ -509,16 +518,25 @@ main > section {
 }
 
 .body-dark-theme .socialMedia-section{
-  width: 700px;
-  display: flex;
-  background-color: white;
-  border-radius: 50px;
+  background: radial-gradient(circle at top, #3a3a54 0%, #25252d 60%, #181827 100%);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgb(64, 72, 104);
 
 }
-.body-dark-theme .socialMedia-section div{
-  margin: 50px;
+.body-dark-theme .socialMedia-section h1{
+  color: white;
 }
-.body-dark-theme .img-social img{
-  width: 200px;
+
+.body-dark-theme  .offers-section {
+  background: radial-gradient(circle at top, #3a3a54 0%, #25252d 60%, #181827 100%);
+  border: 1px solid rgb(64, 72, 104);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+}
+.body-dark-theme  .offer-card {
+  background: linear-gradient(#252539,#0f0f1a);
+  border: 1px solid rgb(64, 72, 104);
+  box-shadow: 0 4px 12px rgba(16, 16, 16, 0.75);
+}
+.body-dark-theme  .offer{
+  color: rgb(231, 229, 235);
 }
