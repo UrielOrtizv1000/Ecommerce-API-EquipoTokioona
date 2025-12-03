@@ -52,18 +52,18 @@ const ApiClient = {
     }
   },
 
-  async login(credentials) {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
-      });
-      return this._handleResponse(response);
-    } catch (error) {
-      return { ok: false, message: 'Error de conexión con el servidor.' };
-    }
-  },
+async login(credentials) {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error de conexión con el servidor.' };
+  }
+},
 
   async logout() {
     try {
@@ -77,17 +77,28 @@ const ApiClient = {
     }
   },
 
-  async getCaptchaWidget() {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/getCaptchaWidget`);
-      if (!response.ok) {
-        return '<div class="captcha-error">No se pudo cargar el CAPTCHA.</div>';
-      }
-      return await response.text();
-    } catch (error) {
-      return '<div class="captcha-error">Error de red al cargar el CAPTCHA.</div>';
+async getCaptcha() {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/getCaptcha`);
+    
+    
+    if (!response.ok) {
+      console.error('❌ Error en respuesta de CAPTCHA:', response.status);
+      throw new Error('Failed to fetch CAPTCHA');
     }
-  },
+    
+    const data = await response.json();
+    
+    return data;
+  } catch (error) {
+    console.error('❌ Error fetching CAPTCHA:', error);
+    return { 
+      ok: false, 
+      message: 'No se pudo cargar el CAPTCHA',
+      error: error.message 
+    };
+  }
+},
 
   async forgotPassword(email) {
     try {
@@ -251,17 +262,17 @@ async getAllProducts() {
 
   // body esperado: { shipping: {...}, payment: {...} }
   async checkout(payload) {
-    try {
-      const response = await fetch(`${BASE_URL}/cart/checkout`, {
-        method: 'POST',
-        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify(payload)
-      });
-      return this._handleResponse(response);
-    } catch (error) {
-      return { ok: false, message: 'Error al procesar la compra.' };
-    }
-  },
+  try {
+    const response = await fetch(`${BASE_URL}/cart/checkout`, {
+      method: 'POST',
+      headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(payload)
+    });
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: 'Error al procesar la compra.' };
+  }
+},
 
   // ==========================
   // WISHLIST
@@ -310,17 +321,18 @@ async getAllProducts() {
 
   // controller.applyCoupon
   async applyCoupon(code) {
-    try {
-      const response = await fetch(`${BASE_URL}/coupons/apply`, {
-        method: 'POST',
-        headers: this._authHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ code })
-      });
-      return this._handleResponse(response);
-    } catch (error) {
-      return { ok: false, message: 'Error al aplicar el cupón.' };
-    }
-  },
+  try {
+    const response = await fetch(`${BASE_URL}/coupons/apply`, {
+  method: 'POST',
+  headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+  body: JSON.stringify({ code })
+});
+    return this._handleResponse(response);
+  } catch (err) {
+    return { ok: false, message: "Error applying coupon." };
+  }
+},
+
 
   async removeCoupon(code) {
     try {
@@ -443,6 +455,24 @@ async subscribe(email) {
     }
   },
 
+  // ==========================
+// ADDRESS
+// ==========================
+
+async createAddress(addressData) {
+  try {
+    const response = await fetch(`${BASE_URL}/address`, {
+      method: 'POST',
+      headers: this._authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(addressData)
+    });
+    return this._handleResponse(response);
+  } catch (error) {
+    return { ok: false, message: "Error al guardar la dirección." };
+  }
+},
+
+
   async getInventoryReport() {
     try {
       const response = await fetch(`${BASE_URL}/admin/inventory-report`, {
@@ -454,4 +484,5 @@ async subscribe(email) {
       return { ok: false, message: 'Error al obtener inventario.' };
     }
   }
+  
 };

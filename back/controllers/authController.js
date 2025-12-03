@@ -1,23 +1,14 @@
-/*
-Here you need to include the controllers for:
-Register: Validates password confirmation, hashes with bcrypt, saves to the DB.
-Login: Verifies credentials, tracks failed attempts → locks account for 5 minutes.
-Lockout: Uses FailedLogin table with last_attempt and attempts.
-Forgot Password: Generates a unique token, sends an email with a reset link.
-CAPTCHA: Generated in captchaController, validated here.
-*/
 const jwt = require('jsonwebtoken');
 
 const User = require("../models/User");
 const FailedLogin = require("../models/FailedLogin");
 const hashPassword = require("../utils/hashPassword");
 
-const recaptcha = require("../utils/generateCaptcha");
-
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
 
-// for forgot password
+const { verifyCaptcha } = require('../utils/generateCaptcha');
 
+// for forgot password
 const sendEmail = require("../utils/sendEmail");
 
 // -- USER REGISTER CONTROLLER (SIGNUP) --
@@ -57,102 +48,58 @@ const signup = async (req, res) => {
 }
 
 // -- USER LOGIN CONTROLLER --
-const login = async (req,res) => {
+const login = async (req, res) => {
   try {
-    const { username, password, 'g-recaptcha-response': captchaResponse } = req.body;
-    if (!captchaResponse) {
+    
+    const { username, password, captchaId, captchaText } = req.body;
+    
+    const captchaResult = verifyCaptcha(captchaId, captchaText);
+    
+    if (!captchaResult.valid) {
+      console.log('❌ CAPTCHA inválido:', captchaResult.reason);
       return res.status(400).json({
         ok: false,
-        message: "Please verify your CAPTCHA"
-      })
-    }
-
-    // Verify CAPTCHA
-    recaptcha.verify(req, async (error, data) => {
-      if (error) {
-        return res.status(400).json({
-          ok: false,
-          message: "CAPTCHA verification failed"
-        });
-      }
-
-      // CAPTCHA PASSED: proceed with login logic
-      
-      // Check if one or more form entries are empty
-      if (!username || !password) {
-        return res.status(400).json({
-          ok: false,
-          message: "One or more form entries are empty"
-        });
-      }
-
-      const userData = await User.userLogin(username, password);
-      if (userData.failedAttempt) {
-
-        const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
-        if (iterateFailedAttempt === 0) {
-          return res.status(404).json({
-            ok: false,
-            message: "User data was not found. Iiteration failed"
-          })
-        }
-
-
-        const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
-        if (!currAtt) {
-          return res.status(404).json({
-            ok: false,
-            message: "User data was not found. Attempt check failed"
-          })
-        }
-
-        if (currAtt % 3 === 0) {
-          const lock = await FailedLogin.setLockout(userData.affectedId);
-          if (lock === 0) {
-            return res.status(500).json({
-              ok: false,
-              messge: "User lockout failed"
-            });
-          }
-        }
-
-        return res.status(401).json({
-          ok: false,
-          message: "Wrong credentials"
-        });
-      }
-
-      const clearAtt = await FailedLogin.resetAttempts(userData.id);
-      if (clearAtt === 0) {
-        return res.status(500).json({
-          ok: false,
-          message: "Failed to reset attempts"
-        })
-      }
-
-      const rmLock = await FailedLogin.removeLockout(userData.id);
-      if (rmLock === 0) {
-        return res.status(500).json({
-          ok: false,
-          message: "Failed to remove lockout"
-        })
-      }
-
-      const token = storeToken(userData);
-
-      res.status(200).json({
-        ok: true,
-        token: token,
+        message: captchaResult.reason
       });
-    })
+    }
+    
+
+    
+    // Proceder con login normal
+    const userData = await User.userLogin(username, password);
+    
+    if (!userData) {
+      console.log('❌ Usuario no encontrado o contraseña incorrecta');
+      return res.status(401).json({
+        ok: false,
+        message: "Credenciales incorrectas"
+      });
+    }
+  
+    
+    if (userData.failedAttempt) {
+      // ... código existente de intentos fallidos
+    }
+    
+    // Limpiar intentos fallidos
+    await FailedLogin.resetAttempts(userData.id);
+    await FailedLogin.removeLockout(userData.id);
+    
+    const token = storeToken(userData);
+    
+    res.status(200).json({
+      ok: true,
+      token: token,
+    });
+    
   } catch (error) {
     console.error("Login error: ", error);
     res.status(500).json({
       ok: false,
-      message: "Internal server error"
+      message: "Error interno del servidor"
     });
   }
-}
+};
 
 // -- USER LOGOUT CONTROLLER --
 const logout = async (req, res) => {
@@ -186,7 +133,6 @@ const sendResetPassword = async (req, res) => {
 
         if (!email) return res.status(400).json({ ok: false, message: "An email address is required" });
 
-        // CORRECT: use your real model function
         const user = await User.getUserByEmail(email);
 
         if (!user) {

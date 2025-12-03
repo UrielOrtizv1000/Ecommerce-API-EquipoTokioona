@@ -98,7 +98,7 @@ function renderOrderItems(items) {
         <span class="summary-item-qty">x${item.quantity}</span>
       </div>
       <div class="summary-item-price">
-        $${Number(item.subtotal || 0).toFixed(2)}
+        $${Number(item.subtotal).toFixed(2)}
       </div>
     `;
     orderItemsContainer.appendChild(row);
@@ -135,7 +135,7 @@ async function recalculateTotals(subtotalFromCart) {
       subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
       taxesEl.textContent    = `$${taxes.toFixed(2)}`;
       shippingEl.textContent = `$${shipping.toFixed(2)}`;
-      discountEl.textContent = `-$${Math.max(discount, 0).toFixed(2)}`;
+      discountEl.textContent = `-$${discount.toFixed(2)}`;
       totalEl.textContent    = `$${total.toFixed(2)}`;
     } else {
       // Si falla el endpoint de cálculo, usar solo el subtotal
@@ -150,23 +150,20 @@ async function recalculateTotals(subtotalFromCart) {
 
 /* Totales simples cuando no hay cálculo avanzado en el backend */
 function setFallbackTotals(subtotal) {
-  const sub = Number(subtotal || 0);
-  subtotalEl.textContent = `$${sub.toFixed(2)}`;
-  taxesEl.textContent    = '$0.00';
-  shippingEl.textContent = '$0.00';
-  discountEl.textContent = '-$0.00';
-  totalEl.textContent    = `$${sub.toFixed(2)}`;
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  taxesEl.textContent = "$0.00";
+  shippingEl.textContent = "$0.00";
+  discountEl.textContent = "-$0.00";
+  totalEl.textContent = `$${subtotal.toFixed(2)}`;
 }
 
 /* Recalcular totales cuando el usuario cambia de país/estado */
 function setupCountryChangeHandler() {
   if (!countrySelect) return;
 
-  countrySelect.addEventListener('change', async () => {
-    // Podríamos volver a llamar getCart, pero basta con leer subtotal actual
-    const currentSubtotalText = subtotalEl.textContent.replace('$', '') || '0';
-    const subtotal = parseFloat(currentSubtotalText) || 0;
-    await recalculateTotals(subtotal);
+  countrySelect.addEventListener("change", async () => {
+    const currentSubtotal = parseFloat(subtotalEl.textContent.replace("$", "")) || 0;
+    await recalculateTotals(currentSubtotal);
   });
 }
 
@@ -197,6 +194,23 @@ function setupPaymentMethodToggles() {
   updateVisibility(checked ? checked.value : 'credit-card');
 }
 
+async function saveAddress(shipping) {
+  const result = await ApiClient.createAddress({
+    recipientName: shipping.name,
+    addressLine1: shipping.address,
+    city: shipping.city,
+    postalCode: shipping.zipCode,
+    country: shipping.country,
+    phone: shipping.phone
+  });
+
+  if (!result.ok || !result.data || result.data.success !== true) {
+    throw new Error(result.data?.message || "No se pudo guardar la dirección");
+  }
+
+  return result.data.addressId;
+}
+
 /* =========================================================
    Place Order: mandar todo al backend (/cart/checkout)
    ========================================================= */
@@ -205,33 +219,46 @@ function setupPlaceOrderHandler() {
   if (!placeOrderBtn) return;
 
   placeOrderBtn.addEventListener('click', async () => {
-    // 1) Obtener datos de envío
-    const shipping = collectShippingData();
-    if (!shipping) return; // Si falla validación, no seguimos
 
-    // 2) Obtener datos de pago
+    const shipping = collectShippingData();
+    if (!shipping) return;
+
     const payment = collectPaymentData();
     if (!payment) return;
 
     placeOrderBtn.disabled = true;
     const originalText = placeOrderBtn.textContent;
-    placeOrderBtn.textContent = 'Procesando...';
+    placeOrderBtn.textContent = "Procesando...";
 
     try {
-      const payload = { shipping, payment };
+      // 1. Guardar dirección → obtener ID
+      const addressId = await saveAddress(shipping);
+
+      // 2. Crear payload para backend
+      const payload = {
+      shipping: {
+      recipientName: shipping.name,
+      addressId: addressId,
+      state: shipping.state,
+      method: shipping.method
+    },
+    payment
+  };
+
+
+      // 3. Checkout real
       const result = await ApiClient.checkout(payload);
 
-      if (result.ok && result.data && result.data.success !== false) {
-        alert('¡Compra realizada con éxito! 🎉');
-
-        // Podrías mandarlo a una página de "gracias"
-        window.location.href = 'index.html';
+      if (result.data && result.data.success) {
+        alert("¡Compra realizada exitosamente! 🎉");
+        window.location.href = "index.html";
       } else {
-        alert(result.data?.message || result.message || 'No se pudo procesar la compra.');
+        alert(result.data?.message || "No se pudo procesar la compra.");
       }
+
     } catch (error) {
-      console.error('Error en checkout:', error);
-      alert('Ocurrió un error al procesar tu compra.');
+      console.error("Error en checkout:", error);
+      alert("Ocurrió un error durante la compra.");
     } finally {
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = originalText;
@@ -273,45 +300,30 @@ function collectPaymentData() {
   const selected = document.querySelector('input[name="payment-method"]:checked');
   const method = selected ? selected.value : 'credit-card';
 
-  const base = { method };
-
-  if (method === 'credit-card') {
-    const cardNumber = document.getElementById('card-number')?.value.trim();
-    const cardName   = document.getElementById('card-name')?.value.trim();
-    const expiryDate = document.getElementById('expiry-date')?.value.trim();
-    const cvv        = document.getElementById('cvv')?.value.trim();
+  if (method === "credit-card") {
+    const cardNumber = document.getElementById("card-number").value.trim();
+    const cardName = document.getElementById("card-name").value.trim();
+    const expiryDate = document.getElementById("expiry-date").value.trim();
+    const cvv = document.getElementById("cvv").value.trim();
 
     if (!cardNumber || !cardName || !expiryDate || !cvv) {
-      alert('Por favor completa los datos de la tarjeta.');
+      alert("Completa todos los datos de tarjeta");
       return null;
     }
 
-    return {
-      ...base,
-      cardNumber,
-      cardName,
-      expiryDate,
-      cvv
-    };
+    return { method, cardNumber, cardName, expiryDate, cvv };
   }
 
-  if (method === 'bank-transfer') {
-    const accountHolder = document.getElementById('account-holder')?.value.trim();
+  if (method === "bank-transfer") {
+    const accountHolder = document.getElementById("account-holder").value.trim();
+
     if (!accountHolder) {
-      alert('Por favor indica el nombre del titular de la cuenta.');
+      alert("Ingresa el titular de la cuenta");
       return null;
     }
 
-    return {
-      ...base,
-      accountHolder
-    };
+    return { method, accountHolder };
   }
 
-  // Para OXXO realmente el backend solo necesita saber el método
-  if (method === 'oxxo') {
-    return base;
-  }
-
-  return base;
+  return { method };
 }

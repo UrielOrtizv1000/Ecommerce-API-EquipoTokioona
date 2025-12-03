@@ -11,11 +11,12 @@
 const pool = require("../db/conexion");
 
 const Product = {
+  // CREATE PRODUCT
   async create(productData) {
     const sql = `
       INSERT INTO products 
-      (name, description, price, stock, image_url, is_on_sale, category_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      (name, description, price, stock, image_url, is_on_sale, category_id, tags)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const params = [
@@ -25,7 +26,8 @@ const Product = {
       productData.stock,
       productData.image_url || null,
       productData.is_on_sale ?? 0,
-      productData.category_id
+      productData.category_id,
+      productData.tags || null 
     ];
 
     const [result] = await pool.query(sql, params);
@@ -33,33 +35,35 @@ const Product = {
   },
 
   // UPDATE PRODUCT
- async update(product_id, productData) {
-  const sql = `
-    UPDATE products
-    SET 
-      name = ?, 
-      description = ?, 
-      price = ?, 
-      stock = ?, 
-      image_url = ?, 
-      is_on_sale = ?, 
-      category_id = ?
-    WHERE product_id = ?
-  `;
+  async update(product_id, productData) {
+    const sql = `
+      UPDATE products
+      SET 
+        name = ?, 
+        description = ?, 
+        price = ?, 
+        stock = ?, 
+        image_url = ?, 
+        is_on_sale = ?, 
+        category_id = ?,
+        tags = ?
+      WHERE product_id = ?
+    `;
 
-  const params = [
-    productData.name,
-    productData.description,
-    productData.price,
-    productData.stock,
-    productData.image_url || null,
-    productData.is_on_sale ?? 0,
-    productData.category_id,
-    product_id
-  ];
+    const params = [
+      productData.name,
+      productData.description,
+      productData.price,
+      productData.stock,
+      productData.image_url || null,
+      productData.is_on_sale ?? 0,
+      productData.category_id,
+      productData.tags || null,
+      product_id
+    ];
 
-  const [result] = await pool.query(sql, params);
-  return result.affectedRows;
+    const [result] = await pool.query(sql, params);
+    return result.affectedRows;
   },
   
   // Get single product by ID
@@ -75,13 +79,13 @@ const Product = {
   },
   
   // DELETE PRODUCT
-async delete(product_id) {
-  const sql = `DELETE FROM products WHERE product_id = ?`;
-  const [result] = await pool.query(sql, [product_id]);
-  return result.affectedRows; // 1 si borró, 0 si no existía
- },
+  async delete(product_id) {
+    const sql = `DELETE FROM products WHERE product_id = ?`;
+    const [result] = await pool.query(sql, [product_id]);
+    return result.affectedRows; 
+  },
 
- async getInventoryByCategory() {
+  async getInventoryByCategory() {
     const [rows] = await pool.query(`
       SELECT 
           c.category_name,
@@ -94,10 +98,26 @@ async delete(product_id) {
     `);
 
     return rows;
- }
+  },
 
+  async countActive() {
+      const [rows] = await pool.query("SELECT COUNT(*) as total FROM products WHERE stock > 0");
+      return rows[0].total;
+  },
+
+async getInventoryReport() {
+    const [rows] = await pool.query(`
+      SELECT 
+        p.product_id,
+        p.name,
+        p.stock,
+        c.category_name
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.category_id
+      ORDER BY p.stock ASC
+    `);
+    return rows;
+  }
 };
-
-
 
 module.exports = Product;

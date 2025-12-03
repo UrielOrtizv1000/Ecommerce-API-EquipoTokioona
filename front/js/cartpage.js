@@ -1,7 +1,7 @@
 // front/js/cartPage.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadCart(); // lo que ya tienes
+  loadCart();
 
   const checkoutBtn = document.getElementById("checkout-btn");
   if (checkoutBtn) {
@@ -9,8 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "checkout.html";
     });
   }
-});
 
+  setupCouponHandler();
+});
 
 async function loadCart() {
   const itemsContainer = document.getElementById("cart-items");
@@ -40,6 +41,12 @@ async function loadCart() {
       </div>
     `;
     if (summaryBox) summaryBox.style.display = "none";
+
+    // 🔁 Actualizar sección de usuario y contador si existen
+    if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+      Auth.updateUserSection();
+      Auth.updateCartCount();
+    }
     return;
   }
 
@@ -56,6 +63,12 @@ async function loadCart() {
     itemsContainer.innerHTML = "";
     if (emptyMessage) emptyMessage.style.display = "block";
     if (summaryBox) summaryBox.style.display = "none";
+
+    // Carrito vacío → actualizar UI del usuario y contador
+    if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+      Auth.updateUserSection();
+      Auth.updateCartCount();
+    }
     return;
   }
 
@@ -65,6 +78,12 @@ async function loadCart() {
 
   renderCartItems(items, itemsContainer);
   updateSummary(items, { subtotalEl, taxesEl, shippingEl, discountEl, totalEl });
+
+  // ✅ Actualizar sección de usuario y contador del carrito en el header
+  if (typeof Auth !== "undefined" && Auth.updateCartCount) {
+    Auth.updateUserSection();
+    Auth.updateCartCount();
+  }
 }
 
 // Pinta los items del carrito en el DOM
@@ -161,7 +180,7 @@ async function changeQuantity(productId, newQty) {
     return;
   }
 
-  // Volver a cargar el carrito actualizado
+  // Volver a cargar el carrito actualizado (y actualizará el contador)
   loadCart();
 }
 
@@ -174,5 +193,38 @@ async function removeItem(productId) {
     return;
   }
 
+  // Recargar carrito y contador
   loadCart();
+}
+
+function setupCouponHandler() {
+  const btn = document.getElementById("apply-coupon");
+  const input = document.getElementById("coupon-code");
+  const msg = document.getElementById("coupon-message");
+
+  if (!btn || !input) return;
+
+  btn.addEventListener("click", async () => {
+    const code = input.value.trim();
+    if (!code) {
+      msg.textContent = "Please enter a coupon code.";
+      msg.style.color = "red";
+      return;
+    }
+
+    // Llamar a backend
+    const result = await ApiClient.applyCoupon(code);
+
+    if (!result.ok || !result.data) {
+      msg.textContent = result.message || "Invalid coupon.";
+      msg.style.color = "red";
+      return;
+    }
+
+    msg.textContent = "Coupon applied successfully!";
+    msg.style.color = "green";
+
+    // Recargar carrito para mostrar descuento y refrescar contador
+    loadCart();
+  });
 }

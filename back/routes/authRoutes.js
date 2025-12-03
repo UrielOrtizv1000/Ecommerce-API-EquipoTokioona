@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { verifyToken } = require("../middlewares/authMiddleware");
 const { limiter } = require("../middlewares/rateLimiter");
-const { getCaptchaWidget } = require("../controllers/captchaController");
+const { getCaptcha } = require("../controllers/captchaController");
 const { signup, login, logout } = require("../controllers/authController");
 const { sendResetPassword, resetPassword } = require("../controllers/authController");
 
@@ -11,7 +11,7 @@ const { sendResetPassword, resetPassword } = require("../controllers/authControl
 router.post("/signup", signup);
 
 // GET /api/auth/getCaptchaWidget
-router.get("/getCaptchaWidget", getCaptchaWidget);
+router.get("/getCaptcha", getCaptcha);
 
 // POST /api/auth/login
 router.post("/login", limiter, login);

@@ -1,28 +1,36 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer"); 
+const path = require("path");
 
 const productController = require('../controllers/productController');
 const { verifyToken } = require('../middlewares/authMiddleware');
 const { validateNewProduct } = require('../middlewares/validateMiddleware');
 
-// GET /api/products - Obtener todos los productos
+// --- MULTER CONFIG ---
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'images/'); 
+    },
+    filename: function (req, file, cb) {
+        // Unique name: timestamp + extension
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
 router.get("/", productController.getAllProducts);
-
-// GET /api/products/categories
 router.get("/categories", productController.getCategories);
-
-// GET /api/products/query - Filtrar productos
 router.get("/query", productController.filterProductsBy);
-
-// GET /api/products/:id - Obtener producto por ID
 router.get("/:id", productController.getProductById);
 
-// Protected: only admins 
-// POST /api/products (admin)
-router.post('/', verifyToken(true), validateNewProduct, productController.createProduct);
-// PUT /api/products/:id (admin)
-router.put('/:id', verifyToken(true), productController.updateProduct);
-// DELETE /api/products/:id (admin)
+// --- PRIVATE ROUTES (ADMIN) ---
+
+// Added 'upload.single('image')'. 'image' is the field name in the form-data
+router.post('/', verifyToken(true), upload.single('image'), validateNewProduct, productController.createProduct);
+router.put('/:id', verifyToken(true), upload.single('image'), productController.updateProduct);
 router.delete('/:id', verifyToken(true), productController.deleteProduct);
 
 module.exports = router;

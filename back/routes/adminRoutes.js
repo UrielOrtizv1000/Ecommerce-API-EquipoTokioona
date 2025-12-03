@@ -4,18 +4,12 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const { verifyToken } = require("../middlewares/authMiddleware");
 
-// GET /api/admin/total_sales (admin only)
 router.get("/total_sales", verifyToken(true), adminController.getTotalSales);
-
-// GET /api/admin/sales/category (admin only)
 router.get("/sales/category", verifyToken(true), adminController.getSalesByCategory);
-
-router.get(
-  "/inventory",
-  verifyToken(true),
-  adminController.getInventoryReport
-);
-
+router.get("/inventory",verifyToken(true),adminController.getInventoryReport);
+router.get("/stats", verifyToken(true), adminController.getDashboardStats);
+router.get("/sales-page", verifyToken(true), adminController.getSalesPageData);
+router.get("/inventory", verifyToken(true), adminController.getInventoryData);
 
 module.exports = router;
 

@@ -109,3 +109,13 @@ a {
 a:hover {
     opacity: 0.7;
 }
+
+.captcha-controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.captcha-controls button{
+    height: 35px;
+    border-radius: 3px;
+}

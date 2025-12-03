@@ -38,19 +38,15 @@ function applyGlobalAccessibilityStyles() {
   // ==========================
   //  2. APLICAR TAMAÑO DE TEXTO
   // ==========================
-  // Leemos la preferencia guardada
   const textSize = localStorage.getItem("tokioona_textSize") || "normal";
-  
-  // Definimos el porcentaje base igual que en accessibility.js
-  let rootSize = "100%"; 
 
+  let rootSize = "100%";
   if (textSize === "small") {
     rootSize = "90%";
   } else if (textSize === "large") {
     rootSize = "115%";
   }
 
-  // Aplicamos el cambio al HTML para que los 'rem' del CSS funcionen
   document.documentElement.style.fontSize = rootSize;
 }
 
@@ -61,19 +57,21 @@ window.addEventListener("accessibilitySettingsChanged", () => {
 
 // Al cargar el DOM
 window.addEventListener("DOMContentLoaded", () => {
-  // 1) Cargar header
-  loadComponent("header", "./includes/header.html");
+  // 1) Cargar header y, cuando termine, actualizar sección de usuario y contador
+  loadComponent("header", "./includes/header.html", () => {
+    if (typeof Auth !== "undefined") {
+      Auth.updateUserSection(); // pinta "Hola, usuario" + carrito
+      Auth.updateCartCount();   // pone el numerito correcto
+    }
+    // El header también puede necesitar el tema/tamaño de texto
+    applyGlobalAccessibilityStyles();
+  });
 
   // 2) Cargar footer y aplicar estilos cuando esté listo
   loadComponent("footer", "./includes/footer.html", () => {
     applyGlobalAccessibilityStyles();
   });
 
-  // 3) Inicializar Auth si existe
-  if (typeof Auth !== "undefined" && Auth.init) {
-    Auth.init();
-  }
-
-  // 4) Aplicar estilos inmediatamente al cuerpo de la página
+  // 3) Aplicar estilos inmediatamente al cuerpo de la página
   applyGlobalAccessibilityStyles();
 });

@@ -51,7 +51,7 @@
       <div class="categories-container">
         <div class="categories-card-collection">
 
-          <a href="store.html?category=grande" class="promo-card">
+          <a href="store.html?category=infantiles" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes grandes">
@@ -62,7 +62,7 @@
             </div>
           </a>
 
-          <a href="store.html?category=mediano" class="promo-card">
+          <a href="store.html?category=juegos y diversion" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes medianos">
@@ -73,7 +73,7 @@
             </div>
           </a>
 
-          <a href="store.html?category=pequeno" class="promo-card">
+          <a href="store.html?category=juguetes de jardin" class="promo-card">
             <div class="category-card">
               <div class="card-img">
                 <img src="http://localhost:3000/images/toys.png" alt="Juguetes pequeños">
@@ -87,12 +87,48 @@
         </div>
       </div>
     </section>
+    
+    <!-- <a href="store.html?offer=true">ofertas</a> -->
 
-    <!-- Offers section -->
+    <!-- Offers section --> 
     <section class="offers-section">
-      <h2>Productos en oferta</h2>
-      <p>Muy pronto encontrarás aquí nuestras mejores promociones.</p>
+      <div class="offers-title">
+        <h2>Conoce nuestras ofertas!</h2>
+      </div>
+      
+      <div class="offers-wrapper">
+        <div class="offer-card">
+          <a href="store.html?offer=true">
+            <div class="offer">
+              Todas las ofertas
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=infantiles&offer=true">
+            <div class="offer">
+              Ofertas en juguetes infantiles
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=juegos y diversion&offer=true">
+            <div class="offer">
+              Ofertas en juegos y diversion
+            </div>
+          </a>
+        </div>
+        <div class="offer-card">
+          <a href="store.html?category=juguetes de jardin&offer=true">
+            <div class="offer">
+              Ofertas en juguetes de jardin
+            </div>
+          </a>
+        </div>
+      </div>
+      
     </section>
+    
 
     <!-- Subscribe section -->
     <section class="subscribe-section">
@@ -113,33 +149,47 @@
       <p id="subscribe-feedback" class="subscribe-feedback"></p>
     </section>
 
+    <section class="socialMedia-section">
+      <div class="img-social">
+        <a href="https://x.com/PetsStlye9776">
+          <img src="http://localhost:3000/images/twitter.png" alt="twitter">
+        </a>
+      </div>
+      <div>
+        <h1>
+          Siguenos en nuestras redes sociales!
+        </h1>
+      </div>
+    </section>
+
   </main>
 
   <!-- Dynamic footer insertion -->
   <div id="footer"></div>
 
-  <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-content">
-      <h2>Iniciar sesión</h2>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar sesión</h2>
 
-      <form id="login-form">
-        <label for="login-username">Nombre de usuario</label>
-        <input type="text" id="login-username" required>
+    <form id="login-form">
+      <label for="login-username">Nombre de usuario</label>
+      <input type="text" id="login-username" required>
 
-        <label for="login-password">Contraseña</label>
-        <input type="password" id="login-password" required>
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
 
-        <div id="captcha-container" style="margin: 10px 0;"></div>
+      <!-- CAPTCHA Container -->
+      <div id="captcha-container" style="margin: 15px 0; padding: 15px; background: linear-gradient(rgba(94, 94, 94, 0.462),rgba(45, 45, 45, 0.469)); border-radius: 14px; border: 1px solid rgb(170, 166, 166);"></div>
 
-        <div class="modal-buttons">
-          <button type="button" id="register-btn">Registrarse</button>
-          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-          <button type="submit" id="submit-btn">Aceptar</button>
-        </div>
-      </form>
-    </div>
+      <div class="modal-buttons">
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
   </div>
+</div>
 
   <!-- FORGOT PASSWORD MODAL -->
   <div class="modal-overlay" id="forgot-modal" style="display:none;">

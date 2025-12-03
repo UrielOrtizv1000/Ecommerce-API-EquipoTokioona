@@ -1,16 +1,14 @@
-//Receives: items,contry,cupon 
-// and returns subtotal,tax,shipping and total
-// src/utils/calculateTotals.js
+// utils/calculateTotals.js
 const pool = require('../db/conexion');
 
 /**
  * Calculate all totals for cart (subtotal, discount, shipping, taxes, total)
  * @param {number} userId
- * @param {string} state - Mexican state (required)
+ * @param {string} country - Código de país (MX, US, CA, ES, CO)
  * @param {string} shippingMethod - "standard" | "express"
  * @returns {Promise<Object>}
  */
-const calculateTotals = async (userId, state, shippingMethod = "standard") => {
+const calculateTotals = async (userId, country, shippingMethod = "standard") => {
   // 1. Get cart items WITH NAME
   const [items] = await pool.query(
     `SELECT
@@ -49,34 +47,86 @@ const calculateTotals = async (userId, state, shippingMethod = "standard") => {
     console.error("Error fetching coupon:", err);
   }
 
-  // 4. Shipping cost - Mexico logic
-  let shippingCost = 129; // Standard national
+  // 4. CONFIGURATION BY COUNTRY
+  const countryConfig = {
+    'MX': {
+      taxRate: 0.16,
+      shipping: {
+        standard: 129, // MXN
+        express: 249,
+        freeThreshold: 799
+      },
+      currency: 'MXN',
+      symbol: '$'
+    },
+    'US': {
+      taxRate: 0.07,
+      shipping: {
+        standard: 15, // USD
+        express: 30,
+        freeThreshold: 100
+      },
+      currency: 'USD',
+      symbol: '$'
+    },
+    'CA': {
+      taxRate: 0.13,
+      shipping: {
+        standard: 20, // CAD
+        express: 40,
+        freeThreshold: 150
+      },
+      currency: 'CAD',
+      symbol: 'C$'
+    },
+    'ES': {
+      taxRate: 0.21,
+      shipping: {
+        standard: 10, // EUR
+        express: 25,
+        freeThreshold: 50
+      },
+      currency: 'EUR',
+      symbol: '€'
+    },
+    'CO': {
+      taxRate: 0.19,
+      shipping: {
+        standard: 15, // USD equivalent - mantenemos USD
+        express: 30,
+        freeThreshold: 100
+      },
+      currency: 'USD', // Mostrar en USD
+      symbol: '$'
+    }
+  };
 
-  const extendedZones = [
-    "baja california sur", "chiapas", "quintana roo", "yucatán",
-    "campeche", "tabasco", "oaxaca"
-  ].map(z => z.toLowerCase());
+  // 5. SHIPPING COST BY COUNTRY
+  let shippingCost = 0;
+  const config = countryConfig[country] || countryConfig['MX']; // Default México
 
-  const isExtendedZone = extendedZones.includes(state.toLowerCase().trim());
-
-  if (isExtendedZone) {
-    shippingCost = 199;
+  if (subtotal >= config.shipping.freeThreshold) {
+    shippingCost = 0; // FREE SHIPPING
+  } else {
+    shippingCost = config.shipping[shippingMethod] || config.shipping.standard;
+    
+    // ESPECIAL LOGIC FOR MEXICO EXTENDED ZONES
+    if (country === 'MX' && config.extendedZones) {
+      // Si el país es México y tenemos un "state" (provincia/estado) en el parámetro
+      // Nota: Actualmente el parámetro 'country' realmente viene como 'state' del frontend
+      // Para mantener compatibilidad, chequeamos si el valor está en las zonas extendidas
+      const userState = country.toLowerCase(); // El parámetro actualmente se llama 'state'
+      if (config.extendedZones.includes(userState)) {
+        shippingCost += 70; 
+      }
+    }
   }
 
-  if (shippingMethod === "express") {
-    shippingCost += 120;
-  }
-
-  // Free shipping threshold
-  if (subtotal >= 799) {
-    shippingCost = 0;
-  }
-
-  // 5. Taxes - Mexico VAT 16%
+  // 6. TAZES AMOUNT
   const taxableAmount = subtotal - discountAmount;
-  const taxes = taxableAmount > 0 ? taxableAmount * 0.16 : 0;
+  const taxes = taxableAmount > 0 ? taxableAmount * config.taxRate : 0;
 
-  // 6. Final total
+  // 7. TOTAL
   const total = taxableAmount + taxes + shippingCost;
 
   return {
@@ -85,14 +135,15 @@ const calculateTotals = async (userId, state, shippingMethod = "standard") => {
     subtotal: Number(subtotal.toFixed(2)),
     discount: Number(discountAmount.toFixed(2)),
     appliedCoupon,
-    shippingCost,
+    shippingCost: Number(shippingCost.toFixed(2)),
     freeShipping: shippingCost === 0,
     shippingDetails: {
-      state: state.trim(),
+      country: country,
       method: shippingMethod
     },
     taxes: Number(taxes.toFixed(2)),
-    total: Number(total.toFixed(2))
+    total: Number(total.toFixed(2)),
+    currency: config.currency
   };
 };
 
