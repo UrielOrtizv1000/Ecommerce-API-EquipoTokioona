@@ -3,11 +3,7 @@ const { generateCaptcha } = require('../utils/generateCaptcha');
 // Solo necesitamos esta función para el frontend
 const getCaptcha = (req, res) => {
   try {
-    console.log('🔍 Generando nuevo CAPTCHA...');
-    const { captchaId, captchaText } = generateCaptcha();
-    
-    console.log('✅ CAPTCHA generado - ID:', captchaId.substring(0, 10) + '...');
-    
+    const { captchaId, captchaText } = generateCaptcha();    
     res.status(200).json({
       ok: true,
       captchaId,

@@ -5,23 +5,24 @@ const Auth = {
     // --- LÓGICA DE SESIÓN ---
 
     // Login con credenciales
-    async login(credentials) {
-        const result = await ApiClient.login(credentials);
-        
-        if (result.ok) {
-            const token = result.data.token;
-            const userData = this._decodeToken(token); 
+async login(credentials) {
+  const result = await ApiClient.login(credentials);
+  
+  
+  if (result.ok) { // ✅ ApiClient SI devuelve result.ok
+    const token = result.data.token;
+    const userData = this._decodeToken(token); 
 
-            if (userData) {
-                this.setUserSession(userData, token);
-                this.updateUserSection();
-                return { success: true };
-            }
-            return { success: false, message: "Token inválido recibido." };
-        } else {
-            return { success: false, message: result.message };
-        }
-    },
+    if (userData) {
+      this.setUserSession(userData, token);
+      this.updateUserSection();  
+      return { success: true };  
+    }
+    return { success: false, message: "Token inválido recibido." };
+  } else {
+    return { success: false, message: result.message };
+  }
+},
 
     // Registro de nuevo usuario
     async register(userData) {
@@ -155,18 +156,16 @@ async _loadCaptcha() {
             <div class="captcha-controls">
               <input 
                 type="text" 
-                id="captcha-input" 
-                placeholder="Ingresa el texto de arriba" 
+                id="captcha-input"  
                 required
                 maxlength="6"
                 style="margin: 10px 0; padding: 8px; width: 200px;"
               >
               <button type="button" id="reload-captcha" style="margin-left: 10px; padding: 8px;">
-                ↻ Actualizar
+                ↻
               </button>
             </div>
             <input type="hidden" id="captcha-id" value="${response.captchaId}">
-            <small style="color: #666; font-size: 12px;">Ingresa las 6 letras/números que ves arriba</small>
           </div>
         `;
         
@@ -235,16 +234,6 @@ _setupLoginHandler() {
       const captchaText = document.getElementById("captcha-input")?.value;
       const captchaId = document.getElementById("captcha-id")?.value;
 
-      // 🔴 LOG CRUCIAL en frontend
-      console.log('🔍 FRONTEND - Datos a enviar:', {
-        username,
-        password: '***', // No mostrar contraseña completa
-        captchaId,
-        captchaText,
-        captchaInputElement: document.getElementById("captcha-input"),
-        captchaIdElement: document.getElementById("captcha-id")
-      });
-
       if (!username || !password) {
         this._showError(loginForm, "Por favor, completa todos los campos.");
         return;
@@ -268,20 +257,33 @@ _setupLoginHandler() {
           captchaText
         };
         
+        // 🔴 CORREGIDO: Auth.login devuelve {success, message}, no {ok}
         const result = await Auth.login(credentials);
         
-        if (result.ok) {
+        
+        if (result.success) { // ✅ CAMBIAR result.ok por result.success
+          // ✅ Cerrar modal
           closeLoginModal();
+          
+          // Mostrar mensaje de éxito
           this._showSuccess("¡Inicio de sesión exitoso!");
-          this.updateUserSection();
+          
+          // Actualizar sección de usuario (ya se hace dentro de Auth.login)
+          // this.updateUserSection(); // No es necesario, ya se hizo
+          
           // Recargar CAPTCHA para próxima vez
           await this._loadCaptcha();
+          
+          // 🔴 OPCIÓN: Forzar recarga de la página si no actualiza bien
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1000);
         } else {
           this._showError(loginForm, result.message);
-          // Recargar CAPTCHA si hay error
           await this._loadCaptcha();
         }
       } catch (error) {
+        console.error('Error en login handler:', error);
         this._showError(loginForm, "Error durante el login");
         await this._loadCaptcha();
       } finally {
@@ -459,9 +461,17 @@ function openLoginModal() {
 }
 
 function closeLoginModal() {
-    const modal = document.getElementById('login-modal');
-    if (modal) modal.style.display = 'none';
-    if (window.grecaptcha) grecaptcha.reset(); 
+  const loginModal = document.getElementById('login-modal');
+  
+  if (loginModal) {
+    loginModal.style.display = 'none';
+  }
+  
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.reset();
+  }
+  
 }
 
 function openForgotModal() {
@@ -478,3 +488,4 @@ function closeForgotModal() {
 document.addEventListener('DOMContentLoaded', () => {
     Auth.init();
 });
+

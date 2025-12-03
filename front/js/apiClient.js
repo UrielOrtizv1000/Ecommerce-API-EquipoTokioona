@@ -79,10 +79,8 @@ async login(credentials) {
 
 async getCaptcha() {
   try {
-    console.log('🔍 Solicitando CAPTCHA al backend...');
     const response = await fetch(`${BASE_URL}/auth/getCaptcha`);
     
-    console.log('🔍 Response status:', response.status);
     
     if (!response.ok) {
       console.error('❌ Error en respuesta de CAPTCHA:', response.status);
@@ -90,7 +88,6 @@ async getCaptcha() {
     }
     
     const data = await response.json();
-    console.log('✅ CAPTCHA recibido - ID:', data.captchaId?.substring(0, 10) + '...');
     
     return data;
   } catch (error) {

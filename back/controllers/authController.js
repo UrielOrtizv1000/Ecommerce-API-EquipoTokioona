@@ -50,13 +50,9 @@ const signup = async (req, res) => {
 // -- USER LOGIN CONTROLLER --
 const login = async (req, res) => {
   try {
-    console.log('🔍 LOGIN REQUEST BODY:', req.body);
     
     const { username, password, captchaId, captchaText } = req.body;
     
-    // ... validaciones anteriores ...
-    
-    console.log('🔍 Validando CAPTCHA:', { captchaId, captchaText });
     const captchaResult = verifyCaptcha(captchaId, captchaText);
     
     if (!captchaResult.valid) {
@@ -67,7 +63,7 @@ const login = async (req, res) => {
       });
     }
     
-    console.log('✅ CAPTCHA válido, continuando con login...');
+
     
     // Proceder con login normal
     const userData = await User.userLogin(username, password);

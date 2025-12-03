@@ -6,7 +6,7 @@ const captchaStore = new Map();
 
 const generateCaptcha = () => {
   // Generar texto aleatorio de 6 caracteres (solo letras y números)
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
   let captchaText = '';
   
   for (let i = 0; i < 6; i++) {
@@ -29,10 +29,6 @@ const generateCaptcha = () => {
 };
 
 const verifyCaptcha = (captchaId, userInput) => {
-  console.log('🔍 VERIFY CAPTCHA - ID:', captchaId, 'User Input:', userInput);
-  console.log('🔍 CAPTCHA STORE SIZE:', captchaStore.size);
-  console.log('🔍 Keys disponibles:', Array.from(captchaStore.keys()));
-  
   const captchaData = captchaStore.get(captchaId);
   
   if (!captchaData) {
@@ -50,8 +46,7 @@ const verifyCaptcha = (captchaId, userInput) => {
   // Comparar texto (case insensitive)
   const isValid = captchaData.text.toLowerCase() === userInput.toLowerCase();
   
-  // ✅ CORREGIDO: NO eliminar aquí todavía
-  console.log('✅ CAPTCHA verificación:', isValid ? 'VÁLIDO' : 'INVÁLIDO');
+
   
   return { 
     valid: isValid, 
@@ -60,9 +55,8 @@ const verifyCaptcha = (captchaId, userInput) => {
   };
 };
 
-// ✅ Nueva función para eliminar CAPTCHA después de login exitoso
+// Nueva función para eliminar CAPTCHA después de login exitoso
 const deleteCaptcha = (captchaId) => {
-  console.log('🗑️  Eliminando CAPTCHA usado:', captchaId?.substring(0, 10) + '...');
   return captchaStore.delete(captchaId);
 };
 
