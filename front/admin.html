@@ -23,6 +23,8 @@
   <script src="./js/apiClient.js"></script>
   <script src="./js/auth.js"></script>
   <script src="./js/components.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
 </head>
 
@@ -85,17 +87,22 @@
             </div>
             
             <h3 class="section-title">Ventas por Categoría</h3>
-            <div class="chart-container">
-                <p class="placeholder-text">Gráfica de ventas por categoría - Se cargará dinámicamente desde el backend</p>
+            <div class="chart-container" style="position: relative; height:300px; width:100%; max-width: 500px; margin: 0 auto;">
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
-
-        <!-- Gestión de Productos -->
         <div id="products" class="panel-section">
-            <div class="products-header">
-                <h2 class="section-title">Gestión de Productos</h2>
-                <button class="add-product-btn" id="addProductBtn">Agregar Producto</button>
-            </div>
+            
+            <div class="products-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0;">Gestión de Productos</h2>
+                
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="searchInput" placeholder="Buscar producto..." 
+                           style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 250px;">
+                    
+                    <button class="add-product-btn" id="addProductBtn">Agregar Producto</button>
+                </div>
+            </div>      
             
             <table class="products-table">
                 <thead>
@@ -221,6 +228,10 @@
                 <div class="form-group">
                     <label for="productStock">Cantidad en Stock</label>
                     <input type="number" id="productStock" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="productTags">Tags (separados por coma)</label>
+                    <input type="text" id="productTags" class="form-control" placeholder="Ej: playa, verano, oferta">
                 </div>
                 <div class="form-group">
                     <label for="productImage">Imagen del Producto</label>

@@ -1,15 +1,7 @@
-/*
-here u are going to administrate the products filters
-getAll, getById, getByCategory, getOnSale, 
-create (admin), update (admin), delete (admin)
-*/
 const Product = require('../models/Product');
 const Category = require("../models/Category");
-const pool = require("../db/conexion"); // ← ESTA LÍNEA DEBE ESTAR
+const pool = require("../db/conexion"); 
 
-
-
-// -- GET PRODUCT CONTROLLER --
 exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -50,30 +42,21 @@ exports.getCategories = async (req, res) => {
 
 exports.filterProductsBy = async (req, res) => {
   try {
-    // Creating query string
-
-    // Check if there are no query parameters
     if (Object.keys(req.query).length === 0)
       return res.status(400).json({
         ok: false,
         message: "Filters were not applied"
       });
 
-    // Setup variables for generating a query string
     let numParams = 0;
     let queryControl = "SELECT * FROM products WHERE ";
     const queryValues = [];
 
     for (const [key, value] of Object.entries(req.query)) {
-      // If current parameter has empty value
-      if (!value)
-        continue;
+      if (!value) continue;
 
-      // If there are more than one parameters, append 'AND' into the query string
-      if (numParams > 0)
-        queryControl += "AND ";
+      if (numParams > 0) queryControl += "AND ";
 
-      // Switch for every valid parameter value
       switch (key) {
         case "category_id":
           queryControl += "category_id = ? ";
@@ -88,20 +71,16 @@ exports.filterProductsBy = async (req, res) => {
           queryControl += "is_on_sale = ? ";
           break;
         default:
-          // If a wrong parameter was requested, return a 404 code
           return res.status(404).json({
             ok: false,
             message: "Non-existent product filter was requested"
           });
       }
 
-      // Add current parameter value to result array
       queryValues.push(value);
-      
       numParams++;
     }
 
-    // Execute query
     const list = await Product.getProductsByFilter(queryControl, queryValues);
     res.status(200).json({
       ok: true,
@@ -118,15 +97,15 @@ exports.filterProductsBy = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      stock,
-      image_url,
-      is_on_sale,
-      category_id
-    } = req.body;
+    // CORRECCIÓN 1: Agregamos 'tags' aquí
+    const { name, description, price, stock, is_on_sale, category_id, tags } = req.body;
+    
+    let image_url = "https://placehold.co/400"; 
+    
+    if (req.file) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        image_url = `${baseUrl}/images/${req.file.filename}`;
+    }
 
     const newProductId = await Product.create({
       name,
@@ -134,51 +113,37 @@ exports.createProduct = async (req, res) => {
       price,
       stock,
       image_url,
-      is_on_sale,
-      category_id
+      is_on_sale: is_on_sale || 0,
+      category_id,
+      tags: tags || "[]" 
     });
 
-    res.status(201).json({
-      ok: true,
-      message: 'Product created successfully',
-      product_id: newProductId
-    });
+    res.status(201).json({ ok: true, message: 'Product created', product_id: newProductId });
 
   } catch (err) {
     console.error('Error creating product:', err);
-
-    res.status(500).json({
-      ok: false,
-      message: 'Internal server error'
-    });
+    res.status(500).json({ ok: false, message: 'Internal server error' });
   }
 };
 
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    // CORRECCIÓN 2: Agregamos 'tags' aquí también
+    const { name, description, price, stock, is_on_sale, category_id, tags } = req.body;
 
-    const {
-      name,
-      description,
-      price,
-      stock,
-      image_url,
-      is_on_sale,
-      category_id
-    } = req.body;
-
-    // Check if exists
-    const existing = await Product.getProductById(id);
-
-    if (!existing) {
-      return res.status(404).json({
-        ok: false,
-        message: "Product not found"
-      });
+    const existingProduct = await Product.getProductById(id);
+    if (!existingProduct) {
+        return res.status(404).json({ ok: false, message: "Product not found" });
     }
 
-    // Update
+    let image_url = existingProduct.image_url;
+    
+    if (req.file) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        image_url = `${baseUrl}/images/${req.file.filename}`;
+    }
+
     const updated = await Product.update(id, {
       name,
       description,
@@ -186,28 +151,17 @@ exports.updateProduct = async (req, res) => {
       stock,
       image_url,
       is_on_sale,
-      category_id
+      category_id,
+      tags: tags || "[]"
     });
 
-    if (updated === 0) {
-      return res.status(400).json({
-        ok: false,
-        message: "Product update failed"
-      });
-    }
+    if (updated === 0) return res.status(400).json({ ok: false, message: "Update failed" });
 
-    res.status(200).json({
-      ok: true,
-      message: "Product updated successfully",
-      product_id: id
-    });
+    res.status(200).json({ ok: true, message: "Product updated successfully" });
 
   } catch (error) {
-    console.error("Error updating product:", error);
-    res.status(500).json({
-      ok: false,
-      message: "Internal server error"
-    });
+    console.error("Error updating:", error);
+    res.status(500).json({ ok: false, message: "Internal server error" });
   }
 };
 
@@ -215,7 +169,6 @@ exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if the product exists
     const product = await Product.getProductById(id);
 
     if (!product) {
@@ -225,7 +178,6 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
-    // Delete
     const deleted = await Product.delete(id);
 
     if (deleted === 0) {
@@ -250,9 +202,10 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// Agregar en productController.js 
+// -- GET ALL PRODUCTS CONTROLLER --
 exports.getAllProducts = async (req, res) => {
   try {
+    // CORRECCIÓN 3: Quitamos 'WHERE p.stock > 0' para que el Admin vea todo
     const [products] = await pool.query(`
       SELECT 
         p.product_id,
@@ -262,13 +215,12 @@ exports.getAllProducts = async (req, res) => {
         p.stock,
         p.image_url,
         p.is_on_sale,
-        p.category_id,           -- ← Solo tenemos este campo
+        p.category_id,          
         p.tags,
-        c.category_name          -- ← Pero unimos con categories para obtener el nombre
+        c.category_name         
       FROM products p 
       LEFT JOIN categories c ON p.category_id = c.category_id 
-      WHERE p.stock > 0
-      ORDER BY p.product_id
+      ORDER BY p.product_id DESC
     `);
     
     res.status(200).json({

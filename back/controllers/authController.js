@@ -1,11 +1,3 @@
-/*
-Here you need to include the controllers for:
-Register: Validates password confirmation, hashes with bcrypt, saves to the DB.
-Login: Verifies credentials, tracks failed attempts → locks account for 5 minutes.
-Lockout: Uses FailedLogin table with last_attempt and attempts.
-Forgot Password: Generates a unique token, sends an email with a reset link.
-CAPTCHA: Generated in captchaController, validated here.
-*/
 const jwt = require('jsonwebtoken');
 
 const User = require("../models/User");
@@ -17,7 +9,6 @@ const recaptcha = require("../utils/generateCaptcha");
 const { storeToken, disposeToken } = require("../middlewares/authMiddleware");
 
 // for forgot password
-
 const sendEmail = require("../utils/sendEmail");
 
 // -- USER REGISTER CONTROLLER (SIGNUP) --
@@ -87,16 +78,27 @@ const login = async (req,res) => {
       }
 
       const userData = await User.userLogin(username, password);
+
+      // ============================================================
+      // 🔴 CORRECCIÓN AQUÍ: Validar si el usuario existe antes de leer propiedades
+      // ============================================================
+      if (!userData) {
+          return res.status(401).json({
+              ok: false,
+              message: "Wrong credentials" // Usuario no encontrado
+          });
+      }
+
+      // Si userData existe, ahora es seguro verificar si hubo intento fallido (contraseña mal)
       if (userData.failedAttempt) {
 
         const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
         if (iterateFailedAttempt === 0) {
           return res.status(404).json({
             ok: false,
-            message: "User data was not found. Iiteration failed"
+            message: "User data was not found. Iteration failed"
           })
         }
-
 
         const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
         if (!currAtt) {
@@ -122,22 +124,13 @@ const login = async (req,res) => {
         });
       }
 
+      // Si llegamos aquí, el login fue exitoso. Limpiamos intentos fallidos.
       const clearAtt = await FailedLogin.resetAttempts(userData.id);
-      if (clearAtt === 0) {
-        return res.status(500).json({
-          ok: false,
-          message: "Failed to reset attempts"
-        })
-      }
-
+      // Nota: Si es la primera vez y no hay registros en failed_logins, esto podría dar 0.
+      // Depende de tu modelo, pero generalmente no debería bloquear el login exitoso.
+      
       const rmLock = await FailedLogin.removeLockout(userData.id);
-      if (rmLock === 0) {
-        return res.status(500).json({
-          ok: false,
-          message: "Failed to remove lockout"
-        })
-      }
-
+      
       const token = storeToken(userData);
 
       res.status(200).json({
@@ -186,7 +179,6 @@ const sendResetPassword = async (req, res) => {
 
         if (!email) return res.status(400).json({ ok: false, message: "An email address is required" });
 
-        // CORRECT: use your real model function
         const user = await User.getUserByEmail(email);
 
         if (!user) {
