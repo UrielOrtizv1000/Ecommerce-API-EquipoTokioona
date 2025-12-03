@@ -44,8 +44,6 @@ const Auth = {
     async logout() {
         const token = this.getToken();
         if (token) {
-            // ApiClient.logout no necesita el token como parámetro,
-            // lo toma de los headers internos, pero pasar el arg no rompe nada.
             await ApiClient.logout(token); 
         }
 
@@ -105,27 +103,13 @@ const Auth = {
         const user = this.getUser();
 
         if (user) {
-            section.innerHTML = `
-            <div class="user-menu">
-                <span>Hola, ${user.name}</span>
-                
-                <div class="cart-wrapper" onclick="location.href='cart.html'">
-                    <img 
-                      src="http://localhost:3000/images/carrito.png" 
-                      alt="Carrito" 
-                      class="cart-icon"
-                    >
-                    <span id="cart-count-badge" class="cart-count-badge">0</span>
-                </div>
-
-                <button onclick="Auth.logout()" class="logout-btn">
-                    Cerrar sesión
-                </button>
-            </div>
-            `;
-
-            // 👉 Actualizamos contador después de pintar el HTML
-            this.updateCartCount();
+           section.innerHTML = `
+    <div class="user-menu">
+        <span>Hola, ${user.name}</span>
+        <img src="images/carrito.png" alt="Carrito" class="cart-icon" style="width:26px;cursor:pointer;" onclick="location.href='cart.html'">
+        <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
+    </div>
+`;
         } else {
             section.innerHTML = `
                 <button type="button" class="login-btn" onclick="openLoginModal()">
@@ -142,13 +126,8 @@ const Auth = {
         this._setupModalEvents();
         this._setupLoginHandler();
         this._setupRegisterHandler();
-        this._setupForgotPasswordHandler();
-        
-        // Primero dibujamos la sección usuario (crea el badge)
+        this._setupForgotPasswordHandler();   // 👈 AQUÍ ENTRAMOS AL FLUJO DE RECUPERACIÓN
         this.updateUserSection();
-
-        // Si quieres forzar una actualización extra del badge:
-        // this.updateCartCount();
     },
 
     // Carga el CAPTCHA de reCAPTCHA
@@ -196,6 +175,7 @@ const Auth = {
         
         if (forgotBtn) {
             forgotBtn.addEventListener("click", () => {
+                // 👇 Ahora abre el modal de recuperación
                 openForgotModal();
             });
         }
@@ -310,10 +290,10 @@ const Auth = {
         }
     },
 
-    // Maneja el envío del formulario "Olvidé mi contraseña"
+    // 👇 NUEVO: Maneja el envío del formulario "Olvidé mi contraseña"
     _setupForgotPasswordHandler() {
         const form = document.getElementById("forgot-form");
-        if (!form) return;
+        if (!form) return; // si no existe el modal/forma, no hace nada
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();

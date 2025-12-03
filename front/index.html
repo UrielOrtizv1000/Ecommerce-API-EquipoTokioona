@@ -15,10 +15,20 @@
   <link rel="stylesheet" href="styles/footer.css">
 
   <!-- Scripts -->
+<<<<<<< HEAD
   <script src="./js/apiClient.js"></script>
   <script src="./js/auth.js"></script>
   <script src="./js/components.js"></script>
   <script src="./js/subscription.js"></script>
+=======
+<script src="./js/apiClient.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/components.js"></script>
+<script src="./js/subscription.js"></script>
+
+
+
+>>>>>>> develop
 </head>
 
 <body>
@@ -94,10 +104,14 @@
       <p>Muy pronto encontrarás aquí nuestras mejores promociones.</p>
     </section>
 
-    <!-- Subscribe section -->
+        <!-- Subscribe section -->
     <section class="subscribe-section">
       <h2>Suscríbete</h2>
+<<<<<<< HEAD
       <p>Recibe nuestras ofertas, cupones y novedades directamente en tu correo.</p>
+=======
+      <p>Recibe nuestras ofertas, cupones y novedades!</p>
+>>>>>>> develop
 
       <form id="subscribe-form" class="subscribe-form">
         <input 
@@ -113,63 +127,47 @@
       <p id="subscribe-feedback" class="subscribe-feedback"></p>
     </section>
 
-    <section class="socialMedia-section">
-      <div class="img-social">
-        <a href="https://x.com/PetsStlye9776">
-          <img src="http://localhost:3000/images/twitter.png" alt="Red Social">
-        </a>
-      </div>
-      <div class="content-social">
-        <h1>Siguenos en nuestras redes sociales!</h1>
-      </div>
-    </section>
-
   </main>
 
   <!-- Dynamic footer insertion -->
   <div id="footer"></div>
 
-  <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-content">
-      <h2>Iniciar sesión</h2>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
 
-      <form id="login-form">
-        <label for="login-username">Nombre de usuario</label>
-        <input type="text" id="login-username" required>
+    <form id="login-form">
+      <label for="login-username">Nombre de Usuario</label>
+      <input type="text" id="login-username" required>
 
-        <label for="login-password">Contraseña</label>
-        <input type="password" id="login-password" required>
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required>
 
-        <div id="captcha-container" style="margin: 10px 0;"></div>
+      <div id="captcha-container" style="margin: 10px 0;"></div>
 
-        <div class="modal-buttons">
-          <button type="button" id="register-btn">Registrarse</button>
-          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-          <button type="submit" id="submit-btn">Aceptar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- FORGOT PASSWORD MODAL -->
-  <div class="modal-overlay" id="forgot-modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Recuperar contraseña</h2>
-
-      <form id="forgot-form">
-        <label for="forgot-email">Correo electrónico</label>
-        <input type="email" id="forgot-email" required placeholder="tu@email.com">
-
-        <div class="modal-buttons">
-          <button type="button" onclick="closeForgotModal()">Cancelar</button>
-          <button type="submit">Enviar instrucciones</button>
-        </div>
-      
       <div class="modal-buttons">
-          <button type="button" id="register-btn">Registrarse</button>
-          <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-          <button type="submit" id="submit-btn">Aceptar</button>
+        <button type="button" id="register-btn">Registrarse</button>
+        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
+        <button type="submit" id="submit-btn">Aceptar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Recuperar contraseña</h2>
+
+    <form id="forgot-form">
+      <label for="forgot-email">Correo electrónico</label>
+      <input type="email" id="forgot-email" required placeholder="tu@email.com">
+
+      <div class="modal-buttons">
+        <button type="button" onclick="closeForgotModal()">Cancelar</button>
+        <button type="submit">Enviar instrucciones</button>
       </div>
     </form>
   </div>
