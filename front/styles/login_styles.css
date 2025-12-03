@@ -1,148 +1,173 @@
-/* === LOGIN MODAL OVERLAY === */
+/* =====================================================================
+   LOGIN MODAL – TOKIOONA
+===================================================================== */
+
+
+/* ============================================================
+   1. OVERLAY
+============================================================ */
+
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 
-  display: none;
-  justify-content: center;
-  align-items: center;
+    display: none;
+    justify-content: center;
+    align-items: center;
 
-  z-index: 2000;
-
-  /* Dynamic blur animation */
-  animation: overlayBlur 0.6s ease;
+    z-index: 2000;
+    animation: overlayBlur 0.6s ease;
 }
 
 @keyframes overlayBlur {
-  0% { backdrop-filter: blur(0px); }
-  100% { backdrop-filter: blur(6px); }
+    0% { backdrop-filter: blur(0px); }
+    100% { backdrop-filter: blur(6px); }
 }
 
 .modal-overlay.active {
-  display: flex;
+    display: flex;
 }
 
-/* === MAIN MODAL CONTAINER === */
+
+/* ============================================================
+   2. MODAL CONTAINER
+============================================================ */
+
 .modal-content {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(25px) saturate(160%);
-  -webkit-backdrop-filter: blur(25px) saturate(160%);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(25px) saturate(160%);
+    -webkit-backdrop-filter: blur(25px) saturate(160%);
 
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 22px;
 
-  padding: 35px;
-  width: 90%;
-  max-width: 380px;
+    padding: 35px;
+    width: 90%;
+    max-width: 380px;
 
-  color: white;
-  text-align: center;
+    color: white;
+    text-align: center;
 
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    0 0 60px rgba(255, 255, 255, 0.05);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.35),
+        0 0 60px rgba(255, 255, 255, 0.05);
 
-  animation: modalAppear 0.35s ease-out;
+    animation: modalAppear 0.35s ease-out;
 }
 
-/* Modal appearance animation */
 @keyframes modalAppear {
-  0% { opacity: 0; transform: translateY(15px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+    0% { opacity: 0; transform: translateY(15px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* === MODAL TITLE === */
+
+/* ============================================================
+   3. TITLE
+============================================================ */
+
 .modal-content h2 {
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  margin-bottom: 22px;
-  color: #ffffff;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 22px;
+    color: #ffffff;
 }
 
-/* === FORM LABELS === */
+
+/* ============================================================
+   4. FORM
+============================================================ */
+
 .modal-content label {
-  display: block;
-  text-align: left;
-  font-size: 0.85em;
-  margin: 12px 0 4px 3px;
-  color: rgba(255, 255, 255, 0.9);
+    display: block;
+    text-align: left;
+    font-size: 0.85em;
+    margin: 12px 0 4px 3px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-/* === FORM INPUT FIELDS === */
 .modal-content input {
-  width: 100%;
-  padding: 12px;
+    width: 100%;
+    padding: 12px;
 
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(5px);
 
-  color: white;
-  font-size: 1em;
-  transition: border 0.2s ease;
+    color: white;
+    font-size: 1em;
+    transition: border 0.2s ease;
 }
 
 .modal-content input:focus {
-  outline: none;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-/* === BUTTONS CONTAINER === */
+
+/* ============================================================
+   5. BUTTONS
+============================================================ */
+
 .modal-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .modal-buttons button {
-  padding: 12px;
-  border-radius: 12px;
+    padding: 12px;
+    border-radius: 12px;
 
-  border: none;
-  cursor: pointer;
+    border: none;
+    cursor: pointer;
 
-  font-weight: 500;
-  font-size: 0.95em;
+    font-weight: 500;
+    font-size: 0.95em;
 
-  transition: transform 0.2s, backdrop-filter 0.3s, background 0.3s;
+    transition: transform 0.2s,
+                backdrop-filter 0.3s,
+                background 0.3s;
 }
 
-/* === REGISTER BUTTON === */
+
+/* === Register Button === */
 #register-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 #register-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  transform: scale(1.03);
+    background: rgba(255, 255, 255, 0.18);
+    transform: scale(1.03);
 }
 
-/* === FORGOT PASSWORD BUTTON === */
+
+/* === Forgot Password Button === */
 #forgot-btn {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.9);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 #forgot-btn:hover {
-  text-decoration: underline;
-  transform: scale(1.02);
+    text-decoration: underline;
+    transform: scale(1.02);
 }
 
-/* === SUBMIT BUTTON (MAIN ACTION) === */
+
+/* === Submit Button (Main Action) === */
 #submit-btn {
-  background: linear-gradient(135deg, #ff3ea5, #ff78c6);
-  color: white;
+    background: linear-gradient(135deg, #ff3ea5, #ff78c6);
+    color: white;
 }
 
 #submit-btn:hover {
-  transform: scale(1.04);
-  filter: brightness(1.15);
+    transform: scale(1.04);
+    filter: brightness(1.15);
 }

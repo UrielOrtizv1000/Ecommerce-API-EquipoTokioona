@@ -1,6 +1,6 @@
-/* ================================
+/* ============================================================
    Global settings & default styles
-   ================================ */
+   ============================================================ */
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -14,9 +14,9 @@ main {
 }
 
 
-/* ================================
-   Page layout structure (content + sidebar on the right)
-   ================================ */
+/* ============================================================
+   Page layout structure (content + sidebar)
+   ============================================================ */
 
 .layout {
   display: flex;
@@ -24,9 +24,9 @@ main {
 }
 
 
-/* ================================
-   Sidebar section: navigation & categories
-   ================================ */
+/* ============================================================
+   Sidebar
+   ============================================================ */
 
 .sidebar {
   width: 230px;
@@ -34,10 +34,7 @@ main {
   color: #f5f5f7;
   padding: 20px;
   box-sizing: border-box;
-  margin-left: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-right: 0;
+  margin: 20px 0 20px 20px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
   border-radius: 18px 0 0 18px;
   order: 2;
@@ -48,8 +45,8 @@ main {
   background-color: #222;
 }
 
-.sidebar h3,
-.sidebar h2 {
+.sidebar h2,
+.sidebar h3 {
   margin: 0 0 14px;
   font-size: 1rem;
   font-weight: 600;
@@ -76,7 +73,7 @@ main {
   color: #f5f5f7;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition: background 0.25s, transform 0.25s, border-color 0.25s, color 0.25s;
 }
 
 .sidebar button:hover {
@@ -90,9 +87,10 @@ main {
   border-color: #f5f5f7;
 }
 
-/* ================================
-   Filters in sidebar (price, offers)
-   ================================ */
+
+/* ============================================================
+   Sidebar filters
+   ============================================================ */
 
 .price-filters {
   display: flex;
@@ -141,9 +139,9 @@ main {
 }
 
 
-/* ================================
-   Main content: products section
-   ================================ */
+/* ============================================================
+   Main content
+   ============================================================ */
 
 .main-content {
   flex: 1;
@@ -159,7 +157,8 @@ main {
   color: #424245;
 }
 
-/* mensajes de estado (cargando / sin productos / error) */
+
+/* Status messages */
 .loading,
 .no-products {
   grid-column: 1 / -1;
@@ -190,9 +189,9 @@ main {
 }
 
 
-/* ================================
-   Product grid: max 3 columns
-   ================================ */
+/* ============================================================
+   Product grid
+   ============================================================ */
 
 .grid {
   display: grid;
@@ -200,7 +199,6 @@ main {
   gap: 20px;
 }
 
-/* Card base look */
 .card {
   position: relative;
   display: flex;
@@ -212,13 +210,11 @@ main {
   box-sizing: border-box;
 }
 
-/* Header area: image + wishlist + badge */
 .card-header {
   position: relative;
   margin-bottom: 10px;
 }
 
-/* Corazón wishlist */
 .wishlist-btn {
   position: absolute;
   top: 10px;
@@ -247,7 +243,6 @@ main {
   color: #ff4d4d;
 }
 
-/* Badge de oferta */
 .badge-offer {
   position: absolute;
   top: 12px;
@@ -261,7 +256,6 @@ main {
   box-shadow: 0 4px 10px rgba(255, 77, 77, 0.5);
 }
 
-/* Imagen del producto */
 .card-header img {
   width: 100%;
   height: 160px;
@@ -270,7 +264,9 @@ main {
   margin-bottom: 10px;
 }
 
-/* Textos de la card */
+
+/* Texts */
+
 .card h2,
 .card h3,
 .card p {
@@ -290,7 +286,6 @@ main {
   line-height: 1.4;
 }
 
-/* Precio y stock */
 .price {
   font-weight: 700;
   margin-top: 6px;
@@ -298,15 +293,8 @@ main {
   color: #1d8ef0;
 }
 
-.card p:nth-of-type(2) {
-  /* "Stock:" en tu estructura actual */
-  font-size: 0.88rem;
-  color: #555;
-}
 
-/* ================================
-   Product tags (size, type, etc.)
-   ================================ */
+/* Tags */
 
 .tags {
   margin-top: 8px;
@@ -324,9 +312,9 @@ main {
 }
 
 
-/* ================================
-   "Add to cart" button container
-   ================================ */
+/* ============================================================
+   Buttons (Add to cart)
+   ============================================================ */
 
 .card-btn {
   display: flex;
@@ -334,7 +322,6 @@ main {
   margin-top: auto;
 }
 
-/* Button base + disabled state  */
 .card-btn button {
   position: relative;
   overflow: hidden;
@@ -349,7 +336,7 @@ main {
   background: linear-gradient(120deg, #1d8ef0, #06d0f9, #345ce0);
   background-size: 220% 220%;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.25s, box-shadow 0.25s, opacity 0.25s;
 }
 
 .card-btn button[disabled] {
@@ -384,9 +371,9 @@ main {
 }
 
 
-/* ================================
-   Liquid animations for button hover
-   ================================ */
+/* ============================================================
+   Button animations
+   ============================================================ */
 
 @keyframes liquid-gradient {
   0% { background-position: 0% 50%; }
@@ -401,9 +388,9 @@ main {
 }
 
 
-/* ================================
-   Responsive layout adjustments
-   ================================ */
+/* ============================================================
+   Responsive layout
+   ============================================================ */
 
 @media (max-width: 1024px) {
   .main-content {
@@ -435,174 +422,128 @@ main {
 }
 
 
-/* ============================================
-   Animations
-   ============================================ */
+/* ============================================================
+   Page animations
+   ============================================================ */
 
 @keyframes fadeInSoft {
-    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes fadeInUp {
-    0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
-    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 main {
-    animation: fadeInSoft 0.7s ease-out;
+  animation: fadeInSoft 0.7s ease-out;
 }
 
 .sidebar {
-    animation: fadeInUp 0.7s ease-out both;
+  animation: fadeInUp 0.7s ease-out both;
 }
 
 .card {
-    opacity: 0;
-    animation: fadeInUp 0.7s ease-out forwards;
+  opacity: 0;
+  animation: fadeInUp 0.7s ease-out forwards;
 }
 
-.card:nth-child(2) {
-    animation-delay: 0.06s;
-}
-
-.card:nth-child(3) {
-    animation-delay: 0.12s;
-}
-
-.card:nth-child(4) {
-    animation-delay: 0.18s;
-}
-.card:nth-child(5) {
-    animation-delay: 0.24s;
-}
-.card:nth-child(6) {
-    animation-delay: 0.30s;
-}
+/* Animation stagger */
+.card:nth-child(2) { animation-delay: 0.06s; }
+.card:nth-child(3) { animation-delay: 0.12s; }
+.card:nth-child(4) { animation-delay: 0.18s; }
+.card:nth-child(5) { animation-delay: 0.24s; }
+.card:nth-child(6) { animation-delay: 0.30s; }
 
 
-/* DARK THEME */
+/* ============================================================
+   DARK THEME
+   ============================================================ */
 
 /* Sidebar */
 .body-dark-theme .sidebar {
-    background: #1c1c1e;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
-    border-radius: 18px 0 0 18px;
+  background: #1c1c1e;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
 }
 
 .body-dark-theme .sidebar:hover {
-    background-color: #2c2c2e;
-}
-
-.body-dark-theme .sidebar h3,
-.body-dark-theme .sidebar h2 {
-    color: #f5f5f7;
+  background-color: #2c2c2e;
 }
 
 .body-dark-theme .sidebar button {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #f5f5f7;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f5f5f7;
 }
 
 .body-dark-theme .sidebar button:hover {
-    background: rgba(160, 100, 255, 0.35);
+  background: rgba(160, 100, 255, 0.35);
 }
 
 .body-dark-theme .sidebar button.active {
-    background: #4cc9f0;
-    color: #111;
-    border-color: #4cc9f0;
+  background: #4cc9f0;
+  color: #111;
+  border-color: #4cc9f0;
 }
 
-/* Filters in sidebar (price, offers) */
+/* Filters */
 .body-dark-theme .price-filters label {
-    color: #d1d1d6;
+  color: #d1d1d6;
 }
 
 .body-dark-theme .price-filters input {
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(0, 0, 0, 0.5);
-    color: #f5f5f7;
-}
-
-.body-dark-theme .price-filters input::placeholder {
-    color: rgba(245, 245, 247, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.5);
+  color: #f5f5f7;
 }
 
 .body-dark-theme .price-filters input:focus {
-    border-color: #9f7bff;
-    box-shadow: 0 0 0 1px rgba(159, 123, 255, 0.7);
+  border-color: #9f7bff;
+  box-shadow: 0 0 0 1px rgba(159, 123, 255, 0.7);
 }
 
-.body-dark-theme .offer-filter {
-    color: #d1d1d6;
-}
-
-/* Main content: products section */
+/* Main content */
 .body-dark-theme .main-content h1 {
-    color: #f5f5f7;
-}
-
-/* Mensajes de estado */
-.body-dark-theme .loading,
-.body-dark-theme .no-products {
-    color: #999;
+  color: #f5f5f7;
 }
 
 .body-dark-theme .error {
-    background: #3c3c43;
-    border: 1px solid #7f8c8d;
-    color: #ffb3b3;
+  background: #3c3c43;
+  border: 1px solid #7f8c8d;
+  color: #ffb3b3;
 }
 
-.body-dark-theme .error button {
-    background: #b00020;
-    color: #fff;
-}
-
-
-/* Product grid */
+/* Cards */
 .body-dark-theme .card {
-    background: #1c1c1e;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  background: #1c1c1e;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* Corazón wishlist */
 .body-dark-theme .wishlist-btn {
-    color: #f5f5f7;
-    background: rgba(0, 0, 0, 0.6);
+  color: #f5f5f7;
+  background: rgba(0, 0, 0, 0.6);
 }
 
-/* Textos de la card */
-.body-dark-theme .product-title {
-    color: #f5f5f7;
+.body-dark-theme .product-title,
+.body-dark-theme .price {
+  color: #f5f5f7;
 }
 
 .body-dark-theme .card p {
-    color: #d1d1d6;
+  color: #d1d1d6;
 }
 
-.body-dark-theme .card p:nth-of-type(2) {
-    color: #999;
-}
-
-/* Precio y stock */
-.body-dark-theme .price {
-    color: #f5f5f7;
-}
-
-/* Product tags */
 .body-dark-theme .tag {
-    background: #2c2c2e;
-    color: #d1d1d6;
+  background: #2c2c2e;
+  color: #d1d1d6;
 }
 
 /* Button */
 .body-dark-theme .card-btn button {
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
 }
 
 .body-dark-theme .card-btn button:hover:not([disabled]) {
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
 }

@@ -1,26 +1,30 @@
-/* ===== LAYOUT GENERAL DEL MAIN ===== */
+/* ================================
+   MAIN LAYOUT
+================================ */
 
 main {
     max-width: 1100px;
     margin: 80px auto 60px;
     padding: 0 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
     color: #424245;
 }
 
-/* ===== QUITAR BORDE AL SELECCIONAR ===== */
+/* ================================
+   SELECCIÓN PERSONALIZADA
+================================ */
+
 *::selection {
     background: rgba(160, 100, 255, 0.18);
-    color: #424245;
-    outline: none !important;
+    color: inherit;
 }
 *:focus {
     outline: none !important;
     border: none !important;
 }
 
-/* ===== HERO DESCRIPCIÓN ===== */
+/* ================================
+   HERO (DESCRIPCIÓN)
+================================ */
 
 .description {
     margin-bottom: 40px;
@@ -31,7 +35,7 @@ main {
     border-radius: 18px;
     padding: 38px;
     border: 1px solid #d2d2d7;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-soft);
     display: grid;
     grid-template-columns: 1.7fr 1fr;
     gap: 28px;
@@ -43,9 +47,9 @@ main {
     line-height: 1.6;
     color: #6e6e73;
     font-weight: 400;
-    margin: 0;
 }
 
+/* IMAGEN HERO */
 .container-img {
     display: flex;
     justify-content: center;
@@ -55,20 +59,21 @@ main {
 .container-img img {
     width: 100%;
     max-width: 240px;
-    transition: transform 0.25s ease;
+    transition: transform var(--transition-fast);
 }
 
 .container-img img:hover {
     transform: scale(1.05);
 }
 
-/* ===== SECCIÓN DESARROLLADORES ===== */
+/* ================================
+   SECCIÓN DESARROLLADORES
+================================ */
 
 .developers-section {
     margin-top: 20px;
 }
 
-/* Título de sección */
 .title {
     text-align: center;
     margin-bottom: 24px;
@@ -77,14 +82,14 @@ main {
 .title-txt p {
     font-size: 1.7rem;
     font-weight: 700;
-    letter-spacing: 0.5px;
     color: #424245;
     margin: 0;
+    letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
     padding-bottom: 6px;
 }
 
-/* Contenedor de tarjetas */
+/* Tarjetas desarrolladores */
 .dev-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -92,19 +97,18 @@ main {
     margin-bottom: 30px;
 }
 
-/* Tarjeta de desarrollador */
 .dev-card {
     background: #ffffff;
     border-radius: 16px;
     padding: 22px;
     border: 1px solid #d2d2d7;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    transition: var(--transition-fast);
 }
 
 .dev-card h1 {
     font-size: 1.1rem;
-    margin: 0 0 8px;
+    margin-bottom: 8px;
     color: #424245;
 }
 
@@ -113,16 +117,17 @@ main {
     line-height: 1.6;
     color: #6e6e73;
     font-weight: 400;
-    margin: 0;
 }
 
-/* Hover con acento Tokioona */
+/* Hover */
 .dev-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
-/* ===== SECCIONES DE INFORMACIÓN ===== */
+/* ================================
+   SECCIONES DE INFORMACIÓN
+================================ */
 
 .info-section {
     background: #ffffff;
@@ -135,94 +140,55 @@ main {
 
 .info-section h1 {
     font-size: 1.25rem;
-    margin: 0 0 8px;
     color: #424245;
+    margin-bottom: 8px;
 }
 
 .info-section h3 {
     font-size: 0.95rem;
-    line-height: 1.6;
     color: #6e6e73;
-    font-weight: 400;
-    margin: 0;
+    line-height: 1.6;
 }
 
-/* ===== RESPONSIVE ===== */
 
-@media (max-width: 900px) {
-    .description-container {
-        grid-template-columns: 1fr;
-    }
-
-    .dev-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 650px) {
-    main {
-        margin-top: 70px;
-        padding: 0 14px;
-    }
-
-    .description-container {
-        padding: 24px;
-    }
-
-    .dev-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ============================================
-   Animations (DELETE FADE IF U HATE IT, LOL)
-   ============================================ */
+/* ================================
+   ANIMACIONES
+================================ */
 
 @keyframes fadeInSoft {
-    0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+    0% { opacity: 0; transform: translateY(12px) scale(0.98); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes fadeInUp {
-    0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+    0% { opacity: 0; transform: translateY(20px); filter: blur(12px); }
     100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-@keyframes liquid-gradient {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+main { animation: fadeInSoft 0.7s ease-out; }
 
-@keyframes liquid-blob {
-    0%   { transform: translate(-10%, -10%); }
-    50%  { transform: translate(15%, 15%); }
-    100% { transform: translate(-10%, -10%); }
-}
-
-main {
-    animation: fadeInSoft 0.7s ease-out;
-}
-
-.description-container {
-    animation: fadeInSoft 0.7s ease-out both;
-}
+.description-container { animation: fadeInSoft 0.7s ease-out both; }
 
 .dev-card {
     opacity: 0;
     animation: fadeInUp 0.7s ease-out forwards;
 }
+.dev-card:nth-child(2) { animation-delay: 0.08s; }
+.dev-card:nth-child(3) { animation-delay: 0.16s; }
 
-.dev-card:nth-child(2) {
-    animation-delay: 0.08s;
+.info-section { animation: fadeInSoft 0.7s ease-out both; }
+
+/* Liquid backgrounds */
+@keyframes liquid-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-.dev-card:nth-child(3) {
-    animation-delay: 0.16s;
-}
-
-.info-section {
-    animation: fadeInSoft 0.7s ease-out both;
+@keyframes liquid-blob {
+    0% { transform: translate(-10%, -10%); }
+    50% { transform: translate(15%, 15%); }
+    100% { transform: translate(-10%, -10%); }
 }
 
 .liquid-bg {
@@ -241,50 +207,60 @@ main {
 }
 
 
-
-/*  DARK THEME */
-
-.body-dark-theme .container-txt h3, .body-dark-theme .title-txt p {
-    color: #d1d1d6; 
-}
-
-.body-dark-theme .dev-card h1, .body-dark-theme .dev-card h3,
-.body-dark-theme .info-section h3, .body-dark-theme .info-section h1 {
-    color: #d3d3d3;
-}
-
-.body-dark-theme .description-container{
-    background: #1d1d5b;
-}
-
-.body-dark-theme .dev-card{
-    background: #2c2c72;
-}
-
-.body-dark-theme .info-section {
-    background: #2a2a74;
-}
+/* ================================
+   DARK THEME
+================================ */
 
 .body-dark-theme {
-    background: #111114;
+    background: var(--color-bg-dark);
 }
 
-.body-dark-theme .description-container{
+.body-dark-theme .container-txt h3,
+.body-dark-theme .title-txt p,
+.body-dark-theme .dev-card h1,
+.body-dark-theme .dev-card h3,
+.body-dark-theme .info-section h1,
+.body-dark-theme .info-section h3 {
+    color: var(--color-text-dark);
+}
+
+/* Panels */
+.body-dark-theme .description-container,
+.body-dark-theme .dev-card,
+.body-dark-theme .info-section {
+    background: #1c1c30;
     border: 1px solid rgba(72, 72, 74, 0.9);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+    box-shadow: var(--shadow-strong);
 }
 
-.body-dark-theme .dev-card{
-    border: 1px solid rgba(72, 72, 74, 0.9);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-}
-
+/* Hover */
 .body-dark-theme .dev-card:hover {
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
     border-color: rgba(90, 90, 92, 0.9);
 }
 
-.body-dark-theme .info-section {
-    border: 1px solid rgba(72, 72, 74, 0.9);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 900px) {
+    .description-container {
+        grid-template-columns: 1fr;
+    }
+    .dev-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    main {
+        margin-top: 70px;
+        padding: 0 14px;
+    }
+    .description-container {
+        padding: 24px;
+    }
+    .dev-container {
+        grid-template-columns: 1fr;
+    }
 }

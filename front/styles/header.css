@@ -1,17 +1,17 @@
-/* ============================================
-   HEADER DARK GRAY GLASS STYLE (Apple Font Added)
-   ============================================ */
+/* ============================================================
+   HEADER – DARK GRAY GLASS STYLE
+============================================================ */
 
 header {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-
     background: rgba(40, 40, 45, 0.85);
     color: #ccc;
     padding: 12px 30px;
-    border-radius: 18px;
     margin: 18px auto;
+    border-radius: 18px;
+
     width: 95%;
     max-width: 1300px;
+
     position: sticky;
     top: 10px;
     z-index: 1000;
@@ -25,32 +25,32 @@ header {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Header hover animation */
 header:hover {
     transform: scale(1.02);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
-/* Header main flex container */
+/* Header Layout */
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* ============================================
-   LOGO + BRAND NAME (Horizontal Layout)
-   ============================================ */
+
+/* ============================================================
+   LOGO + BRAND
+============================================================ */
+
 .header-logo {
     display: flex;
-    flex-direction: row;
     align-items: center;
+    flex-direction: row;
     gap: 10px;
 }
 
 .header-logo img {
     width: 55px;
-    height: auto;
     filter: drop-shadow(0 0 4px rgba(160, 100, 255, 0.35));
     transition: transform 0.25s ease, filter 0.25s ease;
 }
@@ -60,29 +60,29 @@ header:hover {
     filter: drop-shadow(0 0 6px rgba(180, 120, 255, 0.6));
 }
 
-/* Hide previous placeholder text */
+/* Ocultar placeholder previo */
 .header-logo p:first-child {
     display: none;
 }
 
-/* Brand name text style */
 .header-logo p:last-child {
     font-size: 1.15rem;
     font-weight: 600;
     color: #a064ff;
-    opacity: 1;
-    margin: 0;
     letter-spacing: 0.5px;
+    margin: 0;
     text-shadow: 0 0 4px rgba(160, 100, 255, 0.35);
 }
 
-/* ============================================
-   NAVIGATION MENU LINKS
-   ============================================ */
+
+/* ============================================================
+   NAVIGATION LINKS
+============================================================ */
+
 .header-nav nav {
     display: flex;
-    gap: 30px;
     align-items: center;
+    gap: 30px;
 }
 
 .navigation-a {
@@ -92,11 +92,12 @@ header:hover {
 
 .navigation-a a {
     color: #ccc;
-    text-decoration: none;
-    font-weight: 400;
     font-size: 0.9rem;
+    font-weight: 400;
+
     padding: 6px 10px;
     border-radius: 8px;
+
     transition: all 0.25s ease;
 }
 
@@ -106,27 +107,31 @@ header:hover {
     transform: scale(1.05);
 }
 
-/* ============================================
-   USER CONTROL BUTTONS (Login / Cart / Profile)
-   ============================================ */
+
+/* ============================================================
+   USER CONTROL (Login / Cart / Profile)
+============================================================ */
+
 .navigation-b {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Botón de login y otros botones dentro de navegación-b */
 .navigation-b .login-btn,
 .navigation-b button,
 .cart-btn {
     background: rgba(255, 255, 255, 0.08);
     color: #ccc;
+
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 500;
+
     border: 1px solid rgba(160, 100, 255, 0.4);
     cursor: pointer;
+
     transition: all 0.25s ease;
 }
 
@@ -134,101 +139,93 @@ header:hover {
 .login-btn:hover,
 .cart-btn:hover {
     background: rgba(160, 100, 255, 0.25);
-    transform: scale(1.05);
     color: #fff;
+    transform: scale(1.05);
     border-color: rgba(180, 120, 255, 0.7);
 }
 
-/* ============================================
-   USER MENU (Hola, usuario + carrito + logout)
-   ============================================ */
+
+/* ============================================================
+   USER MENU (Hola, usuario + carrito)
+============================================================ */
 
 .user-menu {
     display: flex;
     align-items: center;
-    gap: 14px; /* más espacio entre saludo, carrito y botón */
+    gap: 14px;
 }
 
-/* (opcional) por si quieres estilizar el texto de "Hola, usuario" */
 .user-menu .user-greeting {
     font-size: 0.9rem;
 }
 
-/* ===========================
-   Estilo para el carrito
-   =========================== */
 
-/* El contenedor del carrito (cuando usas <a class="cart-link">) */
-.cart-link {
+/* ============================================================
+   CART ICON + BADGE
+============================================================ */
+
+.cart-wrapper {
+    position: relative;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    padding: 4px;
-    border-radius: 999px;
-    transition: all 0.25s ease;
+    cursor: pointer;
+    margin: 0 10px;
 }
 
-/* El ícono del carrito (funciona tanto si viene de <a.cart-link> como de .user-menu) */
 .cart-icon {
     width: 26px;
-    height: auto;
-    cursor: pointer;
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.45));
     transition: transform 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
 }
 
-/* Efecto hover tipo glass para el carrito */
+/* Hover */
+.cart-wrapper:hover,
 .cart-link:hover,
 .user-menu .cart-icon:hover {
     background: rgba(160, 100, 255, 0.25);
+    border-radius: 999px;
 }
 
+.cart-wrapper:hover .cart-icon,
 .cart-link:hover .cart-icon,
 .user-menu .cart-icon:hover {
     transform: scale(1.08);
-    filter: drop-shadow(0 0 5px rgba(180, 120, 255, 0.8));
     opacity: 0.9;
+    filter: drop-shadow(0 0 5px rgba(180, 120, 255, 0.8));
 }
 
-/* ============================================
-   RESPONSIVE BEHAVIOR (Hide links on mobile)
-   ============================================ */
+/* Badge */
+.cart-count-badge {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    background: #ff3b30;
+    color: #fff;
+    border-radius: 999px;
+
+    box-shadow: 0 0 0 2px #111;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
 @media (max-width: 850px) {
     .navigation-a {
         display: none;
     }
 }
-.cart-wrapper {
-  position: relative;
-  display: inline-block;
-  margin: 0 10px;
-  cursor: pointer;
-}
 
-.cart-icon {
-  width: 26px;
-  height: auto;
-  display: block;
-}
-
-.cart-count-badge {
-  position: absolute;
-  right: -4px;
-  bottom: -4px;              /* 👈 abajo a la derecha */
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 999px;
-
-  background: #ff3b30;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0 0 0 2px #111; /* borde que separa del icono */
-}
 

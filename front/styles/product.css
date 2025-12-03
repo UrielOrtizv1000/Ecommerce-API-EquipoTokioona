@@ -1,12 +1,10 @@
 /* ================================
-   Global settings & default styles
-   ================================ */
+   GLOBAL SETTINGS
+================================ */
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background: #f5f5f7;
   margin: 0;
+  background: #f5f5f7;
 }
 
 main.main-content {
@@ -14,11 +12,12 @@ main.main-content {
   box-sizing: border-box;
   max-width: 1200px;
   margin: 0 auto 40px;
+  animation: fadeInSoft 0.7s ease-out;
 }
 
 /* ================================
-   Product layout
-   ================================ */
+   PRODUCT LAYOUT
+================================ */
 
 .product-container {
   display: flex;
@@ -29,11 +28,14 @@ main.main-content {
   padding: 20px 22px;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
   box-sizing: border-box;
+  opacity: 0;
+  animation: fadeInUp 0.7s ease-out forwards;
+  animation-delay: 0.05s;
 }
 
 /* ================================
-   Image box
-   ================================ */
+   IMAGE BOX
+================================ */
 
 .product-image-box {
   flex: 1;
@@ -52,8 +54,8 @@ main.main-content {
 }
 
 /* ================================
-   Product info
-   ================================ */
+   PRODUCT INFO
+================================ */
 
 .product-info {
   flex: 1.1;
@@ -83,8 +85,8 @@ main.main-content {
 }
 
 /* ================================
-   Price & stock
-   ================================ */
+   PRICE & STOCK
+================================ */
 
 .price-tag {
   margin-top: 4px;
@@ -110,14 +112,13 @@ main.main-content {
   font-weight: 600;
 }
 
-/* Por si quieres marcar sin stock dinámicamente */
 .stock-tag.out-of-stock {
   color: #b00020;
 }
 
 /* ================================
-   Tags
-   ================================ */
+   TAGS
+================================ */
 
 .tags {
   margin-top: 8px;
@@ -136,8 +137,8 @@ main.main-content {
 }
 
 /* ================================
-   Buttons (coherentes con cart.css)
-   ================================ */
+   BUTTONS
+================================ */
 
 .btn {
   display: inline-flex;
@@ -170,8 +171,8 @@ main.main-content {
 }
 
 /* ================================
-   Responsive
-   ================================ */
+   RESPONSIVE
+================================ */
 
 @media (max-width: 900px) {
   .product-container {
@@ -198,74 +199,66 @@ main.main-content {
 }
 
 /* ================================
-   Animations
-   ================================ */
+   ANIMATIONS
+================================ */
 
 @keyframes fadeInSoft {
-  0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+  0% { opacity: 0; transform: translateY(12px) scale(0.98); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes fadeInUp {
-  0%   { opacity: 0; transform: translateY(20px); filter: blur(12px); }
+  0% { opacity: 0; transform: translateY(20px); filter: blur(12px); }
   100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-main.main-content {
-  animation: fadeInSoft 0.7s ease-out;
-}
-
-.product-container {
-  opacity: 0;
-  animation: fadeInUp 0.7s ease-out forwards;
-  animation-delay: 0.05s;
-}
-
-/* DARK THEME */
+/* ================================
+   DARK THEME
+================================ */
 
 .body-dark-theme .product-container {
-    background: #1c1c1e;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  background: #1c1c1e;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
 }
 
 .body-dark-theme .product-image-box {
-    background: #2c2c2e;
+  background: #2c2c2e;
 }
 
 .body-dark-theme .product-info h1 {
-    color: #f5f5f7;
+  color: #f5f5f7;
 }
 
 .body-dark-theme .product-info p,
 .body-dark-theme .tags {
-    color: #d1d1d6;
+  color: #d1d1d6;
 }
 
 .body-dark-theme .price-tag {
-    color: #f5f5f7;
+  color: #f5f5f7;
 }
 
 .body-dark-theme .price-tag span {
-    color: #4cc9f0;
+  color: #4cc9f0;
 }
 
 .body-dark-theme .stock-tag {
-    color: #5abf6c;
+  color: #5abf6c;
 }
 
 .body-dark-theme .stock-tag.out-of-stock {
-    color: #cf6679;
+  color: #cf6679;
 }
 
 .body-dark-theme .tag {
-    background: #2c2c2e;
-    color: #d1d1d6;
+  background: #2c2c2e;
+  color: #d1d1d6;
 }
 
 .body-dark-theme .btn-primary {
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
 }
 
 .body-dark-theme .btn-primary:hover {
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
 }
