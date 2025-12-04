@@ -10,19 +10,34 @@ const pool = require('../db/conexion');
  */
 const calculateTotals = async (userId, country, shippingMethod = "standard") => {
   // 1. Get cart items WITH NAME
-  const [items] = await pool.query(
-    `SELECT
-       c.product_id, 
-       c.quantity,
-       COALESCE(p.name, CONCAT('Producto ID ', c.product_id, ' (no disponible)')) AS name,
-       COALESCE(p.price, 0) AS price,
-       COALESCE(p.stock, 0) AS stock,
-       (c.quantity * COALESCE(p.price, 0)) AS subtotal
-     FROM cart c
-     LEFT JOIN products p ON c.product_id = p.product_id
-     WHERE c.user_id = ?`,
-    [userId]
-  );
+const [items] = await pool.query(
+  `SELECT
+     c.product_id, 
+     c.quantity,
+     COALESCE(p.name, CONCAT('Producto ID ', c.product_id, ' (no disponible)')) AS name,
+     COALESCE(p.price, 0) AS original_price,
+     COALESCE(p.discount, 0) AS discount,
+     COALESCE(p.is_on_sale, 0) AS is_on_sale,
+     COALESCE(p.stock, 0) AS stock,
+     -- Precio con descuento
+     CASE 
+       WHEN COALESCE(p.is_on_sale, 0) = 1 AND COALESCE(p.discount, 0) > 0 
+       THEN ROUND(COALESCE(p.price, 0) - (COALESCE(p.price, 0) * COALESCE(p.discount, 0) / 100), 2)
+       ELSE COALESCE(p.price, 0)
+     END AS final_price,
+     -- Subtotal con descuento
+     (c.quantity * 
+       CASE 
+         WHEN COALESCE(p.is_on_sale, 0) = 1 AND COALESCE(p.discount, 0) > 0 
+         THEN ROUND(COALESCE(p.price, 0) - (COALESCE(p.price, 0) * COALESCE(p.discount, 0) / 100), 2)
+         ELSE COALESCE(p.price, 0)
+       END
+     ) AS subtotal
+   FROM cart c
+   LEFT JOIN products p ON c.product_id = p.product_id
+   WHERE c.user_id = ?`,
+  [userId]
+);
 
   if (items.length === 0) {
     throw new Error("Cart is empty");

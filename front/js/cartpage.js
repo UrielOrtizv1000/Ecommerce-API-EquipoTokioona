@@ -95,9 +95,22 @@ function renderCartItems(items, container) {
     row.className = "cart-item";
     row.dataset.productId = item.product_id;
 
-    const price = Number(item.price || 0);
-    const qty   = Number(item.quantity || 0);
-    const subtotal = Number(item.subtotal ?? price * qty);
+    const originalPrice = Number(item.original_price || 0);
+    const finalPrice = Number(item.price || 0);
+    const discount = Number(item.discount || 0);
+    const qty = Number(item.quantity || 0);
+    const subtotal = Number(item.subtotal || finalPrice * qty);
+
+    // Mostrar precio con descuento si aplica
+    const priceHTML = discount > 0 && item.is_on_sale
+      ? `
+        <div class="item-price-discount">
+          <span class="original-price"><s>$${originalPrice.toFixed(2)}</s></span>
+          <span class="final-price">$${finalPrice.toFixed(2)}</span>
+          <span class="discount-percent">-${discount}%</span>
+        </div>
+      `
+      : `<div class="item-price">$${finalPrice.toFixed(2)}</div>`;
 
     row.innerHTML = `
       <div class="item-info">
@@ -107,8 +120,8 @@ function renderCartItems(items, container) {
         </div>
       </div>
 
-      <div class="item-price">
-        $${price.toFixed(2)}
+      <div class="item-price-container">
+        ${priceHTML}
       </div>
 
       <div class="item-quantity">

@@ -57,9 +57,26 @@ static async getUserCart(userId) {
       c.product_id,
       c.quantity,
       COALESCE(p.name, CONCAT('Producto ID ', c.product_id, ' (no disponible)')) AS name,
-      COALESCE(p.price, 0) + 0.0 AS price,        -- fuerza número
+      COALESCE(p.price, 0) + 0.0 AS price,
+      COALESCE(p.discount, 0) AS discount,
+      COALESCE(p.is_on_sale, 0) AS is_on_sale,
       COALESCE(p.stock, 0) AS stock,
-      (c.quantity * COALESCE(p.price, 0)) + 0.0 AS subtotal  -- fuerza número
+      -- Precio original
+      COALESCE(p.price, 0) + 0.0 AS original_price,
+      -- Precio con descuento si aplica
+      CASE 
+        WHEN COALESCE(p.is_on_sale, 0) = 1 AND COALESCE(p.discount, 0) > 0 
+        THEN ROUND(COALESCE(p.price, 0) - (COALESCE(p.price, 0) * COALESCE(p.discount, 0) / 100), 2)
+        ELSE COALESCE(p.price, 0)
+      END + 0.0 AS final_price,
+      -- Subtotal con descuento aplicado
+      (c.quantity * 
+        CASE 
+          WHEN COALESCE(p.is_on_sale, 0) = 1 AND COALESCE(p.discount, 0) > 0 
+          THEN ROUND(COALESCE(p.price, 0) - (COALESCE(p.price, 0) * COALESCE(p.discount, 0) / 100), 2)
+          ELSE COALESCE(p.price, 0)
+        END
+      ) + 0.0 AS subtotal
     FROM cart c
     LEFT JOIN products p ON c.product_id = p.product_id
     WHERE c.user_id = ?
@@ -69,7 +86,10 @@ static async getUserCart(userId) {
 
   return rows.map(item => ({
     ...item,
-    price: Number(item.price),
+    price: Number(item.final_price), // Usar precio con descuento
+    original_price: Number(item.original_price),
+    discount: Number(item.discount),
+    is_on_sale: Number(item.is_on_sale),
     stock: Number(item.stock),
     subtotal: Number(item.subtotal),
     quantity: Number(item.quantity)

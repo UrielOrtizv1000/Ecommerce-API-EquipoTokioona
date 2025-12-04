@@ -59,16 +59,28 @@ exports.filterProductsBy = async (req, res) => {
 
       switch (key) {
         case "category_id":
-          queryControl += "category_id = ? ";
+          queryControl += "p.category_id = ? ";
           break;
         case "min_price":
-          queryControl += "price >= ? ";
+          // Usar precio final (con descuento)
+          queryControl += `
+            CASE 
+              WHEN p.is_on_sale = 1 AND p.discount > 0 
+              THEN ROUND(p.price - (p.price * p.discount / 100), 2)
+              ELSE p.price 
+            END >= ? `;
           break;
         case "max_price":
-          queryControl += "price <= ? ";
+          // Usar precio final (con descuento)
+          queryControl += `
+            CASE 
+              WHEN p.is_on_sale = 1 AND p.discount > 0 
+              THEN ROUND(p.price - (p.price * p.discount / 100), 2)
+              ELSE p.price 
+            END <= ? `;
           break;
         case "is_on_sale":
-          queryControl += "is_on_sale = ? ";
+          queryControl += "p.is_on_sale = ? ";
           break;
         default:
           return res.status(404).json({

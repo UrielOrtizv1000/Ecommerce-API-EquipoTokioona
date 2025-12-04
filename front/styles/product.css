@@ -262,3 +262,21 @@ main.main-content {
 .body-dark-theme .btn-primary:hover {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
 }
+
+
+
+
+.price-discount-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.discount-badge {
+  background-color: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}

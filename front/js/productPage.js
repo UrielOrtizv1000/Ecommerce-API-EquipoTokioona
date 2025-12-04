@@ -34,8 +34,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tagsContainer = document.getElementById("product-tags");
 
     if (nameEl)  nameEl.textContent = product.name;
+
     if (descEl)  descEl.textContent = product.description || "Sin descripción.";
-    if (priceEl) priceEl.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+    if (priceEl) {
+      const originalPrice = parseFloat(product.price);
+      const discount = product.discount || 0;
+      const isOnSale = product.is_on_sale && discount > 0;
+      const finalPrice = isOnSale 
+        ? originalPrice - (originalPrice * discount / 100)
+        : originalPrice;
+
+      if (isOnSale) {
+        priceEl.innerHTML = `
+          <div class="price-discount-container">
+            <span class="original-price"><s>$${originalPrice.toFixed(2)}</s></span>
+            <span class="final-price">$${finalPrice.toFixed(2)}</span>
+            <span class="discount-badge">-${discount}%</span>
+          </div>
+        `;
+      } else {
+        priceEl.textContent = `$${originalPrice.toFixed(2)}`;
+      }
+    }
     if (stockEl) stockEl.textContent = product.stock;
 
     if (imageEl) {

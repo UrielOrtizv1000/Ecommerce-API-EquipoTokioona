@@ -68,13 +68,38 @@ const Product = {
   
   // Get single product by ID
   async getProductById(id) {
-    const [res] = await pool.query('SELECT * FROM products WHERE product_id = ?', [id]);
+    const [res] = await pool.query(
+      `SELECT 
+        p.*,
+        c.category_name,
+        CASE 
+          WHEN p.is_on_sale = 1 AND p.discount > 0 
+          THEN ROUND(p.price - (p.price * p.discount / 100), 2)
+          ELSE p.price 
+        END as final_price
+      FROM products p 
+      LEFT JOIN categories c ON p.category_id = c.category_id 
+      WHERE p.product_id = ?`, 
+      [id]
+    );
     return res[0];
   },
   
   // Get products with filters
   async getProductsByFilter(filterQuery, filterValues) {
-    const [list] = await pool.query(filterQuery, filterValues);
+    // Modifica la query para incluir precio final
+    const baseQuery = filterQuery.replace(
+      "SELECT * FROM products",
+      `SELECT 
+        p.*,
+        CASE 
+          WHEN p.is_on_sale = 1 AND p.discount > 0 
+          THEN ROUND(p.price - (p.price * p.discount / 100), 2)
+          ELSE p.price 
+        END as final_price
+      FROM products p`
+    );
+    const [list] = await pool.query(baseQuery, filterValues);
     return list;
   },
   
@@ -115,6 +140,32 @@ async getInventoryReport() {
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.category_id
       ORDER BY p.stock ASC
+    `);
+    return rows;
+  },
+
+  async getAllProducts() {
+    const [rows] = await pool.query(`
+      SELECT 
+        p.product_id,
+        p.name,
+        p.description,
+        p.price,
+        p.discount,
+        p.stock,
+        p.image_url,
+        p.is_on_sale,
+        p.category_id,          
+        p.tags,
+        c.category_name,
+        CASE 
+          WHEN p.is_on_sale = 1 AND p.discount > 0 
+          THEN ROUND(p.price - (p.price * p.discount / 100), 2)
+          ELSE p.price 
+        END as final_price
+      FROM products p 
+      LEFT JOIN categories c ON p.category_id = c.category_id 
+      ORDER BY p.product_id DESC
     `);
     return rows;
   }
