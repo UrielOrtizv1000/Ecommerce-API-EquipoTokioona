@@ -32,6 +32,9 @@ class Store {
     // 1) Cargar productos
     await this.loadProducts();
 
+    // 1.b) Cargar wishlist del usuario si está autenticado
+    await this.loadUserWishlist();
+
     // 2) Cargar categorías desde la BD y crear botones
     await this.loadCategories();
 
@@ -47,6 +50,25 @@ class Store {
     // 6) Primer render con todos los productos
     this.applyFilters();
   }
+
+  async loadUserWishlist() {
+    if (typeof Auth === "undefined" || !Auth.isAuthenticated()) {
+        return;
+    }
+    
+    try {
+        const result = await ApiClient.getWishlist();
+        if (result.ok && result.data && result.data.products) {
+            
+            // Mapea los productos de la wishlist a un Set de IDs
+            this.wishlistIds = new Set(
+                result.data.products.map(item => item.product_id)
+            );
+        }
+    } catch (error) {
+        console.error("💥 Error cargando la Wishlist del usuario:", error);
+    }
+}
 
   // Método para configurar filtros desde URL
   setupUrlFilters() {
@@ -229,29 +251,42 @@ class Store {
       ? `<span class="badge-offer">Oferta</span>`
       : "";
 
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="wishlist-btn">
-          <i class="far fa-heart"></i>
-        </span>
-        ${offerBadge}
-        <img src="${imageUrl}" alt="${product.name}" class="product-image">
-      </div>
-      <h4 class="product-title">${product.name}</h4>
-      <p>${product.description || "Descripción no disponible"}</p>
-      <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
-      <p>Stock: ${product.stock}</p>
-      <div class="tags">
-        ${tagsHTML}
-      </div>
-      <div class="card-btn">
-        <button class="add-to-cart-btn" ${
-          product.stock === 0 ? "disabled" : ""
-        }>
-          ${product.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
-        </button>
-      </div>
-    `;
+    const isProductWished = this.wishlistIds.has(product.product_id);
+    const heartIconClass = isProductWished ? "fas fa-heart" : "far fa-heart";
+    const wishlistBtnClass = isProductWished ? "wishlist-btn active" : "wishlist-btn";
+
+    const cartButtonText = isAdmin ? "Acceso Denegado" : "Agregar al Carrito";
+    const cartButtonDisabled = isAdmin ? "disabled" : "";
+
+    const wishlistHTML = isAdmin 
+      ? '' 
+      : `
+        <span class="${wishlistBtnClass}">
+          <i class="${heartIconClass}"></i>
+        </span>
+      `;
+
+card.innerHTML = `
+      <div class="card-header">
+        ${wishlistHTML}
+        ${offerBadge}
+        <img src="${imageUrl}" alt="${product.name}" class="product-image">
+      </div>
+      <h4 class="product-title">${product.name}</h4>
+      <p>${product.description || "Descripción no disponible"}</p>
+      <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
+      <p>Stock: ${product.stock}</p>
+      <div class="tags">
+        ${tagsHTML}
+      </div>
+      <div class="card-btn">
+        <button class="add-to-cart-btn" 
+            ${product.stock === 0 ? "disabled" : ""}
+            ${cartButtonDisabled}> 
+          ${product.stock === 0 ? "Sin Stock" : cartButtonText} 
+        </button>
+      </div>
+    `;
 
     const wishlistBtn = card.querySelector(".wishlist-btn");
     const cartBtn = card.querySelector(".add-to-cart-btn");
@@ -259,16 +294,20 @@ class Store {
     const titleEl = card.querySelector(".product-title");
 
     // ❤️ Wishlist
-    wishlistBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.handleWishlist(product, wishlistBtn);
-    });
+if (wishlistBtn) { 
+      wishlistBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.handleWishlist(product, wishlistBtn);
+      });
+    }
 
     // 🛒 Botón agregar al carrito
-    cartBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.handleAddToCart(product);
-    });
+if (!isAdmin) {
+        cartBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.handleAddToCart(product);
+        });
+    }
 
     // 🔗 Navegar al detalle al hacer clic en imagen o título
     const goToDetail = () => {
@@ -302,6 +341,11 @@ class Store {
         button.classList.toggle("active");
         icon.classList.toggle("far");
         icon.classList.toggle("fas");
+        if (isAdding) {
+            this.wishlistIds.add(product.product_id);
+        } else {
+            this.wishlistIds.delete(product.product_id);
+        }
       } else {
         alert(result.message || "Error en la operación");
       }

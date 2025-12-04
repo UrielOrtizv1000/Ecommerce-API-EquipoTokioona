@@ -292,7 +292,7 @@ async getAllProducts() {
 
   async addToWishlist(productId) {
     try {
-      const response = await fetch(`${BASE_URL}/wishlist`, {
+      const response = await fetch(`${BASE_URL}/wishlist/add`, {
         method: 'POST',
         headers: this._authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ productId })

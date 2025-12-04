@@ -21,7 +21,7 @@ addToWishlist = async (req, res) => {
     const { productId } = req.body;
 
     try {
-        await wishlist.addProduct(userId, productId);
+        await wishlist.insertProduct(userId, productId);
         res.status(201).json({ message: 'Product added to wishlist successfully.' });
     } catch (error) {
         console.error("Error adding product to wishlist:", error);
@@ -34,7 +34,7 @@ deleteFromWishlist = async (req, res) => {
     const { productId } = req.params;
 
     try {
-        await wishlist.removeProduct(userId, productId);
+        await wishlist.deleteProduct(userId, productId);
         res.status(200).json({ message: 'Product removed from wishlist successfully.' });
     } catch (error) {
         console.error("Error removing product from wishlist:", error);

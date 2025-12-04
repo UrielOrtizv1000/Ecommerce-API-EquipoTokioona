@@ -259,3 +259,38 @@ header:hover {
 
   box-shadow: 0 0 0 2px #111; /* borde que separa del icono */
 }
+
+.wishlist-btn-header {
+    /* Base de color */
+    background-color: #ff4d4d;
+    color: white;
+
+    /* ✅ Dimensionamiento CIRCULAR */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Dimensiones Fijas (Ajusta esto a tu gusto) */
+    width: 38px; /* Haz el ancho y alto iguales */
+    height: 38px;
+    padding: 0; /* Elimina el padding que lo hacía rectangular */
+    border-radius: 50%; /* ¡Esto garantiza que sea un círculo! */
+    
+    /* Estilos del icono */
+    font-size: 1.15rem; /* Tamaño del icono */
+    
+    /* Estilos de espaciado y transición */
+    margin-left: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.wishlist-btn-header:hover {
+    background-color: #e03c3c;
+    transform: scale(1.05); /* Añade un hover effect para UX */
+}
+
+/* Ocultar el texto del icono, si usaste Font Awesome */
+.wishlist-btn-header i {
+    margin: 0; 
+}
