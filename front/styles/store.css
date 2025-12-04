@@ -690,3 +690,54 @@ main {
    TEMA OSCURO para nuevas clases
    ================================ */
 
+.body-dark-theme .badge-offer {
+  background: linear-gradient(135deg, #e25861, #b23a60);
+  color: white;
+  box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3);
+}
+
+.body-dark-theme .price-container {
+  background-color: #2c2d2e;
+  border-left: 4px solid #e25861;
+}
+
+.body-dark-theme .original-price {
+  color: #9f9b9b;
+}
+
+.body-dark-theme .final-price {
+  color: #e25861;
+}
+
+.body-dark-theme .discount-saved {
+  color: #46c97d;
+}
+
+/* Producto en oferta - estilo especial */
+.body-dark-theme .product-on-sale {
+  border: 2px solid #e25861;
+}
+
+.body-dark-theme .product-on-sale::before {
+  background-color: #e25861;
+}
+
+/* Info de oferta especial */
+.body-dark-theme .sale-info {
+  background-color: #fff8e1;
+  color: #ff6b00;
+}
+
+/* Stock info mejorado */
+.body-dark-theme .stock-info {
+  color: #555;
+}
+
+.body-dark-theme .stock-info i {
+  color: #cddb34;
+}
+
+/* Clase para stock bajo */
+.body-dark-theme .low-stock {
+  color: #e74c3c;
+}

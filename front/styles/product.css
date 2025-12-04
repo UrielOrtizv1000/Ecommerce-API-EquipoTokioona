@@ -275,7 +275,9 @@ main.main-content {
 
 .discount-badge {
   background-color: #ff4757;
-  color: white;
+  color: white !important;
+  font-size: 15px !important;
+  margin-left: 300px;
   padding: 4px 8px;
   border-radius: 4px;
   font-weight: bold;
