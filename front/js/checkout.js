@@ -26,7 +26,12 @@ async function initCheckoutPage() {
 
   // 1) Verificar que el usuario esté logueado
   if (!Auth.isAuthenticated()) {
-    alert('Debes iniciar sesión para finalizar la compra.');
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Inicio de sesión requerido',
+      text: 'Debes iniciar sesión para usar la lista de deseos',
+      confirmButtonText: 'Entendido'
+    });
     window.location.href = 'store.html';
     return;
   }
@@ -250,15 +255,31 @@ function setupPlaceOrderHandler() {
       const result = await ApiClient.checkout(payload);
 
       if (result.data && result.data.success) {
-        alert("¡Compra realizada exitosamente! 🎉");
+        await Swal.fire({
+          icon: 'success',
+          title: '🎉',
+          text: `¡Compra realizada exitosamente! `,
+          timer: 1500,
+          showConfirmButton: false
+        });
         window.location.href = "index.html";
       } else {
-        alert(result.data?.message || "No se pudo procesar la compra.");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Error al agregar al carrito",
+          confirmButtonText: 'Entendido'
+        });
       }
 
     } catch (error) {
       console.error("Error en checkout:", error);
-      alert("Ocurrió un error durante la compra.");
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: "Hubo un error durante la compra",
+        confirmButtonText: 'Entendido'
+      });
     } finally {
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = originalText;
@@ -277,7 +298,13 @@ function collectShippingData() {
   const phone    = document.getElementById('phone')?.value.trim();
 
   if (!fullName || !email || !address || !city || !zipCode || !country || !phone) {
-    alert('Por favor llena todos los campos de envío.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos faltantes',
+      text: 'Por favor, llena los campos de envío',
+      timer: 1500,
+      showConfirmButton: false
+    });
     return null;
   }
 
@@ -307,7 +334,13 @@ function collectPaymentData() {
     const cvv = document.getElementById("cvv").value.trim();
 
     if (!cardNumber || !cardName || !expiryDate || !cvv) {
-      alert("Completa todos los datos de tarjeta");
+      Swal.fire({
+        icon: 'warning',
+        title: '💳',
+        text: 'Por favor, Completa todos los datos de tarjeta',
+        timer: 1500,
+        showConfirmButton: false
+      });
       return null;
     }
 
@@ -318,7 +351,13 @@ function collectPaymentData() {
     const accountHolder = document.getElementById("account-holder").value.trim();
 
     if (!accountHolder) {
-      alert("Ingresa el titular de la cuenta");
+      Swal.fire({
+        icon: 'warning',
+        title: '👤',
+        text: "Ingresa el titular de la cuenta",
+        timer: 1500,
+        showConfirmButton: false
+      });
       return null;
     }
 

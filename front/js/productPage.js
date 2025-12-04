@@ -6,7 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const productId = params.get("id");
 
     if (!productId) {
-        alert("Producto no encontrado");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Producto no encontrado",
+          confirmButtonText: 'Entendido'
+        });
         window.location.href = "store.html";
         return;
     }
@@ -15,7 +20,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await ApiClient.getProductById(productId);
 
     if (!result.ok || !result.data) {
-        alert("Error cargando el producto.");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Error cargando el producto",
+          confirmButtonText: 'Entendido'
+        });
         window.location.href = "store.html";
         return;
     }
@@ -114,20 +124,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         addBtn.addEventListener("click", async () => {
             if (isAdmin) {
-                alert("Los administradores no pueden realizar compras.");
+                await Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: "Los administradores no pueden realizar compras",
+                  confirmButtonText: 'Entendido'
+                });
                 return;
             }
 
             // 2. Verificación de autenticación
             if (!Auth.isAuthenticated()) {
-                alert("Debes iniciar sesión para agregar al carrito.");
+                await Swal.fire({
+                  icon: 'warning',
+                  title: '',
+                  text: "Debes iniciar sesión para agregar al carrito",
+                  confirmButtonText: 'Entendido'
+                });
                 // Opcional: openLoginModal();
                 return;
             }
 
             // 3. Verificación de stock
             if ((product.stock || 0) <= 0) {
-                alert("Este producto no tiene stock disponible.");
+                await Swal.fire({
+                  icon: 'warning',
+                  title: 'Producto sin stock',
+                  text: 'Este producto no esta disponible',
+                  confirmButtonText: 'Entendido'
+                });
                 return;
             }
 
@@ -138,9 +163,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             if (res.ok) {
-                alert("Producto agregado al carrito.");
+                await Swal.fire({
+                  icon: 'success',
+                  title: '¡Agregado!',
+                  html: `Producto agregado al carrito`,
+                  timer: 1500,
+                  showConfirmButton: false
+                });
             } else {
-                alert(res.message || "Error al agregar al carrito.");
+                await Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: res.message || "Error al agregar al carrito",
+                  confirmButtonText: 'Entendido'
+                });
             }
         });
     }

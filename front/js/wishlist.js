@@ -138,7 +138,6 @@ class WishlistPage {
     }
     
     async handleRemoveFromWishlist(productId, productName) {
-        // Reemplazo de 'confirm' nativo por SweetAlert2
         const confirmation = await Swal.fire({
             title: `Eliminar ${productName}?`,
             text: "¿Estás seguro de que quieres quitar este producto de tu lista?",

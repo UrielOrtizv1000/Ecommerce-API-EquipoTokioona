@@ -17,7 +17,12 @@ async function authFetch(endpoint, options = {}) {
     });
 
     if (response.status === 401 || response.status === 403) {
-        alert("Sesión expirada o no autorizada");
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Inicio de sesion requerida',
+          text: 'Debes inicias sesión para agregar algo al carrito',
+          confirmButtonText: 'Entendido'
+        });
         window.location.href = 'index.html'; 
         return null;
     }
@@ -398,7 +403,12 @@ document.getElementById('productForm').addEventListener('submit', async function
 
         // Verificar si la sesión expiró antes de intentar leer JSON
         if (response.status === 401 || response.status === 403) {
-            alert("Sesión expirada");
+            await Swal.fire({
+              icon: 'warning',
+              title: 'Sesion expirada',
+              text: '',
+              confirmButtonText: 'Entendido'
+            });
             window.location.href = 'index.html';
             return;
         }
@@ -416,11 +426,21 @@ document.getElementById('productForm').addEventListener('submit', async function
             document.getElementById('productModal').style.display = 'none';
             loadProductsTable(); 
         } else {
-            alert('Error del servidor: ' + json.message);
+            await Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: json.message || "Error del servidor",
+              confirmButtonText: 'Entendido'
+            });
         }
 
     } catch (error) {
-        alert("Error de red al guardar");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Error de red al guardar",
+          confirmButtonText: 'Entendido'
+        });
     }
 });
 

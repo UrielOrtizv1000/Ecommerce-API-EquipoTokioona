@@ -189,7 +189,12 @@ async function changeQuantity(productId, newQty) {
   });
 
   if (!result.ok) {
-    alert(result.message || "Error al actualizar cantidad");
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: result.message || "Error al actualizar cantidad",
+      confirmButtonText: 'Entendido'
+    });
     return;
   }
 
@@ -202,7 +207,12 @@ async function removeItem(productId) {
   const result = await ApiClient.removeFromCart(productId);
 
   if (!result.ok) {
-    alert(result.message || "Error al eliminar producto del carrito");
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: result.message || "Error al eliminar producto del carrito",
+      confirmButtonText: 'Entendido'
+    });
     return;
   }
 
