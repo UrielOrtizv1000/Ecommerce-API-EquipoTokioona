@@ -143,123 +143,126 @@ const cartController = {
   },
 
   // CHECKOUT
-  checkout: async (req, res) => {
-    try {
-      const userId = req.user.id;
-      const { shipping, payment } = req.body;
+  // CHECKOUT
+checkout: async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { shipping, payment } = req.body;
 
-      // Validate shipping data
-      if (!shipping?.state) {
-        return res.status(400).json({
-          success: false,
-          message: "Shipping state is required"
-        });
-      }
-
-      if (!shipping?.addressId) {
-        return res.status(400).json({
-          success: false,
-          message: "Shipping address ID is required"
-        });
-      }
-
-      if (!payment?.method) {
-        return res.status(400).json({
-          success: false,
-          message: "Payment method is required"
-        });
-      }
-
-      const shippingAddressId = shipping.addressId;
-
-      // Calculate totals
-      const totals = await calculateTotals(
-        userId,
-        shipping.state,
-        shipping.method || "standard"
-      );
-
-      const items = totals.items;
-
-      // Validate stock
-      for (const item of items) {
-        const [product] = await pool.query(
-          "SELECT stock FROM products WHERE product_id = ?",
-          [item.product_id]
-        );
-        if (item.quantity > product[0].stock) {
-          return res.status(400).json({
-            success: false,
-            message: `Insufficient stock for product: ${item.name}`
-          });
-        }
-      }
-
-      // CREATE ORDER
-      const orderId = await Order.create({
-        userId,
-        items,
-        subtotal: totals.subtotal,
-        discount: totals.discount,
-        taxes: totals.taxes,
-        shipping: totals.shippingCost,
-        total: totals.total,
-        shippingAddressId,
-        paymentMethod: payment.method
-      });
-
-      // REDUCE STOCK
-      for (const item of items) {
-        await pool.query(
-          "UPDATE products SET stock = stock - ? WHERE product_id = ?",
-          [item.quantity, item.product_id]
-        );
-      }
-
-      // GENERATE PDF
-      const pdfPath = await generatePDF({
-        id: orderId,
-        customerName: shipping?.recipientName,
-        items,
-        subtotal: totals.subtotal,
-        discount: totals.discount,
-        tax: totals.taxes,
-        shipping: totals.shippingCost,
-        total: totals.total
-      });
-
-      // SEND EMAIL
-      await sendEmail({
-        to: req.user.email,
-        subject: "Thank you for your purchase!",
-        html: `
-          <h1>Purchase successful</h1>
-          <p>Your receipt is attached.</p>
-          <img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" width="120" />
-          <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>
-        `,
-        attachments: [{ filename: "receipt.pdf", path: pdfPath }]
-      });
-
-      // CLEAN CART & COUPON
-      await Cart.clearCart(userId);
-      await pool.query("DELETE FROM cart_coupons WHERE user_id = ?", [userId]);
-
-      return res.json({
-        success: true,
-        message: "Purchase completed successfully",
-        orderId,
-        totalCharged: totals.total
-      });
-
-    } catch (error) {
-      console.error("Checkout error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Error processing purchase"
-      });
+    // Validate shipping data
+    if (!shipping?.state) {
+      return res.status(400).json({ success: false, message: "Shipping state is required" });
     }
+
+    if (!shipping?.addressId) {
+      return res.status(400).json({ success: false, message: "Shipping address ID is required" });
+    }
+
+    if (!payment?.method) {
+      return res.status(400).json({ success: false, message: "Payment method is required" });
+    }
+
+    const shippingAddressId = shipping.addressId;
+
+    // Calculate totals
+    const totals = await calculateTotals(
+      userId,
+      shipping.state,
+      shipping.method || "standard"
+    );
+
+    const items = totals.items;
+
+    // Validate stock
+    for (const item of items) {
+      const [product] = await pool.query(
+        "SELECT stock FROM products WHERE product_id = ?",
+        [item.product_id]
+      );
+      if (item.quantity > product[0].stock) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for product: ${item.name}`
+        });
+      }
+    }
+
+    // CREATE ORDER
+    const orderId = await Order.create({
+      userId,
+      items,
+      subtotal: totals.subtotal,
+      discount: totals.discount,
+      taxes: totals.taxes,
+      shipping: totals.shippingCost,
+      total: totals.total,
+      shippingAddressId,
+      paymentMethod: payment.method
+    });
+
+    // REDUCE STOCK
+    for (const item of items) {
+      await pool.query(
+        "UPDATE products SET stock = stock - ? WHERE product_id = ?",
+        [item.quantity, item.product_id]
+      );
+    }
+
+    // 🔥 RESPONDER PRIMERO AL FRONTEND (lo más importante)
+    res.json({
+      success: true,
+      message: "Purchase completed successfully",
+      orderId,
+      totalCharged: totals.total
+    });
+
+    // =============================
+    // 🔧 FASE ASÍNCRONA (NO bloquea la compra)
+    // =============================
+    (async () => {
+      try {
+        // Generate PDF
+        const pdfPath = await generatePDF({
+          id: orderId,
+          customerName: shipping?.recipientName,
+          items,
+          subtotal: totals.subtotal,
+          discount: totals.discount,
+          tax: totals.taxes,
+          shipping: totals.shippingCost,
+          total: totals.total
+        });
+
+        // Send email
+        await sendEmail({
+          to: req.user.email,
+          subject: "Thank you for your purchase!",
+          html: `
+            <h1>Purchase successful</h1>
+            <p>Your receipt is attached.</p>
+            <img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" width="120" />
+            <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>
+          `,
+          attachments: [{ filename: "receipt.pdf", path: pdfPath }]
+        });
+
+        // Clean cart & coupon
+        await Cart.clearCart(userId);
+        await pool.query("DELETE FROM cart_coupons WHERE user_id = ?", [userId]);
+
+      } catch (err) {
+        console.error("Post-checkout async error:", err);
+      }
+    })();
+
+  } catch (error) {
+    console.error("Checkout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error processing purchase"
+    });
   }
+}
 };
 
 module.exports = cartController;

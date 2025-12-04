@@ -52,13 +52,22 @@ function generatePDF(order) {
             doc.moveDown(0.5);
 
             order.items.forEach(item => {
-                const name = item.name || "Unnamed product";
-                const price = Number(item.price || 0);
-                const qty = Number(item.quantity || 0);
+    const name = item.name || "Unnamed product";
+    const qty = Number(item.quantity || 0);
 
-                doc.fontSize(12).text(`${qty} x ${name} - $${(price * qty).toFixed(2)}`);
-            });
+    // Calculamos el unit price correctamente
+    const unitPrice = Number(
+        item.unit_price ?? 
+        item.price ?? 
+        (item.subtotal && qty ? item.subtotal / qty : 0)
+    );
 
+    const lineTotal = unitPrice * qty;
+
+    doc.fontSize(12).text(
+        `${qty} x ${name} - $${lineTotal.toFixed(2)}`
+    );
+});
             doc.moveDown();
 
             /* ===============================
