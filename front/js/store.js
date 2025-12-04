@@ -27,7 +27,6 @@ class Store {
   }
 
   async init() {
-    console.log("🛍️ Inicializando tienda...");
 
     // 1) Cargar productos
     await this.loadProducts();
@@ -71,26 +70,20 @@ class Store {
     container.innerHTML = "<p class='loading'>Cargando productos...</p>";
 
     try {
-      console.log("📦 Solicitando productos a la API...");
       const result = await ApiClient.getAllProducts();
-      console.log("✅ Respuesta de API:", result);
 
       if (result && result.ok) {
-        const data = result.data || {};
-        // Soporta:
-        // - { products: [...] }
-        // - [ ... ]
-        this.allProducts = Array.isArray(data) ? data : data.products || [];
+    const data = result.data || {};
+    this.allProducts = Array.isArray(data) ? data : data.products || [];
 
-        console.log(`🎯 ${this.allProducts.length} productos cargados`);
+    // DEBUG: Ver qué productos tienen is_on_sale y discount
+    this.allProducts.forEach((product, index) => {
+      if (product.is_on_sale || product.discount) {
+      }
+    });
 
-        if (this.allProducts.length === 0) {
-          container.innerHTML =
-            "<p class='no-products'>No hay productos disponibles.</p>";
-        } else {
-          container.innerHTML = "";
-        }
-      } else {
+    // ... resto del código ...
+  } else {
         throw new Error(result?.message || "Error desconocido");
       }
     } catch (error) {
@@ -115,9 +108,7 @@ class Store {
     }
 
     try {
-      console.log("📂 Pidiendo categorías a la API...");
       const result = await ApiClient.getCategories();
-      console.log("✅ Respuesta de categorías:", result);
 
       if (!result.ok || !result.data) {
         console.warn("⚠️ No se pudieron cargar categorías desde la API");
@@ -165,7 +156,6 @@ class Store {
       return;
     }
 
-    console.log(`🎨 Renderizando ${products.length} productos`);
 
     products.forEach((product) => {
       const card = this.createProductCard(product);
@@ -177,109 +167,167 @@ class Store {
   // TARJETA DE PRODUCTO
   // ==========================
   createProductCard(product) {
-    const user = typeof Auth !== "undefined" ? Auth.getUser() : null;
-    const isAdmin = user && user.role === "admin";
+  const user = typeof Auth !== "undefined" ? Auth.getUser() : null;
+  const isAdmin = user && user.role === "admin";
 
-    const card = document.createElement("div");
-    card.className = "card";
+  const card = document.createElement("div");
+  card.className = "card";
 
-    const baseImageUrl = "http://localhost:3000/images/";
-    let imageUrl;
+  const baseImageUrl = "http://localhost:3000/images/";
+  let imageUrl;
 
-    if (product.image_url) {
-      imageUrl = product.image_url.startsWith("http")
-        ? product.image_url
-        : baseImageUrl + product.image_url;
-    } else {
-      imageUrl =
-        "https://via.placeholder.com/300x200/cccccc/969696?text=Imagen+No+Disponible";
-    }
+  if (product.image_url) {
+    imageUrl = product.image_url.startsWith("http")
+      ? product.image_url
+      : baseImageUrl + product.image_url;
+  } else {
+    imageUrl =
+      "https://via.placeholder.com/300x200/cccccc/969696?text=Imagen+No+Disponible";
+  }
 
-    let tagsArray = [];
-    try {
-      if (product.tags) {
-        if (typeof product.tags === "string") {
-          tagsArray = JSON.parse(product.tags);
-        } else if (Array.isArray(product.tags)) {
-          tagsArray = product.tags;
-        }
+  let tagsArray = [];
+  try {
+    if (product.tags) {
+      if (typeof product.tags === "string") {
+        tagsArray = JSON.parse(product.tags);
+      } else if (Array.isArray(product.tags)) {
+        tagsArray = product.tags;
       }
-    } catch (error) {
-      console.error(
-        "Error parseando tags para el producto:",
-        product.name,
-        error
-      );
-      tagsArray = [];
     }
+  } catch (error) {
+    console.error(
+      "Error parseando tags para el producto:",
+      product.name,
+      error
+    );
+    tagsArray = [];
+  }
 
-    const tagsHTML = tagsArray
-      .map((tag) => `<span class="tag">${tag}</span>`)
-      .join("");
+  const tagsHTML = tagsArray
+    .map((tag) => `<span class="tag">${tag}</span>`)
+    .join("");
 
-    // Marcamos si está en oferta
-    const isOnOffer =
-      product.on_offer ||
-      product.is_offer ||
-      product.offer ||
-      product.isOffer ||
-      false;
+  // ===================================================
+  // DETECCIÓN CORRECTA DE DESCUENTOS
+  // ===================================================
+  const originalPrice = parseFloat(product.price || 0);
+  
+  // Usar discount de la base de datos (asegúrate que venga en la respuesta)
+  const discount = parseFloat(product.discount || 0);
+  
+  // IMPORTANTE: Verificar correctamente is_on_sale
+  // Puede venir como número (1/0) o como booleano
+  const isOnSale = product.is_on_sale === 1 || 
+                   product.is_on_sale === true || 
+                   product.is_on_sale === '1' ||
+                   (discount > 0); // Si tiene descuento, asumimos que está en oferta
+  
+  // Calcular precio final
+  const finalPrice = isOnSale && discount > 0
+    ? originalPrice - (originalPrice * discount / 100)
+    : originalPrice;
+  
+  // DEBUG: Ver en consola qué productos tienen descuento
+  console.log('Producto:', product.name, 
+              'Precio:', originalPrice, 
+              'Descuento:', discount, 
+              'is_on_sale:', product.is_on_sale,
+              'Final:', finalPrice);
 
-    const offerBadge = isOnOffer
-      ? `<span class="badge-offer">Oferta</span>`
-      : "";
-
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="wishlist-btn">
-          <i class="far fa-heart"></i>
-        </span>
-        ${offerBadge}
-        <img src="${imageUrl}" alt="${product.name}" class="product-image">
+  // Crear badge de descuento si aplica
+  const offerBadge = (isOnSale && discount > 0)
+    ? `<span class="badge-offer">-${Math.round(discount)}%</span>`
+    : "";
+  
+  // Mostrar precio con formato de descuento si aplica
+  const priceHTML = (isOnSale && discount > 0)
+    ? `
+      <div class="price-container">
+        <span class="original-price"><s>$${originalPrice.toFixed(2)}</s></span>
+        <span class="final-price">$${finalPrice.toFixed(2)}</span>
       </div>
-      <h4 class="product-title">${product.name}</h4>
-      <p>${product.description || "Descripción no disponible"}</p>
-      <p class="price">$${parseFloat(product.price).toFixed(2)}</p>
-      <p>Stock: ${product.stock}</p>
-      <div class="tags">
-        ${tagsHTML}
-      </div>
-      <div class="card-btn">
-        <button class="add-to-cart-btn" ${
-          product.stock === 0 ? "disabled" : ""
-        }>
-          ${product.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
-        </button>
-      </div>
-    `;
+    `
+    : `<p class="price">$${originalPrice.toFixed(2)}</p>`;
 
-    const wishlistBtn = card.querySelector(".wishlist-btn");
-    const cartBtn = card.querySelector(".add-to-cart-btn");
-    const imageEl = card.querySelector(".product-image");
-    const titleEl = card.querySelector(".product-title");
+  // ===================================================
+  // HTML de la tarjeta (solo la parte de precio)
+  // ===================================================
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="wishlist-btn">
+        <i class="far fa-heart"></i>
+      </span>
+      ${offerBadge}
+      <img src="${imageUrl}" alt="${product.name}" class="product-image">
+    </div>
+    
+    <h4 class="product-title">${product.name}</h4>
+    
+    <p class="product-description">${product.description || "Sin descripción"}</p>
+    
+    ${priceHTML}
+    
+    <p>Stock: ${product.stock}</p>
+    
+    ${tagsHTML ? `<div class="tags">${tagsHTML}</div>` : ''}
+    
+    <div class="card-btn">
+      <button class="add-to-cart-btn" 
+        ${product.stock === 0 ? "disabled" : ""}
+        ${isAdmin ? "disabled" : ""}>
+        ${isAdmin ? "Vista Admin" : 
+          product.stock === 0 ? "Sin Stock" : 
+          "Agregar al Carrito"}
+      </button>
+    </div>
+  `;
 
-    // ❤️ Wishlist
+  // Añadir clase CSS si está en oferta
+  if (isOnSale && discount > 0) {
+    card.classList.add("product-on-sale");
+  }
+
+  // ===================================================
+  // Event Listeners
+  // ===================================================
+  const wishlistBtn = card.querySelector(".wishlist-btn");
+  const cartBtn = card.querySelector(".add-to-cart-btn");
+  const imageEl = card.querySelector(".product-image");
+  const titleEl = card.querySelector(".product-title");
+
+  // ❤️ Wishlist
+  if (wishlistBtn) {
     wishlistBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.handleWishlist(product, wishlistBtn);
     });
+  }
 
-    // 🛒 Botón agregar al carrito
+  // 🛒 Botón agregar al carrito
+  if (cartBtn) {
     cartBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.handleAddToCart(product);
     });
-
-    // 🔗 Navegar al detalle al hacer clic en imagen o título
-    const goToDetail = () => {
-      window.location.href = `product.html?id=${product.product_id}`;
-    };
-
-    imageEl.addEventListener("click", goToDetail);
-    titleEl.addEventListener("click", goToDetail);
-
-    return card;
   }
+
+  // 🔗 Navegar al detalle al hacer clic en imagen o título
+  const goToDetail = () => {
+    window.location.href = `product.html?id=${product.product_id}`;
+  };
+
+  if (imageEl) imageEl.addEventListener("click", goToDetail);
+  if (titleEl) titleEl.addEventListener("click", goToDetail);
+
+  // ===================================================
+  // Añadir clase CSS si está en oferta
+  // ===================================================
+  if (isOnSale && discount > 0) {
+    card.classList.add("product-on-sale");
+  }
+
+  return card;
+}
 
   // ==========================
   // WISHLIST
@@ -351,58 +399,65 @@ class Store {
   // ==========================
   // FILTROS (CATEGORÍA + PRECIO + OFERTA)
   // ==========================
-  applyFilters() {
-    let products = [...this.allProducts];
+applyFilters() {
+  let products = [...this.allProducts];
 
-    // 1) Filtro por categoría
-    if (this.currentCategory && this.currentCategory !== "all") {
-      products = products.filter((product) => {
-        const productCategory = product.category_name
-          ? product.category_name.toLowerCase().trim()
-          : "";
-        return productCategory === this.currentCategory;
-      });
-    }
-
-    // 2) Filtro por rango de precios
-    if (this.priceMin !== null) {
-      products = products.filter((p) => Number(p.price) >= this.priceMin);
-    }
-
-    if (this.priceMax !== null) {
-      products = products.filter((p) => Number(p.price) <= this.priceMax);
-    }
-
-    // 3) Filtro por productos en oferta
-    if (this.onlyOffers) {
-      products = products.filter((p) => {
-        const flag =
-          p.on_offer ??
-          p.is_offer ??
-          p.offer ??
-          p.isOffer ??
-          0;
-        return flag === true || flag === 1 || flag === "1";
-      });
-    }
-
-    this.renderProducts(products);
+  // 1) Filtro por categoría
+  if (this.currentCategory && this.currentCategory !== "all") {
+    products = products.filter((product) => {
+      const productCategory = product.category_name
+        ? product.category_name.toLowerCase().trim()
+        : "";
+      return productCategory === this.currentCategory;
+    });
   }
 
+  // 2) Filtro por rango de precios
+  if (this.priceMin !== null) {
+    products = products.filter((p) => {
+      // Usar precio final (con descuento si aplica)
+      const originalPrice = parseFloat(p.price || 0);
+      const discount = parseFloat(p.discount || 0);
+      const isOnSale = p.is_on_sale === 1 || discount > 0;
+      const finalPrice = isOnSale && discount > 0
+        ? originalPrice - (originalPrice * discount / 100)
+        : originalPrice;
+      return finalPrice >= this.priceMin;
+    });
+  }
+
+  if (this.priceMax !== null) {
+    products = products.filter((p) => {
+      // Usar precio final (con descuento si aplica)
+      const originalPrice = parseFloat(p.price || 0);
+      const discount = parseFloat(p.discount || 0);
+      const isOnSale = p.is_on_sale === 1 || discount > 0;
+      const finalPrice = isOnSale && discount > 0
+        ? originalPrice - (originalPrice * discount / 100)
+        : originalPrice;
+      return finalPrice <= this.priceMax;
+    });
+  }
+
+  // 3) Filtro por productos en oferta - ¡ESTO ES LO QUE NO FUNCIONA!
+  if (this.onlyOffers) {
+    products = products.filter((product) => {
+      // Verificar si tiene descuento activo
+      const discount = parseFloat(product.discount || 0);
+      const isOnSale = product.is_on_sale === 1 || product.is_on_sale === true;
+      
+      // Producto está en oferta si is_on_sale = 1 Y tiene descuento > 0
+      return isOnSale && discount > 0;
+    });
+  }
+
+  this.renderProducts(products);
+}
   // ==========================
   // BOTONES DE CATEGORÍA
   // ==========================
   setupCategoryFilters() {
     const buttons = document.querySelectorAll(".sidebar button");
-    console.log(`🔘 Encontrados ${buttons.length} botones de categoría`);
-
-    buttons.forEach((btn, index) => {
-      console.log(`Botón ${index}:`, {
-        text: btn.textContent,
-        dataCategory: btn.dataset.category,
-        dataset: btn.dataset,
-      });
-    });
 
     // Activar botón según categoría actual
     buttons.forEach((btn) => {
@@ -445,38 +500,37 @@ class Store {
   // ==========================
   // CONTROLES DE FILTRO (PRECIO + OFERTA)
   // ==========================
-  setupFilterControls() {
-    const minInput = document.getElementById("price-min");
-    const maxInput = document.getElementById("price-max");
-    const offerCheckbox = document.getElementById("filter-offer");
+setupFilterControls() {
+  const minInput = document.getElementById("price-min");
+  const maxInput = document.getElementById("price-max");
+  const offerCheckbox = document.getElementById("filter-offer");
 
-    if (minInput) {
-      minInput.addEventListener("input", () => {
-        const value = parseFloat(minInput.value);
-        this.priceMin = isNaN(value) ? null : value;
-        this.applyFilters();
-      });
-    }
-
-    if (maxInput) {
-      maxInput.addEventListener("input", () => {
-        const value = parseFloat(maxInput.value);
-        this.priceMax = isNaN(value) ? null : value;
-        this.applyFilters();
-      });
-    }
-
-    if (offerCheckbox) {
-      offerCheckbox.addEventListener("change", () => {
-        this.onlyOffers = offerCheckbox.checked;
-        this.applyFilters();
-      });
-    }
+  if (minInput) {
+    minInput.addEventListener("input", () => {
+      const value = parseFloat(minInput.value);
+      this.priceMin = isNaN(value) ? null : value;
+      this.applyFilters();
+    });
   }
+
+  if (maxInput) {
+    maxInput.addEventListener("input", () => {
+      const value = parseFloat(maxInput.value);
+      this.priceMax = isNaN(value) ? null : value;
+      this.applyFilters();
+    });
+  }
+
+  if (offerCheckbox) {
+    offerCheckbox.addEventListener("change", () => {
+      this.onlyOffers = offerCheckbox.checked;
+      this.applyFilters();
+    });
+  }
+}
 }
 
 // Inicializar la tienda cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("🚀 DOM listo, creando instancia de Store...");
   window.store = new Store();
 });

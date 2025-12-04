@@ -561,38 +561,125 @@ main {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
 }
 
+/* ================================
+   Descuentos y ofertas - CLASES NUEVAS
+   ================================ */
 
-
-
-
+/* Badge de descuento rediseñado */
 .badge-offer {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #ff4757;
+  background: linear-gradient(135deg, #ff4757, #ff3838);
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: bold;
-  z-index: 1;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3);
+  animation: pulse 2s infinite;
 }
 
+/* Animación para el badge de oferta */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Contenedor de precios con descuento */
 .price-container {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
+  flex-direction: column;
+  gap: 5px;
+  margin: 12px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #ff4757;
 }
 
 .original-price {
-  color: #999;
+  color: #888;
   font-size: 14px;
+  text-decoration: line-through;
 }
 
 .final-price {
   color: #ff4757;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
 }
+
+.discount-saved {
+  color: #27ae60;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Producto en oferta - estilo especial */
+.product-on-sale {
+  border: 2px solid #ff4757;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-on-sale::before {
+  content: "OFERTA";
+  position: absolute;
+  top: 15px;
+  left: -30px;
+  background-color: #ff4757;
+  color: white;
+  padding: 3px 30px;
+  font-size: 10px;
+  font-weight: bold;
+  transform: rotate(-45deg);
+  z-index: 5;
+}
+
+/* Info de oferta especial */
+.sale-info {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #fff8e1;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #ff6b00;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Stock info mejorado */
+.stock-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+  margin: 8px 0;
+}
+
+.stock-info i {
+  color: #3498db;
+}
+
+/* Clase para stock bajo */
+.low-stock {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* Categoría */
+.category {
+  display: none; 
+  /* por si quieremos mostrarla */
+}
+
+/* ================================
+   TEMA OSCURO para nuevas clases
+   ================================ */
 

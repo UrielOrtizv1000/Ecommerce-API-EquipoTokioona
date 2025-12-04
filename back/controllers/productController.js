@@ -229,6 +229,7 @@ exports.getAllProducts = async (req, res) => {
         p.is_on_sale,
         p.category_id,          
         p.tags,
+        p.discount,
         c.category_name         
       FROM products p 
       LEFT JOIN categories c ON p.category_id = c.category_id 
