@@ -111,7 +111,7 @@ Asegúrate de configurar las variables de entorno para tu servicio de **Backend*
 | :--- | :--- |
 | Bruno | [https://www.linkedin.com/in/bruno-gonz%C3%A1lez-52a948398/] |
 | Brandon | [www.linkedin.com/in/brandon-dávila-0a2603199] |
-| Oscar | [LinkedIn] |
+| Oscar | [https://www.linkedin.com/in/oscar-gomez-aa4b1a398 |
 | Azael | [LinkedIn] |
 | Gael | [LinkedIn] |
 | Uriel | [LinkedIn] |
