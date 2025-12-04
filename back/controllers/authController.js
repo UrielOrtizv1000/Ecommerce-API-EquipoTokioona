@@ -175,28 +175,27 @@ const sendResetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { token } = req.query
+    const { token } = req.query;
     const { password } = req.body;
 
     if (!token) {
       return res.status(401).json({
         ok: false,
         message: "No token was provided"
-      })
+      });
     }
 
     if (!password) {
       return res.status(400).json({
         ok: false,
         message: "A password is required"
-      })
+      });
     }
 
     let decoded;
 
     try {
-      const jwtDecode = jwt.verify(token, process.env.JWT_SECRET);
-      decoded = jwtDecode;
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (tokenError) {
       return res.status(401).json({
         ok: false,
@@ -209,6 +208,7 @@ const resetPassword = async (req, res) => {
     const id = decoded.id;
 
     const passReset = await User.resetPassword(hash, id);
+
     if (passReset === 0) {
       return res.status(500).json({
         ok: false,
@@ -216,10 +216,27 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    // -----------------------------
+    // Generate a new token
+    // -----------------------------
+    const user = await User.getUserById(id);
+
+    const newToken = jwt.sign(
+      {
+        id: user.user_id,
+        username: user.username,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    return res.status(200).json({
       ok: true,
-      message: "Password has been reset successfully"
+      message: "Password has been reset successfully",
+      token: newToken
     });
+
   } catch (error) {
     console.error("Password reset error: ", error);
     res.status(500).json({
@@ -227,7 +244,8 @@ const resetPassword = async (req, res) => {
       message: "Internal server error"
     });
   }
-}
+};
+
 
 
 module.exports = { signup, login, logout , sendResetPassword, resetPassword }

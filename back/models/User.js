@@ -67,10 +67,19 @@ async function resetPassword(password, user_id) {
   return rows.affectedRows;
 }
 
+async function getUserById(id) {
+    const [rows] = await pool.query(
+        "SELECT * FROM users WHERE user_id = ?",
+        [id]
+    );
+    return rows[0] || null;
+}
+
 async function countAll() {
     const [rows] = await pool.query("SELECT COUNT(*) as total FROM users");
     return rows[0].total;
 }
 
 
-module.exports = { createUser, userLogin, getUserByEmail, resetPassword, countAll };
+
+module.exports = { createUser, userLogin, getUserByEmail, resetPassword, countAll, getUserById };

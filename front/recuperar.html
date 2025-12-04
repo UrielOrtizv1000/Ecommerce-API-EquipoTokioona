@@ -1,155 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Page</title>
+    <title>Recuperar Contraseña - Tienda Online</title>
 
     <!-- General styles -->
     <link rel="stylesheet" href="styles/master_styles.css">
     <link rel="stylesheet" href="styles/login_styles.css">
     <link rel="stylesheet" href="styles/recuperar.css">
 
-    <!-- Header and footer styles -->
+    <!-- Header and footer -->
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/footer.css">
 
-  <!-- Scripts -->
-   <script src="./js/init.js"></script>
-  <script src="./js/apiClient.js"></script>
-  <script src="./js/auth.js"></script>
-  <script src="./js/components.js"></script>
-</head>
+    <!-- Scripts globales -->
+    <script src="./js/init.js"></script>
+    <script src="./js/apiClient.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/components.js"></script>
 
+    <!-- Script del recovery -->
+    <script defer src="./js/recovery.js"></script>
+
+</head>
 <body>
 
-    <!-- Dynamic header insertion -->
+    <!-- Header dinámico -->
     <div id="header"></div>
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña - Tienda Online</title>
-    <link rel="stylesheet" href="recovery.css">
-</head>
-<body>
 
     <main>
 
-      <div class="recovery-container">
-        <div class="recovery-card">
-          <div class="recovery-header">
-            <h1>Recuperar Contraseña</h1>
-            <p>Ingresa tu correo electrónico para restablecer tu contraseña</p>
-          </div>
-          
-            <form id="recoveryForm" class="recovery-form">
-              <div class="form-group">
-                    <label for="email">Correo Electrónico</label>
-                    <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="tu@email.com"
-                    required
-                    >
-                    <div id="emailError" class="error-message"></div>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="captcha">Código de Seguridad</label>
-                    <div class="captcha-container">
-                      <div id="captchaText" class="captcha-text"></div>
-                      <button type="button" id="refreshCaptcha" class="refresh-btn">
-                        🔄
-                      </button>
+        <div class="recovery-container">
+            <div class="recovery-card">
+
+                <div class="recovery-header">
+                    <h1>Recuperar Contraseña</h1>
+                    <p>Ingresa tu nueva contraseña para continuar</p>
+                </div>
+                
+                <form id="resetForm" class="recovery-form">
+
+                    <div class="form-group">
+                        <label>Nueva contraseña</label>
+                        <input type="password" id="new-password" required minlength="6">
                     </div>
-                    <input 
-                    type="text" 
-                    id="captcha" 
-                    name="captcha" 
-                    placeholder="Ingresa el código mostrado"
-                    required
-                    >
-                    <div id="captchaError" class="error-message"></div>
-                  </div>
-                  
-                  <button type="submit" id="submitBtn" class="submit-btn">
-                    Enviar Enlace de Recuperación
-                  </button>
+
+                    <div class="form-group">
+                        <label>Confirmar contraseña</label>
+                        <input type="password" id="confirm-password" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Guardar Nueva Contraseña
+                    </button>
+
                 </form>
 
-            <div class="recovery-footer">
-              <p>¿Recordaste tu contraseña? <a href="login.html">Iniciar Sesión</a></p>
-              <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
+                <div id="successMessage" class="success-message hidden">
+                    <div class="success-icon">✓</div>
+                    <h3>¡Contraseña actualizada!</h3>
+                    <p>Ahora puedes iniciar sesión con tu nueva contraseña.</p>
+                    <a href="index.html" class="back-login">Volver al Inicio de Sesión</a>
+                </div>
+
+                <div class="recovery-footer">
+                    <p>¿Recordaste tu contraseña? <a href="index.html">Iniciar Sesión</a></p>
+                    <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
+                </div>
+
             </div>
-            
-            <div id="successMessage" class="success-message hidden">
-              <div class="success-icon">✓</div>
-              <h3>¡Correo Enviado!</h3>
-              <p>Hemos enviado un enlace de recuperación a tu correo electrónico.</p>
-              <p>Revisa tu bandeja de entrada y sigue las instrucciones.</p>
-              <a href="login.html" class="back-login">Volver al Inicio de Sesión</a>
+
+            <div class="recovery-info">
+                <h3>¿Qué esperar?</h3>
+                <ul>
+                    <li>Tu enlace expira en 15 minutos</li>
+                    <li>Tu cuenta permanecerá segura</li>
+                    <li>Podrás crear una nueva contraseña</li>
+                </ul>
             </div>
         </div>
-        
-        <div class="recovery-info">
-          <h3>¿Qué esperar?</h3>
-          <ul>
-            <li>Recibirás un correo con un enlace seguro</li>
-            <li>El enlace expirará en 1 hora por seguridad</li>
-            <li>Podrás crear una nueva contraseña</li>
-            <li>Tu cuenta actual permanecerá segura</li>
-          </ul>
-        </div>
-      </div>
+
     </main>
-      
-      <!-- Dynamic footer insertion -->
-      <div id="footer"></div>
-  <!-- LOGIN MODAL -->
-<div class="modal-overlay" id="login-modal">
-  <div class="modal-content">
-    <h2>Iniciar sesión</h2>
 
-    <form id="login-form">
-      <label for="login-username">Nombre de usuario</label>
-      <input type="text" id="login-username" required>
+    <!-- Footer dinámico -->
+    <div id="footer"></div>
 
-      <label for="login-password">Contraseña</label>
-      <input type="password" id="login-password" required>
-
-      <!-- CAPTCHA Container -->
-      <div id="captcha-container" style="margin: 15px 0; padding: 15px; background: linear-gradient(rgba(94, 94, 94, 0.462),rgba(45, 45, 45, 0.469)); border-radius: 14px; border: 1px solid rgb(170, 166, 166);"></div>
-
-      <div class="modal-buttons">
-        <button type="button" id="register-btn">Registrarse</button>
-        <button type="button" id="forgot-btn">Olvidé mi contraseña</button>
-        <button type="submit" id="submit-btn">Aceptar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-  <!-- FORGOT PASSWORD MODAL -->
-  <div class="modal-overlay" id="forgot-modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Recuperar contraseña</h2>
-
-      <form id="forgot-form">
-        <label for="forgot-email">Correo electrónico</label>
-        <input type="email" id="forgot-email" required placeholder="tu@email.com">
-
-        <div class="modal-buttons">
-          <button type="button" onclick="closeForgotModal()">Cancelar</button>
-          <button type="submit">Enviar instrucciones</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-    </body>
-    </html>
-    
+</body>
+</html>
