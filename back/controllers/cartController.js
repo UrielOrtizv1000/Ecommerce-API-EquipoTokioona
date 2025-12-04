@@ -2,6 +2,7 @@
 Controller for shopping cart
 addToCart, getCart, updateQuantity, removeItem, checkout
 */
+const path = require("path");
 
 const Cart = require('../models/Cart');
 const Order = require("../models/Order");
@@ -235,16 +236,23 @@ checkout: async (req, res) => {
 
         // Send email
         await sendEmail({
-          to: req.user.email,
-          subject: "Thank you for your purchase!",
-          html: `
-            <h1>Purchase successful</h1>
-            <p>Your receipt is attached.</p>
-            <img src="https://i.ibb.co/TqDnY3vD/logo-mock.png" width="120" />
-            <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>
-          `,
-          attachments: [{ filename: "receipt.pdf", path: pdfPath }]
-        });
+  to: req.user.email,
+  subject: "Thank you for your purchase!",
+  html: `
+    <h1>Purchase successful</h1>
+    <p>Your receipt is attached.</p>
+    <img src="cid:tokioonalogo" width="120" />
+    <p>Tokioona — <i>"Recordar es volver a jugar"</i></p>
+  `,
+  attachments: [
+    { filename: "receipt.pdf", path: pdfPath },
+    {   // imagen embebida
+      filename: "logo_mock.png",
+      path: path.join(__dirname, "../images/logo_mock.png"),
+      cid: "tokioonalogo" // este ID debe coincidir con el src del HTML
+    }
+  ]
+});
 
         // Clean cart & coupon
         await Cart.clearCart(userId);
