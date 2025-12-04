@@ -71,3 +71,16 @@ footer .copyright {
         font-size: 13px;
     }
 }
+
+/* ============================================================
+   DARK MODE
+============================================================ */
+
+.body-dark-theme footer a,
+.body-dark-theme footer p{
+    color: rgb(160, 157, 157);
+}
+
+.body-dark-theme .footer-links a:hover{
+    color: rgb(160, 157, 157);
+}

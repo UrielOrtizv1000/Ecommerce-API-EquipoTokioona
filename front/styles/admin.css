@@ -284,6 +284,19 @@
     max-width: 90%;
     padding: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+}
+
+.modal-content h3,
+.modal-content label,
+.modal-content option{
+    color: black;
+}
+
+.modal-content button,
+.modal-content input{
+    border: 1px solid rgb(210, 208, 208);
+    color: black;
 }
 
 .modal-header {
@@ -305,6 +318,11 @@
     border: none;
     font-size: 20px;
     cursor: pointer;
+}
+
+#productImage {
+    border: 0px;
+    padding: 15px;
 }
 
 
@@ -470,4 +488,15 @@
 
 .body-dark-theme .close-btn {
     color: #999999;
+}
+
+
+.body-dark-theme .modal-content h3,
+.body-dark-theme .modal-content label,
+.body-dark-theme .modal-content option{
+    color: rgb(177, 176, 181);
+}
+.body-dark-theme .modal-content input{
+    border: 1px solid rgb(210, 208, 208);
+    color: white;
 }
