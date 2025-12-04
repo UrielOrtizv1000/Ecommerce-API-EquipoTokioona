@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (stockEl) stockEl.textContent = product.stock;
 
     if (imageEl) {
-        const baseImageUrl = "http://localhost:3000/images/";
+        const BACK_URL = window.APP_CONFIG.BACK_URL;
+        const baseImageUrl = BACK_URL + "/images/";
 
         if (product.image_url) {
             const imgPath = product.image_url.startsWith("http")

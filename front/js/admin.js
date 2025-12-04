@@ -1,7 +1,7 @@
 // ==========================================
 // CONFIGURACIÓN Y UTILIDADES
 // ==========================================
-const API_URL = 'http://localhost:3000/api'; 
+const API_URL = window.APP_CONFIG.BACK_URL + '/api';
 const token = localStorage.getItem('token'); 
 
 // Función genérica para peticiones autenticadas
@@ -228,7 +228,8 @@ let currentEditingId = null; // Para saber si estamos editando o creando
 
 // A. Cargar lista de productos en la tabla
 async function loadProductsTable() {
-    const BASE_IMAGE_URL = 'http://localhost:3000/images/'; 
+    const BACK_URL = window.APP_CONFIG.BACK_URL;
+    const BASE_IMAGE_URL = BACK_URL + "/images/";
 
     try {
         const res = await fetch(`${API_URL}/products`);

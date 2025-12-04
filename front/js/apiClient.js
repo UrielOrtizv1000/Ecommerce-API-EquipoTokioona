@@ -1,6 +1,6 @@
 // front/js/apiClient.js
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = window.APP_CONFIG.BACK_URL + '/api';
 
 const ApiClient = {
   // ==========================

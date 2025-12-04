@@ -17,8 +17,6 @@ const addressRoutes = require("./routes/AddressRoutes");
 const app = express();
 const port = process.env.PORT || 3000;
 
-console.log("🔥 JWT_SECRET EN USO →", process.env.JWT_SECRET);
-
 // Middleware
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -44,7 +42,6 @@ app.use("/api/products", productRoutes);
 async function testDBConnection() {
   try {
     const [rows] = await pool.query("SELECT 1 + 1 AS result");
-    console.log("Database connection successful:", rows[0].result);
   } catch (error) {
     console.error("Database connection failed:", error);
   }

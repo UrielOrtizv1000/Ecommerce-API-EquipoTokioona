@@ -127,10 +127,12 @@ const Auth = {
                 </a>
             `;
 
-            headerButtonsHTML += `  
+        const BACK_URL = window.APP_CONFIG.BACK_URL; 
+                
+            headerButtonsHTML += `  
                 <div class="cart-wrapper" onclick="location.href='cart.html'">
                     <img 
-                        src="http://localhost:3000/images/carrito.png" 
+                        src="${BACK_URL}/images/carrito.png"  
                         alt="Carrito" 
                         class="cart-icon"
                         style="width:26px;"

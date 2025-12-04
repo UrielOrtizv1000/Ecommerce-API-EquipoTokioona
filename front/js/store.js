@@ -195,7 +195,8 @@ class Store {
   const card = document.createElement("div");
   card.className = "card";
 
-  const baseImageUrl = "http://localhost:3000/images/";
+  const BACK_URL = window.APP_CONFIG.BACK_URL;
+  const baseImageUrl = BACK_URL + "/images/";
   let imageUrl;
 
   if (product.image_url) {
@@ -272,13 +273,17 @@ class Store {
     : `<p class="price">$${originalPrice.toFixed(2)}</p>`;
 
   // ===================================================
-  // HTML de la tarjeta (solo la parte de precio)
+  // HTML de la tarjeta
   // ===================================================
+
+  const productId = product.product_id;
+  const isAlreadyInWishlist = this.wishlistIds && this.wishlistIds.has(productId);
+
   card.innerHTML = `
-    <div class="card-header">
-      <span class="wishlist-btn">
-        <i class="far fa-heart"></i>
-      </span>
+<div class="card-header">
+      <span class="wishlist-btn">
+                <i class="${isAlreadyInWishlist ? 'fas' : 'far'} fa-heart"></i> 
+      </span>
       ${offerBadge}
       <img src="${imageUrl}" alt="${product.name}" class="product-image">
     </div>
@@ -465,18 +470,19 @@ applyFilters() {
       return finalPrice <= this.priceMax;
     });
   }
-
-  // 3) Filtro por productos en oferta - ¡ESTO ES LO QUE NO FUNCIONA!
-  if (this.onlyOffers) {
-    products = products.filter((product) => {
-      // Verificar si tiene descuento activo
-      const discount = parseFloat(product.discount || 0);
-      const isOnSale = product.is_on_sale === 1 || product.is_on_sale === true;
-      
-      // Producto está en oferta si is_on_sale = 1 Y tiene descuento > 0
-      return isOnSale && discount > 0;
-    });
-  }
+  // 3) Filtro por productos en oferta
+  if (this.onlyOffers) {
+    products = products.filter((product) => {
+      const discount = parseFloat(product.discount || 0);
+      
+      const isOnSale = product.is_on_sale === 1 || 
+                      product.is_on_sale === true || 
+                      product.is_on_sale === '1' ||
+                      (discount > 0); 
+      
+      return isOnSale && discount > 0;
+    });
+  }
 
   this.renderProducts(products);
 }

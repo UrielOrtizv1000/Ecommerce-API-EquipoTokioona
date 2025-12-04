@@ -90,7 +90,8 @@ class WishlistPage {
         const card = document.createElement("div");
         card.className = "card"; 
 
-        const baseImageUrl = "http://localhost:3000/images/";
+        const BACK_URL = window.APP_CONFIG.BACK_URL;
+        const baseImageUrl = BACK_URL + "/images/";
             let imageUrl;
 
             if (product.image_url) {
