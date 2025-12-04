@@ -90,9 +90,20 @@ class WishlistPage {
         const card = document.createElement("div");
         card.className = "card"; 
 
-        const imageUrl = product.image_url 
-             ? `http://localhost:3000/images/${product.image_url}`
-             : 'https://via.placeholder.com/300x200?text=Sin+Imagen';
+        const baseImageUrl = "http://localhost:3000/images/";
+            let imageUrl;
+
+            if (product.image_url) {
+                // Verifica si ya es una URL completa
+                if (product.image_url.startsWith("http")) {
+                    imageUrl = product.image_url;
+                } else {
+                    // Si es solo un nombre de archivo, añade la ruta base
+                    imageUrl = baseImageUrl + product.image_url;
+                }
+            } else {
+                imageUrl = 'https://via.placeholder.com/300x200?text=Sin+Imagen';
+        }
         
         const formattedPrice = parseFloat(product.price).toFixed(2) || '0.00';
 
