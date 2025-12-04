@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Lista de Deseos | Tokioona</title>
+
+    <link rel="stylesheet" href="styles/master_styles.css">
+    <link rel="stylesheet" href="styles/login_styles.css">
+    
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    
+    <link rel="stylesheet" href="styles/wishlist.css"> 
+    <link rel="stylesheet" href="styles/store.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+    <div id="header"></div>
+
+    <main>
+        <div class="title">
+            <div class="title-txt">
+                <p>❤️ Mi Lista de Deseos</p>
+            </div>
+        </div>
+
+        <section class="wishlist-section layout">
+            <div id="wishlist-products-container" class="grid"> 
+                <p class='loading'>Verificando tu lista de deseos...</p>
+            </div>
+            
+            <div id="empty-wishlist-message" style="display:none; margin-top: 50px;">
+                <p>Tu lista de deseos está vacía. ¡Explora la <a href="store.html">Tienda</a> para empezar a agregar productos!</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <div class="modal-overlay" id="login-modal">...</div>
+    <div class="modal-overlay" id="forgot-modal" style="display:none;">...</div>
+
+    <script src="./js/apiClient.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/components.js"></script>
+    <script src="./js/wishlist.js"></script> 
+
+</body>
+</html>

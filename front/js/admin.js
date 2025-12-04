@@ -227,8 +227,9 @@ async function loadSalesChart() {
 let currentEditingId = null; // Para saber si estamos editando o creando
 
 // A. Cargar lista de productos en la tabla
-// A. Cargar lista de productos en la tabla
 async function loadProductsTable() {
+    const BASE_IMAGE_URL = 'http://localhost:3000/images/'; 
+
     try {
         const res = await fetch(`${API_URL}/products`);
         const data = await res.json();
@@ -250,12 +251,25 @@ async function loadProductsTable() {
                     } catch (e) { console.warn("Error tags", e); }
                 }
 
+                let finalImageUrl;
+                const defaultPlaceholder = 'https://placehold.co/50';
+
+                if (p.image_url) {
+                    if (p.image_url.startsWith("http")) {
+                        finalImageUrl = p.image_url;
+                    } else {
+                        finalImageUrl = BASE_IMAGE_URL + p.image_url;
+                    }
+                } else {
+                    finalImageUrl = defaultPlaceholder;
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${p.product_id}</td>
                     <td>
-                        <img src="${p.image_url || 'https://placehold.co/50'}" 
-                             alt="img" 
+                        <img src="${finalImageUrl}" 
+                             alt="${p.name} image" 
                              style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
                     </td>
                     <td>${p.name}</td>

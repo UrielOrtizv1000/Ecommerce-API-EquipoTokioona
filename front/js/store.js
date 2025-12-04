@@ -31,6 +31,9 @@ class Store {
     // 1) Cargar productos
     await this.loadProducts();
 
+    // 1.b) Cargar wishlist del usuario si está autenticado
+    await this.loadUserWishlist();
+
     // 2) Cargar categorías desde la BD y crear botones
     await this.loadCategories();
 
@@ -46,6 +49,25 @@ class Store {
     // 6) Primer render con todos los productos
     this.applyFilters();
   }
+
+  async loadUserWishlist() {
+    if (typeof Auth === "undefined" || !Auth.isAuthenticated()) {
+        return;
+    }
+    
+    try {
+        const result = await ApiClient.getWishlist();
+        if (result.ok && result.data && result.data.products) {
+            
+            // Mapea los productos de la wishlist a un Set de IDs
+            this.wishlistIds = new Set(
+                result.data.products.map(item => item.product_id)
+            );
+        }
+    } catch (error) {
+        console.error("💥 Error cargando la Wishlist del usuario:", error);
+    }
+}
 
   // Método para configurar filtros desde URL
   setupUrlFilters() {
@@ -350,6 +372,11 @@ class Store {
         button.classList.toggle("active");
         icon.classList.toggle("far");
         icon.classList.toggle("fas");
+        if (isAdding) {
+            this.wishlistIds.add(product.product_id);
+        } else {
+            this.wishlistIds.delete(product.product_id);
+        }
       } else {
         alert(result.message || "Error en la operación");
       }

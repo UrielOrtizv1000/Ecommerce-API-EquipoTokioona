@@ -15,7 +15,9 @@ const Auth = {
       if (userData) {
         this.setUserSession(userData, token);
         this.updateUserSection();   // pinta "Hola, usuario + carrito"
-        this.updateCartCount();     // actualiza numerito
+        if (this.isAuthenticated() && this.getUser().role !== 'admin') {
+            this.updateCartCount();
+        }
         return { success: true };
       }
       return { success: false, message: "Token inválido recibido." };
@@ -100,38 +102,63 @@ const Auth = {
 
   // Actualizar sección de usuario en la UI
   updateUserSection() {
-    const section = document.getElementById("user-section");
-    if (!section) return;
+    const section = document.getElementById("user-section");
+    if (!section) return;
 
-    const user = this.getUser();
+    const user = this.getUser();
+    
+    const isAdmin = user && user.role === "admin"; 
+    
+    if (user) {
+        
+        let headerButtonsHTML = '';
 
-    if (user) {
-      section.innerHTML = `
-        <div class="user-menu">
-          <span>Hola, ${user.name}</span>
+        if (isAdmin) {
+            headerButtonsHTML = `
+                    <button onclick="window.location.href='admin.html'" class="admin-panel-btn" style="margin-right: 15px; cursor: pointer;">
+                        ⚙️ Panel Admin
+                    </button>
+            `;
+        } else {
 
-          <div class="cart-wrapper" onclick="location.href='cart.html'">
-            <img 
-              src="http://localhost:3000/images/carrito.png" 
-              alt="Carrito" 
-              class="cart-icon"
-              style="width:26px;"
-            >
-            <span id="cart-count-badge" class="cart-count-badge"></span>
-          </div>
+          headerButtonsHTML += `
+                <a href="wishlist.html" class="header-btn wishlist-btn-header" title="Lista de Deseos">
+                    <i class="fas fa-heart"></i>
+                </a>
+            `;
 
-          <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
-        </div>
-      `;
-    } else {
-      section.innerHTML = `
-        <button type="button" class="login-btn" onclick="openLoginModal()">
-          Inicia sesión
-        </button>
-      `;
+            headerButtonsHTML += `  
+                <div class="cart-wrapper" onclick="location.href='cart.html'">
+                    <img 
+                        src="http://localhost:3000/images/carrito.png" 
+                        alt="Carrito" 
+                        class="cart-icon"
+                        style="width:26px;"
+                    >
+                    <span id="cart-count-badge" class="cart-count-badge"></span>
+                </div>
+            `;
+        }
+        
+      section.innerHTML = `
+        <div class="user-menu">
+          <span>Hola, ${user.name}</span>
+
+          ${headerButtonsHTML}            <button onclick="Auth.logout()" class="logout-btn">Cerrar sesión</button>
+        </div>
+      `;
+    } else {
+      section.innerHTML = `
+        <button type="button" class="login-btn" onclick="openLoginModal()">
+          Inicia sesión
+        </button>
+      `;
+    }
+    
+    if (!isAdmin) {
+        this.updateCartCount();
     }
-  },
-
+  },
   // Inicializa la lógica de eventos de login/registro/captcha/recuperación
   async init() {
     await this._loadCaptcha();
