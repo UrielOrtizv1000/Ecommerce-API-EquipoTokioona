@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         /** ENVIAR AL BACKEND **/
         try {
             const response = await fetch(
-                `tookiona-backend.railway.internal/api/auth/resetPassword?token=${token}`,
+                `http://tookiona-backend.railway.internal:3000/api/auth/resetPassword?token=${token}`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
