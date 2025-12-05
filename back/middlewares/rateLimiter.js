@@ -7,10 +7,15 @@ const limiter = rateLimit({
   limit: 3, // 3 attempts
   message: {
     success: false,
-    message: "Too many login attempts. Try again after 5 minutes"
+    message: "Varios intentos fallidos. Intenta de nuevo en 5 minutos"
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  requestWasSuccessful: (req, res) => {
+    // Return true if request should NOT count against the limit
+    return res.statusCode != 401;
+  }
 });
 
 module.exports = { limiter };
