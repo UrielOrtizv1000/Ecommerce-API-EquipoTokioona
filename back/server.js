@@ -13,7 +13,7 @@ const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
-const addressRoutes = require("./routes/AddressRoutes");
+const addressRoutes = require("./routes/addressroutes");
 const app = express();
 const port = process.env.PORT || 3000;
 
