@@ -1,21 +1,3 @@
-// utils/sendEmail.js
-// const transporter = require("../config/email"); // Usa Nodemailer transporter
-
-// async function sendEmail({ to, subject, html, attachments = [] }) {
-//     const mailOptions = {
-//         from: `"Tokioona" <${process.env.EMAIL_USER}>`,
-//         to,
-//         subject,
-//         html,
-//         attachments
-//     };
-
-//     return transporter.sendMail(mailOptions); // Llama al método de Nodemailer
-// }
-
-// module.exports = sendEmail;
-// utils/sendEmail.js (Versión SendGrid mejorada)
-
 const sgMail = require("@sendgrid/mail");
 const fs = require('fs').promises; // Usamos la versión de promesas
 const path = require('path'); // Para manejar rutas
@@ -69,7 +51,6 @@ async function sendEmail({ to, subject, html, attachments = [] }) {
         const [response] = await sgMail.send(msg);
         return response; 
     } catch (error) {
-        // AÑADE ESTO: Muestra el body para obtener el array de errores
         if (error.response && error.response.body && error.response.body.errors) {
             console.error("ERRORES DETALLADOS DE SENDGRID:", JSON.stringify(error.response.body.errors, null, 2));
         }
