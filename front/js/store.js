@@ -360,36 +360,66 @@ class Store {
   // WISHLIST
   // ==========================
   async handleWishlist(product, button) {
-    if (typeof Auth === "undefined" || !Auth.isAuthenticated()) {
-      alert("Debes iniciar sesión para usar la lista de deseos");
-      return;
-    }
-
-    const icon = button.querySelector("i");
-    const isAdding = icon.classList.contains("far");
-
-    try {
-      const result = isAdding
-        ? await ApiClient.addToWishlist(product.product_id)
-        : await ApiClient.removeFromWishlist(product.product_id);
-
-      if (result.ok) {
-        button.classList.toggle("active");
-        icon.classList.toggle("far");
-        icon.classList.toggle("fas");
-        if (isAdding) {
-            this.wishlistIds.add(product.product_id);
-        } else {
-            this.wishlistIds.delete(product.product_id);
-        }
-      } else {
-        alert(result.message || "Error en la operación");
-      }
-    } catch (error) {
-      console.error("Error wishlist:", error);
-      alert("Error de conexión");
-    }
+  if (typeof Auth === "undefined" || !Auth.isAuthenticated()) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Inicio de sesión requerido',
+      text: 'Debes iniciar sesión para usar la lista de deseos',
+      confirmButtonText: 'Entendido'
+    });
+    return;
   }
+
+  const icon = button.querySelector("i");
+  const isAdding = icon.classList.contains("far");
+
+  try {
+    const result = isAdding
+      ? await ApiClient.addToWishlist(product.product_id)
+      : await ApiClient.removeFromWishlist(product.product_id);
+
+    if (result.ok) {
+      button.classList.toggle("active");
+      icon.classList.toggle("far");
+      icon.classList.toggle("fas");
+      
+      if (isAdding) {
+        this.wishlistIds.add(product.product_id);
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Añadido!',
+          text: `${product.name} ha sido añadido a tu lista de deseos`,
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        this.wishlistIds.delete(product.product_id);
+        await Swal.fire({
+          icon: 'error',
+          title: '¡Eliminado!',
+          text: `${product.name} ha sido eliminado de tu lista de deseos`,
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    } else {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: result.message || "Error en la operación",
+        confirmButtonText: 'Entendido'
+      });
+    }
+  } catch (error) {
+    console.error("Error wishlist:", error);
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error de conexión',
+      text: 'No se pudo completar la operación',
+      confirmButtonText: 'Entendido'
+    });
+  }
+}
 
   // ==========================
   // CARRITO
@@ -397,12 +427,22 @@ class Store {
   async handleAddToCart(product) {
     // Validar sesión con Auth si existe
     if (typeof Auth === "undefined" || !Auth.isAuthenticated()) {
-      alert("Debes iniciar sesión para agregar al carrito");
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Inicio de sesion requerida',
+        text: 'Debes inicias sesión para agregar algo al carrito',
+        confirmButtonText: 'Entendido'
+      });
       return;
     }
 
     if ((product.stock || 0) === 0) {
-      alert("Producto sin stock");
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Producto sin stock',
+        text: 'Este producto no esta disponible',
+        confirmButtonText: 'Entendido'
+      });
       return;
     }
 
@@ -413,18 +453,34 @@ class Store {
       });
 
       if (result.ok) {
-        alert(`¡${product.name} agregado al carrito!`);
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Agregado!',
+          html: `<strong>${product.name}</strong> ha sido agregado al carrito`,
+          timer: 1500,
+          showConfirmButton: false
+        });
 
         // 🔥 Actualizar el contador del carrito en el header sin recargar
         if (typeof Auth !== "undefined" && typeof Auth.updateCartCount === "function") {
           Auth.updateCartCount();
         }
       } else {
-        alert(result.message || "Error al agregar al carrito");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.message || "Error al agregar al carrito",
+          confirmButtonText: 'Entendido'
+        });
       }
     } catch (error) {
       console.error("Error cart:", error);
-      alert("Error de conexión al carrito");
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo conectar con el servidor',
+        confirmButtonText: 'Entendido'
+      });
     }
   }
 

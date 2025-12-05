@@ -30,11 +30,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // Limpiar formulario
         form.reset();
       } else {
-        alert("Error al enviar el mensaje. Inténtalo de nuevo.");
+        await Swal.fire({
+          icon: 'error',
+          title: '❌',
+          text: `Error al enviar el mensaje. Inténtalo de nuevo.`,
+          confirmButtonText: 'Entendido'
+        });
       }
     } catch (err) {
       console.error("Error en contacto:", err);
-      alert("Error de conexión.");
+      await Swal.fire({
+        icon: 'error',
+        title: '❌',
+        text: `Error de conexión`,
+        confirmButtonText: 'Entendido'
+      });
     }
   });
 

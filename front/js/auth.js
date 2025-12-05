@@ -380,7 +380,12 @@ const Auth = {
       const email = emailInput ? emailInput.value.trim() : "";
 
       if (!email) {
-        alert("Ingresa tu correo");
+        await Swal.fire({
+          icon: 'warning',
+          title: '✉️',
+          text: 'Ingresa tu correo',
+          confirmButtonText: 'Entendido'
+        });
         return;
       }
 
@@ -388,16 +393,30 @@ const Auth = {
         const result = await ApiClient.forgotPassword(email);
 
         if (result.ok) {
-          alert(
-            "Te enviamos un correo con instrucciones para recuperar tu contraseña."
-          );
+          await Swal.fire({
+            icon: 'success',
+            title: '¡Enviado!',
+            html: `Te enviamos un correo con instrucciones para recuperar tu contraseña`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeForgotModal();
         } else {
-          alert(result.message || "Error enviando correo de recuperación.");
+          await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || "Error enviando correo de recuperación",
+            confirmButtonText: 'Entendido'
+          });
         }
       } catch (error) {
         console.error("Error en forgotPassword:", error);
-        alert("Error de conexión.");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.message || "Error de conexión",
+          confirmButtonText: 'Entendido'
+        });
       }
     });
   },
