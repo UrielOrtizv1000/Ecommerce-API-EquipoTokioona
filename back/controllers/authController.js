@@ -68,22 +68,61 @@ const login = async (req, res) => {
     // Proceder con login normal
     const userData = await User.userLogin(username, password);
     
-    if (!userData) {
+    if (userData.failedAttempt) {
       console.log('❌ Usuario no encontrado o contraseña incorrecta');
+      const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
+      if (iterateFailedAttempt === 0) {
+        console.log('❌ User data was not found. Iiteration failed');
+        return res.status(404).json({
+          ok: false,
+          message: "Credenciales incorrectas"
+        })
+      }
+
+      
+      const currAtt = await FailedLogin.getCurrentAttempts(userData.affectedId);
+      if (!currAtt) {
+        console.log('❌ User data was not found. Attempt check failed');
+        return res.status(404).json({
+          ok: false,
+          message: "Credenciales incorrectas"
+        })
+      }
+
+      if (currAtt % 3 === 0) {
+        const lock = await FailedLogin.setLockout(userData.affectedId);
+        if (lock === 0) {
+          console.log('❌ User lockout failed');
+          return res.status(500).json({
+            ok: false,
+            messge: "Error al iniciar sesión"
+          });
+        }
+      }
+
       return res.status(401).json({
         ok: false,
         message: "Credenciales incorrectas"
       });
     }
-  
-    
-    if (userData.failedAttempt) {
-      // ... código existente de intentos fallidos
+
+    const clearAtt = await FailedLogin.resetAttempts(userData.id);
+    if (clearAtt === 0) {
+      console.log('❌ Failed to reset attempts');
+      return res.status(500).json({
+        ok: false,
+        message: "Error al iniciar sesión"
+      })
     }
-    
-    // Limpiar intentos fallidos
-    await FailedLogin.resetAttempts(userData.id);
-    await FailedLogin.removeLockout(userData.id);
+
+    const rmLock = await FailedLogin.removeLockout(userData.id);
+    if (rmLock === 0) {
+      console.log('❌ Failed to remove lockout');
+      return res.status(500).json({
+        ok: false,
+        message: "Error al iniciar sesión"
+      })
+    }
     
     const token = storeToken(userData);
     
@@ -93,7 +132,7 @@ const login = async (req, res) => {
     });
     
   } catch (error) {
-    console.error("Login error: ", error);
+    console.error("❌ Login error: ", error);
     res.status(500).json({
       ok: false,
       message: "Error interno del servidor"
