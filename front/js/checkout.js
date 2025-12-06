@@ -137,11 +137,14 @@ async function recalculateTotals(subtotalFromCart) {
       const discount   = Number(data.discount || 0);
       const total      = Number(data.total || (subtotal + taxes + shipping - discount));
 
-      subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-      taxesEl.textContent    = `$${taxes.toFixed(2)}`;
-      shippingEl.textContent = `$${shipping.toFixed(2)}`;
-      discountEl.textContent = `-$${discount.toFixed(2)}`;
-      totalEl.textContent    = `$${total.toFixed(2)}`;
+      const currency = data.currency || "$";
+
+      // Actualiza UI con moneda correcta
+      subtotalEl.textContent = `${currency} ${subtotal.toFixed(2)}`;
+      taxesEl.textContent    = `${currency} ${taxes.toFixed(2)}`;
+      shippingEl.textContent = `${currency} ${shipping.toFixed(2)}`;
+      discountEl.textContent = `-${currency} ${discount.toFixed(2)}`;
+      totalEl.textContent    = `${currency} ${total.toFixed(2)}`;
     } else {
       // Si falla el endpoint de cálculo, usar solo el subtotal
       setFallbackTotals(baseSubtotal);
@@ -155,11 +158,12 @@ async function recalculateTotals(subtotalFromCart) {
 
 /* Totales simples cuando no hay cálculo avanzado en el backend */
 function setFallbackTotals(subtotal) {
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  taxesEl.textContent = "$0.00";
-  shippingEl.textContent = "$0.00";
-  discountEl.textContent = "-$0.00";
-  totalEl.textContent = `$${subtotal.toFixed(2)}`;
+  const currency = "$"; // Default
+  subtotalEl.textContent = `${currency} ${subtotal.toFixed(2)}`;
+  taxesEl.textContent = `${currency} 0.00`;
+  shippingEl.textContent = `${currency} 0.00`;
+  discountEl.textContent = `-${currency} 0.00`;
+  totalEl.textContent = `${currency} ${subtotal.toFixed(2)}`;
 }
 
 /* Recalcular totales cuando el usuario cambia de país/estado */

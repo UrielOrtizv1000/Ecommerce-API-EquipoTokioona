@@ -70,7 +70,7 @@ const login = async (req, res) => {
     
     if (userData.failedAttempt) {
       console.log('❌ Usuario no encontrado o contraseña incorrecta');
-      const iterateFailedAttempt = FailedLogin.iterateFailedAttempt(userData.affectedId);
+      const iterateFailedAttempt = await FailedLogin.iterateFailedAttempt(userData.affectedId);
       if (iterateFailedAttempt === 0) {
         console.log('❌ User data was not found. Iiteration failed');
         return res.status(404).json({

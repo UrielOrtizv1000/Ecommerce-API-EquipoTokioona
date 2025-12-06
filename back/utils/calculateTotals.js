@@ -1,6 +1,19 @@
 // utils/calculateTotals.js
 const pool = require('../db/conexion');
 
+// Conversión simple según país
+const convertCurrency = (amount, country) => {
+  const rates = {
+    MX: 1,       // Base MXN
+    US: 0.058,   // MXN → USD
+    CA: 0.079,   // MXN → CAD
+    ES: 0.053,   // MXN → EUR
+    CO: 0.058    // MXN → USD (mismo que US)
+  };
+  const rate = rates[country] || 1;
+  return Number((amount * rate).toFixed(2));
+};
+
 /**
  * Calculate all totals for cart (subtotal, discount, shipping, taxes, total)
  * @param {number} userId
@@ -43,11 +56,14 @@ const [items] = await pool.query(
     throw new Error("Cart is empty");
   }
 
-  // 2. Subtotal
-  const subtotal = items.reduce((acc, item) => acc + Number(item.subtotal), 0);
+  // 2. Subtotal (MXN)
+  const subtotalMXN = items.reduce((acc, item) => acc + Number(item.subtotal), 0);
+
+  // convert subtotal to corresponding country
+  const subtotal = convertCurrency(subtotalMXN, country);
 
   // 3. Applied coupon
-  let discountAmount = 0;
+  let discountAmountMXN = 0;
   let appliedCoupon = null;
   try {
     const [couponRows] = await pool.query(
@@ -56,88 +72,61 @@ const [items] = await pool.query(
     );
     if (couponRows.length > 0) {
       appliedCoupon = couponRows[0].coupon_code;
-      discountAmount = Number(couponRows[0].discount_amount);
+      discountAmountMXN = Number(couponRows[0].discount_amount);
     }
   } catch (err) {
     console.error("Error fetching coupon:", err);
   }
 
+  // Convert the coupon to corresponding country coin
+  const discountAmount = convertCurrency(discountAmountMXN, country);
+
   // 4. CONFIGURATION BY COUNTRY
   const countryConfig = {
     'MX': {
       taxRate: 0.16,
-      shipping: {
-        standard: 129, // MXN
-        express: 249,
-        freeThreshold: 799
-      },
+      shipping: { standard: 129, express: 249, freeThreshold: 799 },
       currency: 'MXN',
       symbol: '$'
     },
     'US': {
       taxRate: 0.07,
-      shipping: {
-        standard: 15, // USD
-        express: 30,
-        freeThreshold: 100
-      },
+      shipping: { standard: 15, express: 30, freeThreshold: 100 },
       currency: 'USD',
       symbol: '$'
     },
     'CA': {
       taxRate: 0.13,
-      shipping: {
-        standard: 20, // CAD
-        express: 40,
-        freeThreshold: 150
-      },
+      shipping: { standard: 20, express: 40, freeThreshold: 150 },
       currency: 'CAD',
       symbol: 'C$'
     },
     'ES': {
       taxRate: 0.21,
-      shipping: {
-        standard: 10, // EUR
-        express: 25,
-        freeThreshold: 50
-      },
+      shipping: { standard: 10, express: 25, freeThreshold: 50 },
       currency: 'EUR',
       symbol: '€'
     },
     'CO': {
       taxRate: 0.19,
-      shipping: {
-        standard: 15, // USD equivalent - mantenemos USD
-        express: 30,
-        freeThreshold: 100
-      },
-      currency: 'USD', // Mostrar en USD
+      shipping: { standard: 15, express: 30, freeThreshold: 100 },
+      currency: 'USD',
       symbol: '$'
     }
   };
 
+  const config = countryConfig[country] || countryConfig['MX'];
+
   // 5. SHIPPING COST BY COUNTRY
   let shippingCost = 0;
-  const config = countryConfig[country] || countryConfig['MX']; // Default México
 
   if (subtotal >= config.shipping.freeThreshold) {
     shippingCost = 0; // FREE SHIPPING
   } else {
     shippingCost = config.shipping[shippingMethod] || config.shipping.standard;
-    
-    // ESPECIAL LOGIC FOR MEXICO EXTENDED ZONES
-    if (country === 'MX' && config.extendedZones) {
-      // Si el país es México y tenemos un "state" (provincia/estado) en el parámetro
-      // Nota: Actualmente el parámetro 'country' realmente viene como 'state' del frontend
-      // Para mantener compatibilidad, chequeamos si el valor está en las zonas extendidas
-      const userState = country.toLowerCase(); // El parámetro actualmente se llama 'state'
-      if (config.extendedZones.includes(userState)) {
-        shippingCost += 70; 
-      }
-    }
   }
 
-  // 6. TAZES AMOUNT
+  // 6. TAXES AMOUNT
   const taxableAmount = subtotal - discountAmount;
   const taxes = taxableAmount > 0 ? taxableAmount * config.taxRate : 0;
 
