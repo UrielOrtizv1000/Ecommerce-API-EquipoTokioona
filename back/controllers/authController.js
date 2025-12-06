@@ -184,7 +184,7 @@ const sendResetPassword = async (req, res) => {
             { expiresIn: "15m" }
         );
 
-        const resetURL = `${process.env.FRONT_URL}/front/recuperar.html?token=${token}`;
+        const resetURL = `${process.env.FRONT_URL}/recuperar.html?token=${token}`;
 
         const html = `
             <h1>Password Reset</h1>
