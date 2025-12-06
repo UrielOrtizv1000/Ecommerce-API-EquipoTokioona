@@ -1,5 +1,5 @@
 window.APP_CONFIG = {
-    BACK_URL: "https://tookiona-backend-production-5312.up.railway.app" 
+    BACK_URL: "http://127.0.0.1:3000" 
 };
 
 document.addEventListener('DOMContentLoaded', () => {
